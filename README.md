@@ -9,7 +9,7 @@
 **MMLCA** aims to simplify the identification of multimorbidity patterns
 through user-friendly functions. Leveraging the power of Latent Class
 Analysis (LCA) as implemented in the `poLCA` package, **MMLCA** provides
-an accessible and efficient tool for researchers and practitioners.
+an accessible and efficient tool for researchers.
 
 ## Installation
 

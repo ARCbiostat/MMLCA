@@ -4,8 +4,7 @@ Title: Latent Class Analysis to Identify Multimorbidity Patterns
 Version: 0.1.0
 Author: Caterina Gregorio
 Maintainer: The package maintainer <caterina.gregorio@ki.se>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
+Description: MMLCA aims to simplify the identification of multimorbidity patterns through user-friendly functions. Leveraging the power of Latent Class Analysis (LCA) as implemented in the poLCA package, MMLCA provides an accessible and efficient tool for researchers.
 License: `use_mit_license()`
 Encoding: UTF-8
 LazyData: true

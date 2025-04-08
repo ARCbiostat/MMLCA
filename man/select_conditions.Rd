@@ -20,6 +20,6 @@ A character vector.
 Identify chronic conditions above threshold prevalence
 }
 \examples{
-dat <- data.frame(dis_1=rbinom(prob=0.1,size=1,n=100),dis_2=rbinom(prob=0.3,size=1,n=100),dis_3=rbinom(prob=0.05,size=1,n=100))
-select_conditions(dat,0.02,"dis_")
+dat <- data.frame(dis_1 = rbinom(prob = 0.1, size = 1, n = 100), dis_2 = rbinom(prob = 0.3, size = 1, n = 100), dis_3 = rbinom(prob = 0.05, size = 1, n = 100))
+select_conditions(dat, 0.02, "dis_")
 }

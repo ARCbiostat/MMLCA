@@ -1,6 +1,6 @@
 Package: MMLCA
 Type: Package
-Title: Latent Class Analysis to Idnetify Multimorbidity Patterns
+Title: Latent Class Analysis to Identify Multimorbidity Patterns
 Version: 0.1.0
 Author: Caterina Gregorio
 Maintainer: The package maintainer <caterina.gregorio@ki.se>

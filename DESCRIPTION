@@ -1,11 +1,16 @@
 Package: MMLCA
 Type: Package
-Title: What the Package Does (Title Case)
+Title: Latent Class Analysis to Idnetify Multimorbidity Patterns
 Version: 0.1.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
+Author: Caterina Gregorio
+Maintainer: The package maintainer <caterina.gregorio@ki.se>
 Description: More about what it does (maybe more than one line)
     Use four spaces when indenting paragraphs within the Description.
-License: What license is it under?
+License: `use_mit_license()`
 Encoding: UTF-8
 LazyData: true
+RoxygenNote: 7.2.3
+Imports: 
+    dplyr,
+    magrittr,
+    tidyr

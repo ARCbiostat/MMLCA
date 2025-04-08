@@ -20,3 +20,6 @@ Imports:
     tidyr
 URL: https://github.com/caterinagregorio/MMLCA
 BugReports: https://github.com/caterinagregorio/MMLCA/issues
+Suggests: 
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3

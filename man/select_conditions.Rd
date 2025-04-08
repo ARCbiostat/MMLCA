@@ -4,14 +4,12 @@
 \alias{select_conditions}
 \title{Identify chronic conditions above threshold prevalence}
 \usage{
-select_conditions(dat_dis, threshold, string)
+select_conditions(X, threshold)
 }
 \arguments{
-\item{dat_dis}{Dataframe.}
+\item{X}{Matrix with chronic diseases variables (coded as 1:no and 2:yes) to use for the calculation.}
 
 \item{threshold}{Numeric prevalence threshold to use.}
-
-\item{string}{String to identify chronic conditions in the dataset.}
 }
 \value{
 A character vector.
@@ -20,6 +18,6 @@ A character vector.
 Identify chronic conditions above threshold prevalence
 }
 \examples{
-dat <- data.frame(dis_1 = rbinom(prob = 0.1, size = 1, n = 100), dis_2 = rbinom(prob = 0.3, size = 1, n = 100), dis_3 = rbinom(prob = 0.05, size = 1, n = 100))
-select_conditions(dat, 0.02, "dis_")
+X <- as.matrix(data.frame(dis_1 = rbinom(prob = 0.1, size = 1, n = 100)+1, dis_2 = rbinom(prob = 0.3, size = 1, n = 100)+1, dis_3 = rbinom(prob = 0.05, size = 1, n = 100)+1))
+select_conditions(X, 0.02)
 }

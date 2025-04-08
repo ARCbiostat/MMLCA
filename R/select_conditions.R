@@ -1,8 +1,7 @@
 #' Identify chronic conditions above threshold prevalence
 #'
-#' @param dat_dis Dataframe.
+#' @param X Matrix with chronic diseases variables (coded as 1:no and 2:yes) to use for the calculation.
 #' @param threshold Numeric prevalence threshold to use.
-#' @param string String to identify chronic conditions in the dataset.
 #' @import magrittr
 #' @import dplyr
 #' @import tidyr
@@ -11,12 +10,12 @@
 #' @export
 #'
 #' @examples
-#' dat <- data.frame(dis_1 = rbinom(prob = 0.1, size = 1, n = 100), dis_2 = rbinom(prob = 0.3, size = 1, n = 100), dis_3 = rbinom(prob = 0.05, size = 1, n = 100))
-#' select_conditions(dat, 0.02, "dis_")
-select_conditions <- function(dat_dis, threshold, string) {
+#' X <- as.matrix(data.frame(dis_1 = rbinom(prob = 0.1, size = 1, n = 100)+1, dis_2 = rbinom(prob = 0.3, size = 1, n = 100)+1, dis_3 = rbinom(prob = 0.05, size = 1, n = 100)+1))
+#' select_conditions(X, 0.02)
+select_conditions <- function(X, threshold) {
   prev <-
-    dat_dis %>%
-    dplyr::select(contains(string)) %>%
+    X-1 %>%
+    as.data.frame() %>%
     dplyr::summarise_all(function(x) {
       mean(x, na.rm = T)
     }) %>%

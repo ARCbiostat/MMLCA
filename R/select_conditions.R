@@ -14,8 +14,7 @@
 #' select_conditions(X, 0.02)
 select_conditions <- function(X, threshold) {
   prev <-
-    X-1 %>%
-    as.data.frame() %>%
+    as.data.frame(X-1) %>%
     dplyr::summarise_all(function(x) {
       mean(x, na.rm = T)
     }) %>%

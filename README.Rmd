@@ -16,15 +16,16 @@ knitr::opts_chunk$set(
 # MMLCA
 
 <!-- badges: start -->
+
 <!-- badges: end -->
 
-The goal of MMLCA is to ...
+**MMLCA** aims to simplify the identification of multimorbidity patterns through user-friendly functions. Leveraging the power of Latent Class Analysis (LCA) as implemented in the `poLCA` package, **MMLCA** provides an accessible and efficient tool for researchers and practitioners.
 
 ## Installation
 
 You can install the development version of MMLCA from [GitHub](https://github.com/) with:
 
-```{r}
+```{r,eval=FALSE}
 # install.packages("devtools")
 devtools::install_github("caterinagregorio/MMLCA")
 ```
@@ -35,6 +36,4 @@ This is a basic example:
 
 ```{r example}
 library(MMLCA)
-## basic example code
 ```
-

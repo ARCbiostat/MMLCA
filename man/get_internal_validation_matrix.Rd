@@ -2,13 +2,18 @@
 % Please edit documentation in R/get_internal_validation_matrix.R
 \name{get_internal_validation_matrix}
 \alias{get_internal_validation_matrix}
+<<<<<<< HEAD
 \title{Function to calculate the approximate misclassifications matrix}
+=======
+\title{Function to calculate the approximate classification matrix}
+>>>>>>> 913c431363112a33f6b9a5f53db8d024bd9780f9
 \usage{
 get_internal_validation_matrix(fit, X)
 }
 \arguments{
 \item{fit}{object of class poLCA.}
 
+<<<<<<< HEAD
 \item{X}{matrix with chronic diseases variables (coded as 1:no and 2:yes) to use for the calculation.}
 }
 \value{
@@ -19,4 +24,13 @@ Function to calculate the approximate misclassifications matrix
 }
 \details{
 This function calculates the misclassification probabilities as in https://www.stata.com/meeting/uk22/slides/UK22_Tompsett.pdf
+=======
+\item{X}{matrix with chronic diseases variabiables (coded as 1:no and 2:yes) to use for the calculation.}
+}
+\value{
+nc x nc matrix where nc is the number of latent multimorbidity patterns.
+}
+\description{
+Function to calculate the approximate classification matrix
+>>>>>>> 913c431363112a33f6b9a5f53db8d024bd9780f9
 }

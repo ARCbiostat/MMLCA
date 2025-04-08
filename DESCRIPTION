@@ -16,6 +16,7 @@ Imports:
     ggpubr,
     magrittr,
     poLCA,
+    tictoc,
     tidyr
 URL: https://github.com/caterinagregorio/MMLCA
 BugReports: https://github.com/caterinagregorio/MMLCA/issues

@@ -7,7 +7,7 @@
 ggaccuracy_LCA(obj, test = NULL)
 }
 \arguments{
-\item{obj}{fit object of class poLCA.}
+\item{obj}{object returned by the function select_number_LCA.}
 
 \item{test}{Matrix with chronic diseases variables (coded as 1:no and 2:yes) used as a test set. It should be of the same format as the one used for fitting the LCA model.}
 }
@@ -15,5 +15,5 @@ ggaccuracy_LCA(obj, test = NULL)
 object of class ggplot.
 }
 \description{
-This function derives and plot the accuracy of a LCA model for multimorbidity patterns using the misclassification probability and entropy on both the data used to fit the LCA and on a separate dataset.
+This function compares and plot the accuracy of LCA models with different number of classes for multimorbidity patterns using the misclassification probability and entropy on both the data used to fit the LCA and on a separate dataset.
 }

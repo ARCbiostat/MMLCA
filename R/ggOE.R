@@ -80,13 +80,14 @@ ggOE <- function(obj,cutoff_OE=2,cutoff_P=NULL,table=F){
     ggplot2::scale_y_reverse("Chronic conditions")+
     ggplot2::scale_x_continuous(limits = c(0,1))+
     ggplot2::theme_void()+
+    ggplot2::ggtitle("Pattern characterizing diseases")+
     ggplot2::theme(legend.position = "null",
           axis.text.y = ggplot2::element_blank(),
           axis.ticks.y = ggplot2::element_blank(),
           strip.text.x.top = ggplot2::element_blank(),
           text = ggplot2::element_text(face = "bold",size = 16))
 
-  gg <- ggpubr::ggarrange(ggOE,ggnames,heights = c(1,1))
+  gg <- ggpubr::ggarrange(ggOE,ggnames,heights = c(1,1),nrow=2)
   print(gg)
 
   if(table){

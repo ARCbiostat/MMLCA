@@ -17,7 +17,7 @@
 #' @examples
 select_number_LCA <- function(nclasses, X, conditions, plot = T, nrep = 50) {
   tictoc::tic()
-  res <- lapply(nclasses, run_LCA, X = X, conditions = conditions, nrep = nrep)
+  res <- lapply(nclasses, function(x) run_LCA(x, X = X, conditions = conditions, nrep = nrep))
   dat_res <- do.call("rbind", lapply(res, function(x) x$metrics))
   objects <- lapply(res, function(x) x$obj)
   names(objects) <- nclasses

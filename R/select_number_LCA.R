@@ -1,5 +1,5 @@
 #' Function to run LCA with different number of classes and compare the goodness-of-fit
-#'
+#' @description  This is a helper function to select the number of latent classes using poLCA. For  details regarding poLCA see the package documentation and https://statistics.ohlsen-web.de/latent-class-analysis-polca/.
 #' @param nclasses Numeric vector indicating the number of latent classes to investigate.
 #' @param X Matrix with chronic diseases variables (coded as 1:no and 2:yes) to use for the calculation.
 #' @param conditions Vector of columns names indicating the conditions to use for the LCA. It can be the object returned from the function select_conditions.
@@ -17,7 +17,7 @@
 #' @examples
 select_number_LCA <- function(nclasses, X, conditions, plot = T, nrep = 50) {
   tictoc::tic()
-  res <- lapply(nclasses, run_LCA, dat_long = dat_long, conditions = conditions, nrep = nrep)
+  res <- lapply(nclasses, run_LCA, X = X, conditions = conditions, nrep = nrep)
   dat_res <- do.call("rbind", lapply(res, function(x) x$metrics))
   objects <- lapply(res, function(x) x$obj)
   names(objects) <- nclasses

@@ -1,5 +1,4 @@
 #' Identify chronic conditions above threshold prevalence
-#'
 #' @param X Matrix with chronic diseases variables (coded as 1:no and 2:yes) to use for the calculation.
 #' @param threshold Numeric prevalence threshold to use.
 #' @import magrittr

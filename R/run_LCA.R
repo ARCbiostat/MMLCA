@@ -1,5 +1,5 @@
 #' Main function to run the LCA
-#'
+#' @description  This is a helper function to run a  latent class model using poLCA. For  details regarding poLCA see the package documentation and https://statistics.ohlsen-web.de/latent-class-analysis-polca/.
 #' @param nclass Numeric indicating the number of latent classes.
 #' @param X Matrix with chronic diseases variables (coded as 1:no and 2:yes) to use for the calculation.
 #' @param conditions Vector of columns names indicating the conditions to use for the LCA. It can be the object returned from the function select_conditions.
@@ -16,7 +16,7 @@
 #' @examples
 run_LCA <- function(nclass, X, conditions, nrep = 50, fcov = NULL, probstart = NULL) {
   gc()
-  f <- dat_long %>%
+  f <- X %>%
     dplyr::select(any_of(conditions)) %>%
     as.matrix()
   if (!is.null(fcov)) {
@@ -27,7 +27,7 @@ run_LCA <- function(nclass, X, conditions, nrep = 50, fcov = NULL, probstart = N
 
   if (is.null(probstart)) {
     myresult <- poLCA::poLCA(formula,
-      dat_long,
+      X,
       nclass = nclass,
       maxiter = 3000,
       na.rm = F,
@@ -36,7 +36,7 @@ run_LCA <- function(nclass, X, conditions, nrep = 50, fcov = NULL, probstart = N
     )
   } else {
     myresult <- poLCA::poLCA(formula,
-      dat_long,
+      X,
       nclass = nclass,
       maxiter = 3000,
       na.rm = F,
@@ -55,9 +55,9 @@ run_LCA <- function(nclass, X, conditions, nrep = 50, fcov = NULL, probstart = N
   ABIC <- (-2 * myresult$llik) + ((log((myresult$N + 2) / 24)) * myresult$npar)
   CAIC <- (-2 * myresult$llik) + myresult$npar * (1 + log(myresult$N))
   likelihood_ratio <- myresult$Gsq
-  internal_val_matrix <- get_internal_validation_matrix(myresult, dat_long)
+  internal_val_matrix <- get_internal_validation_matrix(myresult, X)
   acc <- sum(diag(internal_val_matrix)) / nclass
-  entropy <- get_entropy(myresult, dat_long)
+  entropy <- get_entropy(myresult, X)
   return(list(
     obj = myresult,
     accuracy_matrix = internal_val_matrix,

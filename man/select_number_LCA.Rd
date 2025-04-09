@@ -26,5 +26,5 @@ A list containing the following elements:
 \item{elapsed_time}{Numeric indicating the time elapsed.}
 }
 \description{
-Function to run LCA with different number of classes and compare the goodness-of-fit
+This is a helper function to select the number of latent classes using poLCA. For  details regarding poLCA see the package documentation and https://statistics.ohlsen-web.de/latent-class-analysis-polca/.
 }

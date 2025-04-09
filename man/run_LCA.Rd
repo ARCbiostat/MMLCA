@@ -26,5 +26,5 @@ A list containing the following elements:
 \item{metrics}{A vector containing goodness-of-fit measures.}
 }
 \description{
-Main function to run the LCA
+This is a helper function to run a  latent class model using poLCA. For  details regarding poLCA see the package documentation and https://statistics.ohlsen-web.de/latent-class-analysis-polca/.
 }

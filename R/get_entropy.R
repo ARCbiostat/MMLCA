@@ -10,7 +10,7 @@
 #' @examples
 get_entropy <- function(obj, X, ratio = T) {
   error_prior <- entropy(obj$P)
-  posterior_probs <- poLCA::poLCA.posterior(obj, dat)
+  posterior_probs <- poLCA::poLCA.posterior(obj, X)
   error_post <- mean(apply(posterior_probs, 1, entropy), na.rm = TRUE)
   entropy_value <- 1 - (error_post / error_prior)
   if (!ratio) {

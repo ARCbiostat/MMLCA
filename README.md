@@ -18,7 +18,7 @@ You can install the development version of MMLCA from
 
 ``` r
 # install.packages("devtools")
-devtools::install_github("caterinagregorio/MMLCA")
+devtools::install_github("ARCbiostat/MMLCA")
 ```
 
 ## Example

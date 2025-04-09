@@ -40,5 +40,4 @@ get_internal_validation_matrix <- function(fit, X) {
   }
 
   Qmatrix
-
 }

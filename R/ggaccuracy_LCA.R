@@ -42,7 +42,7 @@ ggaccuracy_LCA <- function(obj, test = NULL) {
       ggplot2::scale_y_continuous("Assignment accuracy (%)", limits = c(0, 1)) +
       ggplot2::scale_x_continuous("Number of latent classes", breaks = dat$nclass) +
       ggplot2::theme_bw() +
-      ggplot2::scale_color_discrete("")+
+      ggplot2::scale_color_discrete("") +
       ggplot2::theme(axis.title = ggplot2::element_text(face = "bold", size = 14), axis.text = element_text(face = "bold", size = 12))
 
 
@@ -54,7 +54,7 @@ ggaccuracy_LCA <- function(obj, test = NULL) {
       ggplot2::scale_y_continuous("Ratio assignment accuracy") +
       ggplot2::scale_x_continuous("Number of latent classes", breaks = dat$nclass) +
       ggplot2::theme_bw() +
-      ggplot2::scale_color_discrete("")+
+      ggplot2::scale_color_discrete("") +
       ggplot2::theme(axis.title = ggplot2::element_text(face = "bold", size = 14), axis.text = element_text(face = "bold", size = 12))
     gg <- ggpubr::ggarrange(gg_test, ratio_test, ncol = 2, common.legend = T)
   } else {

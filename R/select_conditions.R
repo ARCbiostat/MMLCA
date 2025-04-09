@@ -9,11 +9,11 @@
 #' @export
 #'
 #' @examples
-#' X <- as.matrix(data.frame(dis_1 = rbinom(prob = 0.1, size = 1, n = 100)+1, dis_2 = rbinom(prob = 0.3, size = 1, n = 100)+1, dis_3 = rbinom(prob = 0.05, size = 1, n = 100)+1))
+#' X <- as.matrix(data.frame(dis_1 = rbinom(prob = 0.1, size = 1, n = 100) + 1, dis_2 = rbinom(prob = 0.3, size = 1, n = 100) + 1, dis_3 = rbinom(prob = 0.05, size = 1, n = 100) + 1))
 #' select_conditions(X, 0.02)
 select_conditions <- function(X, threshold) {
   prev <-
-    as.data.frame(X-1) %>%
+    as.data.frame(X - 1) %>%
     dplyr::summarise_all(function(x) {
       mean(x, na.rm = T)
     }) %>%

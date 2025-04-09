@@ -74,18 +74,19 @@ ggOE <- function(obj,cutoff_OE=2,cutoff_P=NULL,table=F){
 
 
       print(ggOE)
+      if(table){
+        colnames(Char_MP)[4] <- "O/E above threshold"
+        colnames(Char_MP)[6] <- "Prevalence above threshold"
+        colnames(Char_MP)[7] <- "Flag for prevalence and O/E above threshold"
+        colnames(Char_MP)[10] <- "Prevalence and O/E above threshold"
+
+        return(list(plot=ggOE,table=Char_MP))
+      }else return(ggOE)
     })
+
 
 
   })
 
 
-  if(table){
-    colnames(Char_MP)[4] <- "O/E above threshold"
-    colnames(Char_MP)[6] <- "Prevalence above threshold"
-    colnames(Char_MP)[7] <- "Flag for prevalence and O/E above threshold"
-    colnames(Char_MP)[10] <- "Prevalence and O/E above threshold"
-
-    return(list(plot=ggOE,table=Char_MP))
-  }else return(ggOE)
 }

@@ -32,30 +32,9 @@ devtools::install_github("ARCbiostat/MMLCA")
 
 ## Overview of the package
 
-```{r,echo=FALSE}
+```{r,echo=FALSE,warning=F,message=FALSE}
 
-# Get the namespace of the package
-ns <- asNamespace("MMLCA")
-
-# List all exported functions
-exported_functions <- ls(ns, all.names = TRUE)
-
-# Filter to include only functions
-exported_functions <- Filter(function(x) is.function(get(x, envir = ns)), exported_functions)
-
-exported_functions <- exported_functions[-c(1:4)]
-
-# Get descriptions for each exported function
-get_description <- function(func_name) {
-help_content <- capture.output(help(func_name, package = "MMLCA"))
-description <- help_content[grep("Description", help_content, ignore.case = TRUE)]
-paste(description, collapse = " ")
-}
-
-
-# Print the exported functions and descriptions in Markdown format
-cat(paste0("* **", exported_functions, "**: ", sapply(exported_functions, get_description), collapse = "\n"))
-
+pkgdown::build_reference()
 
 ```
 

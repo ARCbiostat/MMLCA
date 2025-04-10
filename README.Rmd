@@ -34,7 +34,7 @@ devtools::install_github("ARCbiostat/MMLCA")
 
 ```{r,echo=FALSE,warning=F,message=FALSE}
 
-pkgdown::build_reference()
+
 
 ```
 

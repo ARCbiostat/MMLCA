@@ -23,12 +23,12 @@ devtools::install_github("ARCbiostat/MMLCA")
 
 ## Overview of the package
 
-    #> -- Building function reference -------------------------------------------------
-
 ## Example
 
 This is a basic example:
 
 ``` r
 library(MMLCA)
+#> Warning: replacing previous import 'magrittr::extract' by 'tidyr::extract' when
+#> loading 'MMLCA'
 ```

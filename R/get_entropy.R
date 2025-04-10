@@ -20,4 +20,13 @@ get_entropy <- function(obj, X, ratio = T) {
 }
 
 
+
+#' Entropy internal
+#'
+#' This function is used internally within the package.
+#' @param p A numeric value.
+#' @return Entropy.
+#' @keywords internal
+
+
 entropy <- function(p) sum(-p * log(p))

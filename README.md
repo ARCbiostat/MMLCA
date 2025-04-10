@@ -21,12 +21,20 @@ You can install the development version of MMLCA from
 devtools::install_github("ARCbiostat/MMLCA")
 ```
 
+## Overview of the package
+
+    #> Warning: replacing previous import 'magrittr::extract' by 'tidyr::extract' when
+    #> loading 'MMLCA'
+    #> * **ggOE**: 
+    #> * **ggOEx**: 
+    #> * **run_LCA**: 
+    #> * **select_conditions**: 
+    #> * **select_number_LCA**:
+
 ## Example
 
 This is a basic example:
 
 ``` r
 library(MMLCA)
-#> Warning: replacing previous import 'magrittr::extract' by 'tidyr::extract' when
-#> loading 'MMLCA'
 ```

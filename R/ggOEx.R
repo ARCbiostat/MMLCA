@@ -29,11 +29,11 @@ ggOEx <- function(obj, cutoff_OE = 2, cutoff_Ex = 0.25,table=F) {
       R %<>% as.data.frame() %>%
         tibble::rownames_to_column("Disease") %>%
         tidyr::pivot_longer(2:(nclass + 1),
-          names_to = "Multimorbidity profile",
-          values_to = "O/E"
+                            names_to = "Multimorbidity profile",
+                            values_to = "O/E"
         ) %>%
-        dplyr:mutate(`Multimorbidity profile` = as.numeric(gsub("\\D", "", `Multimorbidity profile`))) %>%
-        dplyr:mutate(label = ifelse(`O/E` < cutoff_OE, NA_integer_, Disease))
+        dplyr::mutate(`Multimorbidity profile` = as.numeric(gsub("\\D", "", `Multimorbidity profile`))) %>%
+        dplyr::mutate(label = ifelse(`O/E` < cutoff_OE, NA_integer_, Disease))
 
       N <- apply(obj$y - 1, 2, sum)
 
@@ -48,11 +48,11 @@ ggOEx <- function(obj, cutoff_OE = 2, cutoff_Ex = 0.25,table=F) {
       Ex %<>% as.data.frame() %>%
         tibble::rownames_to_column("Disease") %>%
         tidyr::pivot_longer(2:(nclass + 1),
-          names_to = "Multimorbidity profile",
-          values_to = "Exclusivity"
+                            names_to = "Multimorbidity profile",
+                            values_to = "Exclusivity"
         ) %>%
-        dplyr:mutate(`Multimorbidity profile` = as.numeric(gsub("\\D", "", `Multimorbidity profile`))) %>%
-        dplyr:mutate(label2 = ifelse(`Exclusivity` < cutoff_Ex, NA_integer_, Disease))
+        dplyr::mutate(`Multimorbidity profile` = as.numeric(gsub("\\D", "", `Multimorbidity profile`))) %>%
+        dplyr::mutate(label2 = ifelse(`Exclusivity` < cutoff_Ex, NA_integer_, Disease))
 
 
       Char_MP <- R %>% left_join(Ex)
@@ -71,7 +71,7 @@ ggOEx <- function(obj, cutoff_OE = 2, cutoff_Ex = 0.25,table=F) {
         ggplot2::geom_vline(aes(xintercept = 2), linetype = "dashed") +
         ggplot2::facet_grid(. ~ `Multimorbidity profile`) +
         ggplot2::scale_y_discrete("Chronic conditions") +
-        theme_prism() +
+        ggprism::theme_prism() +
         ggplot2::theme(
           legend.position = "null",
           axis.text.y = ggplot2::element_text(hjust = 1),
@@ -87,7 +87,7 @@ ggOEx <- function(obj, cutoff_OE = 2, cutoff_Ex = 0.25,table=F) {
         ggplot2::facet_grid(. ~ `Multimorbidity profile`) +
         ggplot2::scale_y_discrete("Chronic conditions") +
         ggplot2::scale_x_continuous(limits = c(0, 1)) +
-        theme_prism() +
+        ggprism::theme_prism() +
         ggplot2::theme(
           legend.position = "null",
           axis.text.y = ggplot2::element_text(hjust = 1),
@@ -96,17 +96,20 @@ ggOEx <- function(obj, cutoff_OE = 2, cutoff_Ex = 0.25,table=F) {
           panel.grid.major.y = ggplot2::element_line(color = "grey", linewidth = 0.5)
         )
 
-      Char_MP %<>% mutate(`Multimorbidity profile` = as.factor(`Multimorbidity profile`)) %>%
+      Char_MP %<>% mutate(`Multimorbidity profile` = as.factor(`Multimorbidity profile`))
+
+      Char_MP2 <- Char_MP%>%
         dplyr::filter(char == 1) %>%
         dplyr::group_by(`Multimorbidity profile`) %>%
         dplyr::mutate(index = row_number())
 
-      ggnames <- ggplot2::ggplot(Char_MP) +
+      ggnames <- ggplot2::ggplot(Char_MP2) +
         ggplot2::geom_text(aes(0.1, index, label = label2, hjust = "left"), size = 8) +
         facet_grid(. ~ `Multimorbidity profile`, drop = F) +
         ggplot2::scale_y_reverse("Chronic conditions") +
         ggplot2::scale_x_continuous(limits = c(0, 1)) +
         ggplot2::theme_void() +
+        ggplot2::ggtitle("Diseases above thresholds:")+
         ggplot2::theme(
           legend.position = "null",
           axis.text.y = ggplot2::element_blank(),
@@ -116,13 +119,12 @@ ggOEx <- function(obj, cutoff_OE = 2, cutoff_Ex = 0.25,table=F) {
         )
 
 
-      gg <- ggOE / ggex / ggnames + plot_layout(heights = c(1, 1, 1))
+      gg <- ggpubr::ggarrange(ggOE,ggex,ggnames,nrow=3,align = "v")
       print(gg)
       if (table) {
         colnames(Char_MP)[4] <- "O/E above threshold"
-        colnames(Char_MP)[6] <- "Prevalence above threshold"
-        colnames(Char_MP)[7] <- "Flag for prevalence and O/E above threshold"
-        colnames(Char_MP)[10] <- "Prevalence and O/E above threshold"
+        colnames(Char_MP)[6] <- "Exclusivity above threshold"
+        colnames(Char_MP)[7] <- "Flag for O/E and exclusivity above threshold"
 
         return(list(plot = gg, table = Char_MP))
       } else {

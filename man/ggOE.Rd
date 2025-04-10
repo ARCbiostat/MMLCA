@@ -9,7 +9,7 @@ ggOE(obj, cutoff_OE = 2, cutoff_P = NULL, table = F)
 \arguments{
 \item{obj}{poLCA object}
 
-\item{cutoff_OE}{Numeric indicating the cut-off for the Observed/Expected ratio}
+\item{cutoff_OE}{Numeric indicating the cut-off for the Observed/Expected ratio.}
 
 \item{cutoff_P}{Numeric indicating the prevalence threshold for the Observed/Expected ratio to be calculated. If NULL, all diseases are considered.}
 

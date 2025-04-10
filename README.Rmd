@@ -32,11 +32,10 @@ devtools::install_github("ARCbiostat/MMLCA")
 
 ## Overview of the package
 
-```{r,echo=FALSE,warning=F,message=FALSE}
+For detailed documentation of all functions, please visit the [Reference Documentation](docs/reference/index.html).
 
 
 
-```
 
 ## Example
 

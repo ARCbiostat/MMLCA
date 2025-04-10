@@ -23,6 +23,9 @@ devtools::install_github("ARCbiostat/MMLCA")
 
 ## Overview of the package
 
+For detailed documentation of all functions, please visit the [Reference
+Documentation](docs/reference/index.html).
+
 ## Example
 
 This is a basic example:

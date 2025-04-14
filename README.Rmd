@@ -105,7 +105,7 @@ We now consider the result with 5 classes and try different method to characteri
 
 **Method 1:** O/E and Exclusivity:
 
-```{r,height=50,width=20}
+```{r,fig.height=50,fig.width=20}
 
 OEx_sol5 <- ggOEx(res$obj[[4]], table = F)
 OEx_sol5
@@ -113,7 +113,7 @@ OEx_sol5
 
 **Method 2:** O/E and overall prevalence:
 
-```{r,height=20}
+```{r,fig.height=20}
 
 OE_sol5 <- ggOE(res$obj[[4]], table = F)
 OE_sol5
@@ -121,7 +121,7 @@ OE_sol5
 
 **Method 3:**
 
-```{r,height=20}
+```{r,fig.height=20}
 
 prev_sol5 <- ggprev(res$obj[[4]])
 prev_sol5

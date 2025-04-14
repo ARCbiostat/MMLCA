@@ -49,8 +49,8 @@ select_number_LCA <- function(nclasses, X, conditions, plot = T, nrep = 50) {
 
 
     gg <- ggplot2::ggplot(dat_res_wide) +
-      ggplot2::geom_line(aes(nclass, metrics)) +
-      ggplot2::geom_point(aes(nclass, metrics)) +
+      ggplot2::geom_line(ggplot2::aes(nclass, metrics)) +
+      ggplot2::geom_point(ggplot2::aes(nclass, metrics)) +
       ggplot2::facet_wrap(~name, scales = "free_y") +
       ggplot2::scale_y_continuous("") +
       ggplot2::scale_x_continuous("Number of latent classes", breaks = nclasses) +

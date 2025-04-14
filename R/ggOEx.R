@@ -9,8 +9,7 @@
 #' @export
 #'
 #' @examples
-
-ggOEx <- function(obj, cutoff_OE = 2, cutoff_Ex = 0.25,table=F) {
+ggOEx <- function(obj, cutoff_OE = 2, cutoff_Ex = 0.25, table = F) {
   suppressMessages({
     suppressWarnings({
       nclass <- nrow(obj$probs[[1]])
@@ -29,8 +28,8 @@ ggOEx <- function(obj, cutoff_OE = 2, cutoff_Ex = 0.25,table=F) {
       R %<>% as.data.frame() %>%
         tibble::rownames_to_column("Disease") %>%
         tidyr::pivot_longer(2:(nclass + 1),
-                            names_to = "Multimorbidity profile",
-                            values_to = "O/E"
+          names_to = "Multimorbidity profile",
+          values_to = "O/E"
         ) %>%
         dplyr::mutate(`Multimorbidity profile` = as.numeric(gsub("\\D", "", `Multimorbidity profile`))) %>%
         dplyr::mutate(label = ifelse(`O/E` < cutoff_OE, NA_integer_, Disease))
@@ -48,8 +47,8 @@ ggOEx <- function(obj, cutoff_OE = 2, cutoff_Ex = 0.25,table=F) {
       Ex %<>% as.data.frame() %>%
         tibble::rownames_to_column("Disease") %>%
         tidyr::pivot_longer(2:(nclass + 1),
-                            names_to = "Multimorbidity profile",
-                            values_to = "Exclusivity"
+          names_to = "Multimorbidity profile",
+          values_to = "Exclusivity"
         ) %>%
         dplyr::mutate(`Multimorbidity profile` = as.numeric(gsub("\\D", "", `Multimorbidity profile`))) %>%
         dplyr::mutate(label2 = ifelse(`Exclusivity` < cutoff_Ex, NA_integer_, Disease))
@@ -64,11 +63,14 @@ ggOEx <- function(obj, cutoff_OE = 2, cutoff_Ex = 0.25,table=F) {
       )
 
       colnames(datn)[1] <- "Multimorbidity profile"
-      Char_MP %<>% dplyr::left_join(datn)
+
+
+      Char_MP %<>% dplyr::left_join(datn) %>%
+        dplyr::mutate(`Multimorbidity profile` = paste0(`Multimorbidity profile`, " (", P, "%)"))
 
       ggOE <- ggplot2::ggplot(Char_MP) +
-        ggplot2::geom_bar(aes(`O/E`, Disease, fill = Disease), stat = "identity") +
-        ggplot2::geom_vline(aes(xintercept = 2), linetype = "dashed") +
+        ggplot2::geom_bar(ggplot2::aes(`O/E`, Disease, fill = Disease), stat = "identity") +
+        ggplot2::geom_vline(ggplot2::aes(xintercept = 2), linetype = "dashed") +
         ggplot2::facet_grid(. ~ `Multimorbidity profile`) +
         ggplot2::scale_y_discrete("Chronic conditions") +
         ggprism::theme_prism() +
@@ -82,8 +84,8 @@ ggOEx <- function(obj, cutoff_OE = 2, cutoff_Ex = 0.25,table=F) {
         ggplot2::ggtitle("Multimorbidity Profiles")
 
       ggex <- ggplot2::ggplot(Char_MP) +
-        ggplot2::geom_bar(aes(Exclusivity, Disease, fill = Disease), stat = "identity") +
-        ggplot2::geom_vline(aes(xintercept = 0.25), linetype = "dashed") +
+        ggplot2::geom_bar(ggplot2::aes(Exclusivity, Disease, fill = Disease), stat = "identity") +
+        ggplot2::geom_vline(ggplot2::aes(xintercept = 0.25), linetype = "dashed") +
         ggplot2::facet_grid(. ~ `Multimorbidity profile`) +
         ggplot2::scale_y_discrete("Chronic conditions") +
         ggplot2::scale_x_continuous(limits = c(0, 1)) +
@@ -98,18 +100,18 @@ ggOEx <- function(obj, cutoff_OE = 2, cutoff_Ex = 0.25,table=F) {
 
       Char_MP %<>% mutate(`Multimorbidity profile` = as.factor(`Multimorbidity profile`))
 
-      Char_MP2 <- Char_MP%>%
+      Char_MP2 <- Char_MP %>%
         dplyr::filter(char == 1) %>%
         dplyr::group_by(`Multimorbidity profile`) %>%
         dplyr::mutate(index = row_number())
 
       ggnames <- ggplot2::ggplot(Char_MP2) +
-        ggplot2::geom_text(aes(0.1, index, label = label2, hjust = "left"), size = 8) +
-        facet_grid(. ~ `Multimorbidity profile`, drop = F) +
+        ggplot2::geom_text(ggplot2::aes(0.1, index, label = label2, hjust = "left"), size = 8) +
+        ggplot2::facet_grid(. ~ `Multimorbidity profile`, drop = F) +
         ggplot2::scale_y_reverse("Chronic conditions") +
         ggplot2::scale_x_continuous(limits = c(0, 1)) +
         ggplot2::theme_void() +
-        ggplot2::ggtitle("Diseases above thresholds:")+
+        ggplot2::ggtitle("Diseases above thresholds:") +
         ggplot2::theme(
           legend.position = "null",
           axis.text.y = ggplot2::element_blank(),
@@ -119,7 +121,7 @@ ggOEx <- function(obj, cutoff_OE = 2, cutoff_Ex = 0.25,table=F) {
         )
 
 
-      gg <- ggpubr::ggarrange(ggOE,ggex,ggnames,nrow=3,align = "v")
+      gg <- ggpubr::ggarrange(ggOE, ggex, ggnames, nrow = 3, align = "v")
       print(gg)
       if (table) {
         colnames(Char_MP)[4] <- "O/E above threshold"

@@ -65,9 +65,9 @@ ggOE <- function(obj, cutoff_OE = 2, cutoff_P = NULL, table = F) {
         dplyr::mutate(label3 = ifelse(!is.na(label) & !is.na(label2), Disease, NA_integer_))
 
       ggOE <- ggplot2::ggplot(Char_MP) +
-        ggplot2::geom_text(aes(`O/E`, Disease, label = label3, hjust = "left"), size = 6) +
-        ggplot2::geom_bar(aes(`O/E`, Disease, fill = Disease), stat = "identity") +
-        ggplot2::geom_vline(aes(xintercept = cutoff_OE), linetype = "dashed") +
+        ggplot2::geom_text(ggplot2::aes(`O/E`, Disease, label = label3, hjust = "left"), size = 6) +
+        ggplot2::geom_bar(ggplot2::aes(`O/E`, Disease, fill = Disease), stat = "identity") +
+        ggplot2::geom_vline(ggplot2::aes(xintercept = cutoff_OE), linetype = "dashed") +
         ggplot2::facet_grid(. ~ `Multimorbidity profile`) +
         ggplot2::scale_y_discrete("Chronic conditions") +
         ggprism::theme_prism(base_size = 16) +

@@ -15,5 +15,5 @@ ggaccuracy_LCA(obj, test = NULL)
 object of class ggplot.
 }
 \description{
-This function compares and plot the accuracy of LCA models with different number of classes for multimorbidity patterns using the misclassification probability and entropy on both the data used to fit the LCA and on a separate dataset.
+This function compares and plot the accuracy of LCA models with different number of classes for multimorbidity patterns using the misclassification probability and entropy on both the data used to fit the LCA and on a separate dataset. The dashed line corresponds to the assignment accuracy based on the prior.
 }

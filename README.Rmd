@@ -78,7 +78,7 @@ test <- setdiff(1:nrow(X), train)
 
 Run the LCA with different number of classes:
 
-```{r,results='hide'}
+```{r,results='hold'}
 res <- select_number_LCA(
   nclasses = 2:7,
   X = X[train, ],

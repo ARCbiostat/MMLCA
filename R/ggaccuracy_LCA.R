@@ -36,10 +36,10 @@ ggaccuracy_LCA <- function(obj, test = NULL) {
 
     gg_test <- ggplot2::ggplot(dat) +
       ggplot2::geom_line(ggplot2::aes(nclass, prior), linetype = "dashed", linewidth = 1) +
-      ggplot2::geom_line(ggplot2::aes(nclass, ext_accuracy, col = "Test"), linewidth = 1) +
-      ggplot2::geom_point(ggplot2::aes(nclass, ext_accuracy, col = "Test")) +
       ggplot2::geom_line(ggplot2::aes(nclass, `Assignment accuracy (%)`, col = "Train"), linewidth = 1) +
       ggplot2::geom_point(ggplot2::aes(nclass, `Assignment accuracy (%)`, col = "Train")) +
+      ggplot2::geom_line(ggplot2::aes(nclass, ext_accuracy, col = "Test"), linewidth = 1) +
+      ggplot2::geom_point(ggplot2::aes(nclass, ext_accuracy, col = "Test")) +
       ggplot2::scale_y_continuous("Assignment accuracy (%)", limits = c(0, 1)) +
       ggplot2::scale_x_continuous("Number of latent classes", breaks = dat$nclass) +
       ggplot2::theme_bw() +
@@ -48,10 +48,10 @@ ggaccuracy_LCA <- function(obj, test = NULL) {
 
 
     ratio_test <- ggplot2::ggplot(dat) +
-      ggplot2::geom_line(ggplot2::aes(nclass, ext_accuracy / prior, col = "Test"), linewidth = 1) +
-      ggplot2::geom_point(ggplot2::aes(nclass, ext_accuracy / prior, col = "Test")) +
       ggplot2::geom_line(ggplot2::aes(nclass, `Assignment accuracy (%)` / prior, col = "Train"), linewidth = 1) +
       ggplot2::geom_point(ggplot2::aes(nclass, `Assignment accuracy (%)` / prior, col = "Train")) +
+      ggplot2::geom_line(ggplot2::aes(nclass, ext_accuracy / prior, col = "Test"), linewidth = 1) +
+      ggplot2::geom_point(ggplot2::aes(nclass, ext_accuracy / prior, col = "Test")) +
       ggplot2::scale_y_continuous("Ratio assignment accuracy") +
       ggplot2::scale_x_continuous("Number of latent classes", breaks = dat$nclass) +
       ggplot2::theme_bw() +

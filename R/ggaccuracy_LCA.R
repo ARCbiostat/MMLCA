@@ -32,7 +32,7 @@ ggaccuracy_LCA <- function(obj, test = NULL) {
     ggplot2::theme(axis.title = ggplot2::element_text(face = "bold", size = 14), axis.text = ggplot2::element_text(face = "bold", size = 12))
 
   if (!is.null(test)) {
-    dat$ext_accuracy <- unlist(lapply(1:nrow(dat), function(x) mean(diag(get_internal_validation_matrix(obj$obj[[x]], test)))))
+    dat$ext_accuracy <- unlist(lapply(1:nrow(dat), function(x) sum(diag(get_internal_validation_matrix(obj$obj[[x]], test)))/max(dat$nclass)))
 
     gg_test <- ggplot2::ggplot(dat) +
       ggplot2::geom_line(ggplot2::aes(nclass, prior), linetype = "dashed", linewidth = 1) +

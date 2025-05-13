@@ -38,9 +38,6 @@ Load the package and the data:
 library(MMLCA)
 #> Warning: replacing previous import 'magrittr::extract' by 'tidyr::extract' when
 #> loading 'MMLCA'
-```
-
-``` r
 data(mmdata)
 ```
 
@@ -104,10 +101,10 @@ res$plot
 Compare the classification accuracy on the train vs. test data:
 
 ``` r
-ggaccuracy_LCA(res, test = X[test, ])
+ggacc <- ggaccuracy_LCA(res, test = X[test, ])
 ```
 
-<img src="man/figures/README-unnamed-chunk-8-1.png" width="100%" /><img src="man/figures/README-unnamed-chunk-8-2.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-8-1.png" width="100%" />
 
 ### Interpretation of the MM patterns
 
@@ -123,12 +120,6 @@ OEx_sol5 <- ggOEx(res$obj[[4]], table = F)
 
 <img src="man/figures/README-unnamed-chunk-9-1.png" width="100%" />
 
-``` r
-OEx_sol5
-```
-
-<img src="man/figures/README-unnamed-chunk-9-2.png" width="100%" />
-
 **Method 2:** O/E and overall prevalence:
 
 ``` r
@@ -138,14 +129,6 @@ OE_sol5 <- ggOE(res$obj[[4]], table = F)
 
 <img src="man/figures/README-unnamed-chunk-10-1.png" width="100%" />
 
-``` r
-OE_sol5
-#> Warning: Removed 167 rows containing missing values or values outside the scale range
-#> (`geom_text()`).
-```
-
-<img src="man/figures/README-unnamed-chunk-10-2.png" width="100%" />
-
 **Method 3:**
 
 ``` r
@@ -154,9 +137,3 @@ prev_sol5 <- ggprev(res$obj[[4]])
 ```
 
 <img src="man/figures/README-unnamed-chunk-11-1.png" width="100%" />
-
-``` r
-prev_sol5
-```
-
-<img src="man/figures/README-unnamed-chunk-11-2.png" width="100%" />

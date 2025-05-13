@@ -76,21 +76,15 @@ test <- setdiff(1:nrow(X), train)
 
 ### Run the LCA
 
-Run the LCA with different number of classes:
+Run the LCA with different number of classes and compare the metrics:
 
-```{r,results='hold'}
+```{r,results='hide'}
 res <- select_number_LCA(
   nclasses = 2:7,
   X = X[train, ],
   conditions = disease_names,
   nrep = 5
 )
-```
-
-Visualize and compare the metrics:
-
-```{r}
-res$plot
 ```
 
 Compare the classification accuracy on the train vs. test data:

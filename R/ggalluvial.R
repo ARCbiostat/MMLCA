@@ -25,9 +25,9 @@ ggalluvial <- function(data,time_var="time",id_var,mm_var,colors){
      dplyr::mutate(time=round(.data[[time_var]]))%>%
      dplyr::full_join(expanded_dat)%>%
      dplyr::arrange(.data[[id_var]],.data[[time_var]])%>%
-    group_by(.data[[id_var]]) %>%
+     dplyr::group_by(.data[[id_var]]) %>%
      dplyr::mutate(min_time=round(min(.data[[time_var]],na.rm = T)),
-           max_time=round(max(.data[[time_var]],na.rm = T)))
+           max_time=round(max(.data[[time_var]],na.rm = T))) %>%
    dplyr::filter(time>=min_time)%>%
      tidyr::fill(.data[[mm_var]], .direction = "down") %>%
      dplyr::mutate(mm_pattern=.data[[mm_var]])

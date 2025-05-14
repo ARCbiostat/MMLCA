@@ -21,6 +21,17 @@ colnames(expanded_dat)[1] <- id_var
   n<- length(unique(data[[mm_var]]))
 
 
+  duplicated <- data %>%
+    mutate(time=round(.data[[time_var]])) %>%
+    group_by(time,.data[[id_var]]) %>%
+    mutate(n=n()) %>%
+    filter(n>1) %>%
+    mutate(duplicated=1)
+
+
+
+
+
    dat_alluvial <- data %>%
     dplyr::select(.data[[id_var]],.data[[time_var]],.data[[mm_var]]) %>%
      dplyr::mutate(time=round(.data[[time_var]]))%>%
@@ -39,12 +50,7 @@ colnames(expanded_dat)[1] <- id_var
     tidyr::drop_na(mm_pattern)
 
 
-   duplicated <- dat_alluvial %>%
-     group_by(.data[[id_var]],time,next_time) %>%
-     distinct(.data[[id_var]],time,next_time,.data[[mm_var]]) %>%
-     nrow()
-
-   message(paste("There are",duplicated,"overlapping transitions!"))
+   message(paste("There are",nrow(duplicated),"overlapping transitions!"))
 
   ggalluvial <- ggplot2::ggplot(dat_alluvial, aes(x = time,
                                        next_x = next_time,
@@ -64,6 +70,8 @@ colnames(expanded_dat)[1] <- id_var
           axis.ticks.x = element_blank())
 
   print(ggalluvial)
+
+  dat_alluvial %<>% left_join(duplicated)
  return(list(plot=ggalluvial,data=dat_alluvial))
 
 }

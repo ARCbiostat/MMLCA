@@ -72,7 +72,7 @@ colnames(expanded_dat)[1] <- id_var
 
   print(ggalluvial)
 
-  dat_alluvial %<>% left_join(duplicated) %>% select(.data[[id]],.data[[time_var]],time,next_time,mm_pattern,next_mm_pattern,duplicated_status)
+  dat_alluvial %<>% left_join(duplicated) %>% select(.data[[id_var]],.data[[time_var]],time,next_time,mm_pattern,next_mm_pattern,duplicated_status)
  return(list(plot=ggalluvial,data=dat_alluvial))
 
 }

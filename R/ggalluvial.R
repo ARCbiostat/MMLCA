@@ -1,7 +1,7 @@
 
 #' Describe mm patterns longitudinally through an alluvial plot
 #'
-#' @param dat dataset to use.
+#' @param data dataset to use.
 #' @param time_var string containing the name of the time variable.
 #' @param id_var string containing the name of the id variable.
 #' @param mm_var string containing the name of the multimorbidity patterns variable.
@@ -11,16 +11,16 @@
 #' @export
 #'
 #' @examples
-ggalluvial <- function(dat,time_var="time",id_var,mm_var,colors){
+ggalluvial <- function(data,time_var="time",id_var,mm_var,colors){
 
-  expanded_dat <- tidyr::expand_grid(id=unique(dat[[id_var]]),
-                       time=c(min(dat[[time_var]]):max(dat[[time_var]])))
+  expanded_dat <- tidyr::expand_grid(id=unique(data[[id_var]]),
+                       time=c(min(data[[time_var]]):max(data[[time_var]])))
 
 
   n<- length(unique(data[[mm_var]]))
 
 
-   dat_alluvial <- dat %>%
+   dat_alluvial <- data %>%
     dplyr::select(.data[[id_var]],.data[[time_var]],.data[[mm_var]]) %>%
      dplyr::mutate(time=round(.data[[time_var]]))%>%
      dplyr::full_join(expanded_dat)%>%

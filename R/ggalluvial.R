@@ -14,7 +14,7 @@
 ggalluvial <- function(data,time_var="time",id_var,mm_var,colors){
 
   expanded_dat <- tidyr::expand_grid(id=unique(data[[id_var]]),
-                       time=unique(round([[time_var]])))
+                       time=unique(round(data[[time_var]])))
 
 
   n<- length(unique(data[[mm_var]]))
@@ -29,7 +29,7 @@ ggalluvial <- function(data,time_var="time",id_var,mm_var,colors){
      dplyr::mutate(min_time=round(min(.data[[time_var]],na.rm = T)),
            max_time=round(max(.data[[time_var]],na.rm = T)))
    dplyr::filter(time>=min_time)%>%
-     dplyr::fill(.data[[mm_var]], .direction = "down") %>%
+     tidyr::fill(.data[[mm_var]], .direction = "down") %>%
      dplyr::mutate(mm_pattern=.data[[mm_var]])
    dplyr::mutate(mm_pattern=ifelse(time>max_time & mm_pattern!=n, NA_integer_, mm_pattern),
            next_time = lead(time),

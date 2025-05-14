@@ -129,4 +129,3 @@ prev_sol5 <- ggprev(res$obj[[4]])
 mm_pattern <- assign_LCA(res$obj[[4]],X)
 table(mm_pattern)
 ```
-

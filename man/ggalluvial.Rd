@@ -4,10 +4,10 @@
 \alias{ggalluvial}
 \title{Describe mm patterns longitudinally through an alluvial plot}
 \usage{
-ggalluvial(dat, time_var = "time", id_var, mm_var, colors)
+ggalluvial(data, time_var = "time", id_var, mm_var, colors)
 }
 \arguments{
-\item{dat}{dataset to use.}
+\item{data}{dataset to use.}
 
 \item{time_var}{string containing the name of the time variable.}
 

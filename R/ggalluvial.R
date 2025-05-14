@@ -25,7 +25,7 @@ colnames(expanded_dat)[1] <- id_var
     dplyr::select(.data[[id_var]],.data[[time_var]],.data[[mm_var]]) %>%
      dplyr::mutate(time=round(.data[[time_var]]))%>%
      dplyr::full_join(expanded_dat)%>%
-     dplyr::arrange(.data[[id_var]],.data[[time_var]])%>%
+     dplyr::arrange(.data[[id_var]],time)%>%
      dplyr::group_by(.data[[id_var]]) %>%
      dplyr::mutate(min_time=round(min(.data[[time_var]],na.rm = T)),
            max_time=round(max(.data[[time_var]],na.rm = T))) %>%

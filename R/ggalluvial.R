@@ -6,12 +6,13 @@
 #' @param id_var string containing the name of the id variable.
 #' @param mm_var string containing the name of the multimorbidity patterns variable.
 #' @param colors colors to use (one for each mm pattern and death, loss-to follow-up)
+#' @param space numeric indicating the spacing between nodes
 #'
 #' @return ggplot object
 #' @export
 #'
 #' @examples
-ggalluvial <- function(data,time_var="time",id_var,mm_var,colors){
+ggalluvial <- function(data,time_var="time",id_var,mm_var,colors,space=0){
 
   expanded_dat <- tidyr::expand_grid(id=unique(data[[id_var]]),
                        time=unique(round(data[[time_var]])))
@@ -44,7 +45,7 @@ colnames(expanded_dat)[1] <- id_var
                                        fill = factor(mm_pattern),
                                        label=mm_pattern,
                                        node.fill=mm_pattern)) +
-    ggsankey::geom_sankey(flow.alpha=0.8,node.col=1,space=0) +
+    ggsankey::geom_sankey(flow.alpha=0.8,node.col=1,space=space) +
     ggplot2::scale_fill_manual("",values=colors) +
     ggsankey::theme_sankey(base_size = 30)+
     ggplot2::scale_x_continuous(time_var)+

@@ -4,7 +4,7 @@
 \alias{ggalluvial}
 \title{Describe mm patterns longitudinally through an alluvial plot}
 \usage{
-ggalluvial(data, time_var = "time", id_var, mm_var, colors)
+ggalluvial(data, time_var = "time", id_var, mm_var, colors, space = 0)
 }
 \arguments{
 \item{data}{dataset to use.}
@@ -16,6 +16,8 @@ ggalluvial(data, time_var = "time", id_var, mm_var, colors)
 \item{mm_var}{string containing the name of the multimorbidity patterns variable.}
 
 \item{colors}{colors to use (one for each mm pattern and death, loss-to follow-up)}
+
+\item{space}{numeric indicating the spacing between nodes}
 }
 \value{
 ggplot object

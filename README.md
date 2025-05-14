@@ -130,9 +130,9 @@ prev_sol5 <- ggprev(res$obj[[4]])
 
 <img src="man/figures/README-unnamed-chunk-10-1.png" width="100%" />
 
-### Assignment of subject into the latent classes
+### Assignment of subjects into the latent classes
 
-**Warning**: If following analyses are performed, it is recommended to
+**Warning**: If additional analyses are performed, it is recommended to
 take into account for the uncertainty in the classification.
 
 ``` r

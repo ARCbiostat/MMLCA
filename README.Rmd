@@ -121,9 +121,9 @@ prev_sol5 <- ggprev(res$obj[[4]])
 
 ```
 
-### Assignment of subject into the latent classes
+### Assignment of subjects into the latent classes
 
-**Warning**: If following analyses are performed, it is recommended to take into account for the uncertainty in the classification.
+**Warning**: If additional analyses are performed, it is recommended to take into account for the uncertainty in the classification.
 
 ```{r}
 mm_pattern <- assign_LCA(res$obj[[4]],X)

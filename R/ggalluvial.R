@@ -7,12 +7,13 @@
 #' @param mm_var string containing the name of the multimorbidity patterns variable.
 #' @param colors colors to use (one for each mm pattern and death, loss-to follow-up)
 #' @param space numeric indicating the spacing between nodes
+#' @param end_patterns vector indicating the values of death/loss-to-follow up in mm_var
 #'
 #' @return ggplot object and data
 #' @export
 #'
 #' @examples
-ggalluvial <- function(data,time_var="time",id_var,mm_var,colors,space=0){
+ggalluvial <- function(data,time_var="time",id_var,mm_var,colors,space=0,end_patterns){
 
   expanded_dat <- tidyr::expand_grid(id=unique(data[[id_var]]),
                        time=unique(round(data[[time_var]])))
@@ -26,7 +27,7 @@ colnames(expanded_dat)[1] <- id_var
     group_by(time,.data[[id_var]]) %>%
     mutate(n=n()) %>%
     filter(n>1) %>%
-    mutate(duplicated=1)
+    mutate(duplicated_status=1)
 
 
 
@@ -43,7 +44,7 @@ colnames(expanded_dat)[1] <- id_var
    dplyr::filter(time>=min_time)%>%
      tidyr::fill(.data[[mm_var]], .direction = "down") %>%
      dplyr::mutate(mm_pattern=.data[[mm_var]]) %>%
-   dplyr::mutate(mm_pattern=ifelse(time>max_time & mm_pattern!=n, NA_integer_, mm_pattern),
+   dplyr::mutate(mm_pattern=ifelse(time>max_time & !(mm_pattern%in%end_patterns), NA_integer_, mm_pattern),
            next_time = lead(time),
            next_mm_pattern = lead(mm_pattern)) %>%
      dplyr::ungroup() %>%
@@ -71,7 +72,7 @@ colnames(expanded_dat)[1] <- id_var
 
   print(ggalluvial)
 
-  dat_alluvial %<>% left_join(duplicated)
+  dat_alluvial %<>% left_join(duplicated) %>% select(.data[[id]],.data[[time_var]],time,next_time,mm_pattern,next_mm_pattern,duplicated_status)
  return(list(plot=ggalluvial,data=dat_alluvial))
 
 }

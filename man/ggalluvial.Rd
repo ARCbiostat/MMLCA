@@ -4,7 +4,15 @@
 \alias{ggalluvial}
 \title{Describe mm patterns longitudinally through an alluvial plot}
 \usage{
-ggalluvial(data, time_var = "time", id_var, mm_var, colors, space = 0)
+ggalluvial(
+  data,
+  time_var = "time",
+  id_var,
+  mm_var,
+  colors,
+  space = 0,
+  end_patterns
+)
 }
 \arguments{
 \item{data}{dataset to use.}
@@ -18,6 +26,8 @@ ggalluvial(data, time_var = "time", id_var, mm_var, colors, space = 0)
 \item{colors}{colors to use (one for each mm pattern and death, loss-to follow-up)}
 
 \item{space}{numeric indicating the spacing between nodes}
+
+\item{end_patterns}{vector indicating the values of death/loss-to-follow up in mm_var}
 }
 \value{
 ggplot object and data

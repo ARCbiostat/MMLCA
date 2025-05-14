@@ -16,7 +16,7 @@ ggalluvial <- function(data,time_var="time",id_var,mm_var,colors){
   expanded_dat <- tidyr::expand_grid(id=unique(data[[id_var]]),
                        time=unique(round(data[[time_var]])))
 
-
+colnames(expanded_dat)[1] <- id_var
   n<- length(unique(data[[mm_var]]))
 
 

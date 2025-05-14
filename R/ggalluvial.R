@@ -8,7 +8,7 @@
 #' @param colors colors to use (one for each mm pattern and death, loss-to follow-up)
 #' @param space numeric indicating the spacing between nodes
 #'
-#' @return ggplot object
+#' @return ggplot object and data
 #' @export
 #'
 #' @examples
@@ -38,6 +38,14 @@ colnames(expanded_dat)[1] <- id_var
      dplyr::ungroup() %>%
     tidyr::drop_na(mm_pattern)
 
+
+   duplicated <- dat_alluvial %>%
+     group_by(.data[[id_var]],time,next_time) %>%
+     distinct(.data[[id_var]],time,next_time,.data[[mm_var]]) %>%
+     nrow()
+
+   message(paste("There are",duplicated,"overlapping transitions!"))
+
   ggalluvial <- ggplot2::ggplot(dat_alluvial, aes(x = time,
                                        next_x = next_time,
                                        node = mm_pattern,
@@ -56,6 +64,6 @@ colnames(expanded_dat)[1] <- id_var
           axis.ticks.x = element_blank())
 
   print(ggalluvial)
- return(ggalluvial)
+ return(list(plot=ggalluvial,data=dat_alluvial))
 
 }

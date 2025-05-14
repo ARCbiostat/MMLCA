@@ -20,7 +20,7 @@ ggalluvial(data, time_var = "time", id_var, mm_var, colors, space = 0)
 \item{space}{numeric indicating the spacing between nodes}
 }
 \value{
-ggplot object
+ggplot object and data
 }
 \description{
 Describe mm patterns longitudinally through an alluvial plot

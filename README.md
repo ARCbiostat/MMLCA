@@ -129,3 +129,16 @@ prev_sol5 <- ggprev(res$obj[[4]])
 ```
 
 <img src="man/figures/README-unnamed-chunk-10-1.png" width="100%" />
+
+### Assignment of subject into the latent classes
+
+**Warning**: If following analyses are performed, it is recommended to
+take into account for the uncertainty in the classification.
+
+``` r
+mm_pattern <- assign_LCA(res$obj[[4]],X)
+table(mm_pattern)
+#> mm_pattern
+#>    1    2    3    4    5 
+#>  425 1087  555  207  487
+```

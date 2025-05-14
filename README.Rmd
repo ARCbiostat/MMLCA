@@ -120,3 +120,13 @@ OE_sol5 <- ggOE(res$obj[[4]], table = F)
 prev_sol5 <- ggprev(res$obj[[4]])
 
 ```
+
+### Assignment of subject into the latent classes
+
+**Warning**: If following analyses are performed, it is recommended to take into account for the uncertainty in the classification.
+
+```{r}
+mm_pattern <- assign_LCA(res$obj[[4]],X)
+table(mm_pattern)
+```
+

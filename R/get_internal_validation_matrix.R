@@ -8,7 +8,7 @@
 #' @export
 #'
 #' @examples
-get_internal_validation_matrix <- function(fit, X) {
+get_internal_validation_matrix <- function(fit, X,norm=T,n_norm) {
   pClY <- poLCA::poLCA.posterior(fit, y = X)
   ng <- ncol(pClY)
   pred <- as.numeric(apply(pClY, 1, function(x) which.max(x))) # MODE
@@ -39,5 +39,10 @@ get_internal_validation_matrix <- function(fit, X) {
     }
   }
 
+
+
+  if(norm){
+    Qmatrix*(nrow(X)/n_norm*100)
+  }
   Qmatrix
 }

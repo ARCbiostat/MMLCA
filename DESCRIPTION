@@ -18,7 +18,8 @@ Imports:
     poLCA,
     tibble,
     tictoc,
-    tidyr
+    tidyr,
+    ggsankey
 URL: https://github.com/caterinagregorio/MMLCA
 BugReports: https://github.com/caterinagregorio/MMLCA/issues
 Suggests: 

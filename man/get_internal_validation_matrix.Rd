@@ -4,7 +4,7 @@
 \alias{get_internal_validation_matrix}
 \title{Function to calculate the approximate misclassifications matrix}
 \usage{
-get_internal_validation_matrix(fit, X, norm = T, n_norm)
+get_internal_validation_matrix(fit, X, norm = T, n_norm = NULL)
 }
 \arguments{
 \item{fit}{object of class poLCA.}

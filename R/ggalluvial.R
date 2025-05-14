@@ -30,7 +30,7 @@ ggalluvial <- function(data,time_var="time",id_var,mm_var,colors){
            max_time=round(max(.data[[time_var]],na.rm = T))) %>%
    dplyr::filter(time>=min_time)%>%
      tidyr::fill(.data[[mm_var]], .direction = "down") %>%
-     dplyr::mutate(mm_pattern=.data[[mm_var]])
+     dplyr::mutate(mm_pattern=.data[[mm_var]]) %>%
    dplyr::mutate(mm_pattern=ifelse(time>max_time & mm_pattern!=n, NA_integer_, mm_pattern),
            next_time = lead(time),
            next_mm_pattern = lead(mm_pattern)) %>%

@@ -130,6 +130,15 @@ prev_sol5 <- ggprev(res$obj[[4]])
 
 <img src="man/figures/README-unnamed-chunk-10-1.png" width="100%" />
 
+**Method 4:**
+
+``` r
+
+prev_sol5 <- ggprev_spaghetti(res$obj[[4]])
+```
+
+<img src="man/figures/README-unnamed-chunk-11-1.png" width="100%" />
+
 ### Assignment of subjects into the latent classes
 
 **Warning**: If additional analyses are performed, it is recommended to

@@ -29,4 +29,4 @@ get_entropy <- function(obj, X, ratio = T) {
 #' @keywords internal
 
 
-entropy <- function(p) sum(-p * log(p))
+entropy <- function(p) sum(-p * log2(p))

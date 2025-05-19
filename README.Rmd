@@ -121,6 +121,14 @@ prev_sol5 <- ggprev(res$obj[[4]])
 
 ```
 
+**Method 4:**
+
+```{r,fig.height=10,fig.width=50}
+
+prev_sol5 <- ggprev_spaghetti(res$obj[[4]])
+
+```
+
 ### Assignment of subjects into the latent classes
 
 **Warning**: If additional analyses are performed, it is recommended to take into account for the uncertainty in the classification.

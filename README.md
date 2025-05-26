@@ -90,6 +90,9 @@ res <- select_number_LCA(
 
 <img src="man/figures/README-unnamed-chunk-6-1.png" width="100%" />
 
+**Note**: a higher number of repetitions may be needed. Default is 50.
+See the documentation for further details.
+
 Compare the classification accuracy on the train vs. test data:
 
 ``` r

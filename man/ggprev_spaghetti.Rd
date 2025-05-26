@@ -4,7 +4,7 @@
 \alias{ggprev_spaghetti}
 \title{Plot disease prevalences within MM patterns}
 \usage{
-ggprev_spaghetti(obj, nclass, cutoff_OE = 2, cutoff_Ex = 0.25, cutoff_P = NULL)
+ggprev_spaghetti(obj, cutoff_P = 0)
 }
 \arguments{
 \item{cutoff_P}{}

@@ -87,6 +87,8 @@ res <- select_number_LCA(
 )
 ```
 
+**Note**: a higher number of repetitions may be needed. Default is 50. See the documentation for further details.
+
 Compare the classification accuracy on the train vs. test data:
 
 ```{r}

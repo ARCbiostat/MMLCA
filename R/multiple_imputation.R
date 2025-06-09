@@ -2,9 +2,9 @@
 #'
 #' @param obj LCA object
 #' @param data your dataset
-#' @param nimp
+#' @param nimp number of imputated datasets
 #'
-#' @return
+#' @return list of nimp dataset with assigned MM pattern according to posterior distribution probabilities
 #' @export
 #'
 #' @examples

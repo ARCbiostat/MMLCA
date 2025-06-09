@@ -22,7 +22,7 @@ multiple_imputation <- function(obj, data, nimp) {
   ng <- ncol(pClY)
   for (i in 1:nimp) {
     data_imp[[i]] <- data
-    data_imp[[i]]$MP <- apply(post, 1, function(p) {
+    data_imp[[i]]$MP <- apply(pClY, 1, function(p) {
       sample(1:ng,
              size = nimp,
              replace = TRUE,

@@ -10,7 +10,7 @@
 #' @export
 #'
 #' @examples
-ggOE <- function(obj, cutoff_OE = 2, cutoff_P = NULL, table = F) {
+ggOE <- function(obj, cutoff_OE = 2, cutoff_P = NULL, table = F,boot=F,nboot=1000) {
   suppressMessages({
     suppressWarnings({
       nclass <- nrow(obj$probs[[1]])
@@ -24,9 +24,54 @@ ggOE <- function(obj, cutoff_OE = 2, cutoff_P = NULL, table = F) {
         }
       }
 
+
+
       O <- do.call("cbind", n)
       rownames(O) <- colnames(obj$y)
       R <- O / E
+
+      if(boot){
+        warning("cutoff_OE not used if 95% CI are calculated!")
+
+        observed_boot <- array(NA, dim=c(nclass,nboot,ncol(obj$y)))
+        expected_boot <- matrix(NA,nrow=nboot,ncol=ncol(obj$y))
+        OE_boot <- array(NA, dim=c(nclass,nboot,ncol(obj$y)))
+
+        for (i in 1:ncol(obj$y)) {
+          expected_boot[,i] <- rnorm(nboot,mean=E[i],sd=sqrt((E[i]*(1-E[i])/nrow(obj$y))))
+        }
+        for (j in 1:nclass) {
+          for (i in 1:ncol(obj$y)) {
+            observed_boot[j,,i] <- rnorm(nboot,mean=obj$probs[[i]][j, 2],sd=obj$probs.se[[i]][j, 2])
+            OE_boot[j,,i] <- observed_boot[j,,i]/expected_boot[,i]
+          }
+
+        }
+
+      lower <- apply(OE_boot,c(1,3) , quantile,prob=0.025,na.rm=T)
+      upper <- apply(OE_boot,c(1,3) , quantile,prob=0.975,na.rm=T)
+
+      colnames(lower) <- colnames(upper) <- colnames(obj$y)
+
+
+      lower %<>% t() %>% as.data.frame() %>%
+        tibble::rownames_to_column("Disease") %>%
+        tidyr::pivot_longer(2:(nclass + 1),
+                            names_to = "Multimorbidity profile",
+                            values_to = "Lower O/E"
+        )%>%
+        dplyr::mutate(`Multimorbidity profile` = as.numeric(gsub("\\D", "", `Multimorbidity profile`)))
+
+
+       upper %<>% t() %>% as.data.frame() %>%
+        tibble::rownames_to_column("Disease") %>%
+        tidyr::pivot_longer(2:(nclass + 1),
+                            names_to = "Multimorbidity profile",
+                            values_to = "Upper O/E"
+        )%>%
+         dplyr::mutate(`Multimorbidity profile` = as.numeric(gsub("\\D", "", `Multimorbidity profile`)))
+
+      }
 
       if (is.null(cutoff_P)) cutoff_P <- 0
       O %<>% as.data.frame() %>%
@@ -60,28 +105,64 @@ ggOE <- function(obj, cutoff_OE = 2, cutoff_P = NULL, table = F) {
       )
 
       colnames(datn)[1] <- "Multimorbidity profile"
-      Char_MP %<>% dplyr::left_join(datn) %>%
-        dplyr::mutate(`Multimorbidity profile` = paste0(`Multimorbidity profile`, " (", P, "%)")) %>%
-        dplyr::mutate(label3 = ifelse(!is.na(label) & !is.na(label2), Disease, NA_integer_))
-
-      ggOE <- ggplot2::ggplot(Char_MP) +
-        ggplot2::geom_text(ggplot2::aes(`O/E`, Disease, label = label3, hjust = "left"), size = 6) +
-        ggplot2::geom_bar(ggplot2::aes(`O/E`, Disease, fill = Disease), stat = "identity") +
-        ggplot2::geom_vline(ggplot2::aes(xintercept = cutoff_OE), linetype = "dashed") +
-        ggplot2::facet_grid(. ~ `Multimorbidity profile`) +
-        ggplot2::scale_y_discrete("Chronic conditions") +
-        ggprism::theme_prism(base_size = 16) +
-        ggplot2::theme(
-          legend.position = "null",
-          axis.text.y = ggplot2::element_text(hjust = 1),
-          strip.text.x.top = ggplot2::element_text(size = 16),
-          axis.ticks.y = ggplot2::element_blank(),
-          panel.grid.major.y = ggplot2::element_line(color = "grey", linewidth = 0.5)
-        ) +
-        ggplot2::ggtitle("Multimorbidity Patterns")
 
 
-      print(ggOE)
+      if(boot){
+        Char_MP %<>% left_join(lower) %>% left_join(upper)
+        Char_MP %<>% dplyr::left_join(datn) %>%
+          dplyr::mutate(`Multimorbidity profile` = paste0(`Multimorbidity profile`, " (", P, "%)")) %>%
+          dplyr::mutate(label3 = ifelse(!is.na(label) & !is.na(label2), Disease, NA_integer_))
+
+        Char_MP %<>% mutate(sign=ifelse(`Lower O/E`>1 & Prevalence >= cutoff_P ,Disease,NA_integer_))
+
+        ggOE <- ggplot2::ggplot(Char_MP) +
+          ggplot2::geom_text(ggplot2::aes(`Upper O/E`, Disease, label = sign, hjust = "left"), size = 6) +
+          ggplot2::geom_pointrange(ggplot2::aes(xmin=`Lower O/E`,xmax=`Upper O/E`,y=Disease,x=`O/E`),linewidth=1)+
+          ggplot2::geom_bar(ggplot2::aes(`O/E`, Disease, fill = Disease), stat = "identity",alpha=0.5) +
+          ggplot2::geom_vline(ggplot2::aes(xintercept = 1), linetype = "dashed") +
+          ggplot2::facet_grid(. ~ `Multimorbidity profile`) +
+          ggplot2::scale_y_discrete("Chronic conditions") +
+          ggplot2::scale_x_continuous("O/E") +
+          ggprism::theme_prism(base_size = 16) +
+          ggplot2::theme(
+            legend.position = "null",
+            axis.text.y = ggplot2::element_text(hjust = 1),
+            strip.text.x.top = ggplot2::element_text(size = 16),
+            axis.ticks.y = ggplot2::element_blank(),
+            panel.grid.major.y = ggplot2::element_line(color = "grey", linewidth = 0.5)
+          ) +
+          ggplot2::ggtitle("Multimorbidity Patterns")
+
+
+        print(ggOE)
+
+      }else{
+        Char_MP %<>% dplyr::left_join(datn) %>%
+          dplyr::mutate(`Multimorbidity profile` = paste0(`Multimorbidity profile`, " (", P, "%)")) %>%
+          dplyr::mutate(label3 = ifelse(!is.na(label) & !is.na(label2), Disease, NA_integer_))
+
+        ggOE <- ggplot2::ggplot(Char_MP) +
+          ggplot2::geom_text(ggplot2::aes(`O/E`, Disease, label = label3, hjust = "left"), size = 6) +
+          ggplot2::geom_bar(ggplot2::aes(`O/E`, Disease, fill = Disease), stat = "identity") +
+          ggplot2::geom_vline(ggplot2::aes(xintercept = cutoff_OE), linetype = "dashed") +
+          ggplot2::facet_grid(. ~ `Multimorbidity profile`) +
+          ggplot2::scale_y_discrete("Chronic conditions") +
+          ggprism::theme_prism(base_size = 16) +
+          ggplot2::theme(
+            legend.position = "null",
+            axis.text.y = ggplot2::element_text(hjust = 1),
+            strip.text.x.top = ggplot2::element_text(size = 16),
+            axis.ticks.y = ggplot2::element_blank(),
+            panel.grid.major.y = ggplot2::element_line(color = "grey", linewidth = 0.5)
+          ) +
+          ggplot2::ggtitle("Multimorbidity Patterns")
+
+
+        print(ggOE)
+      }
+
+
+
       if (table) {
         colnames(Char_MP)[4] <- "O/E above threshold"
         colnames(Char_MP)[6] <- "Prevalence above threshold"

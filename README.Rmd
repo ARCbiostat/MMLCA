@@ -115,6 +115,14 @@ OE_sol5 <- ggOE(res$obj[[4]], table = F)
 
 ```
 
+Same method but with 95% CI:
+
+```{r}
+OEx_sol5 <- ggOE(res$obj[[4]], table = F,boot = T)
+```
+
+
+
 **Method 3:**
 
 ```{r,fig.height=20}

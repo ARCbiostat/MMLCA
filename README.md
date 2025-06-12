@@ -124,6 +124,14 @@ OE_sol5 <- ggOE(res$obj[[4]], table = F)
 
 <img src="man/figures/README-unnamed-chunk-9-1.png" width="100%" />
 
+Same method but with 95% CI:
+
+``` r
+OEx_sol5 <- ggOE(res$obj[[4]], table = F,boot = T)
+```
+
+<img src="man/figures/README-unnamed-chunk-10-1.png" width="100%" />
+
 **Method 3:**
 
 ``` r
@@ -131,7 +139,7 @@ OE_sol5 <- ggOE(res$obj[[4]], table = F)
 prev_sol5 <- ggprev(res$obj[[4]])
 ```
 
-<img src="man/figures/README-unnamed-chunk-10-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-11-1.png" width="100%" />
 
 **Method 4:**
 
@@ -140,7 +148,7 @@ prev_sol5 <- ggprev(res$obj[[4]])
 prev_sol5 <- ggprev_spaghetti(res$obj[[4]])
 ```
 
-<img src="man/figures/README-unnamed-chunk-11-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-12-1.png" width="100%" />
 
 ### Assignment of subjects into the latent classes
 

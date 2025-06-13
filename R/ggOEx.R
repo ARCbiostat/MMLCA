@@ -70,7 +70,7 @@ ggOEx <- function(obj, cutoff_OE = 2, cutoff_Ex = 0.25, table = F) {
 
       ggOE <- ggplot2::ggplot(Char_MP) +
         ggplot2::geom_bar(ggplot2::aes(`O/E`, Disease, fill = Disease), stat = "identity") +
-        ggplot2::geom_vline(ggplot2::aes(xintercept = 2), linetype = "dashed") +
+        ggplot2::geom_vline(ggplot2::aes(xintercept = cutoff_OE), linetype = "dashed") +
         ggplot2::facet_grid(. ~ `Multimorbidity profile`) +
         ggplot2::scale_y_discrete("Chronic conditions") +
         ggprism::theme_prism() +
@@ -85,7 +85,7 @@ ggOEx <- function(obj, cutoff_OE = 2, cutoff_Ex = 0.25, table = F) {
 
       ggex <- ggplot2::ggplot(Char_MP) +
         ggplot2::geom_bar(ggplot2::aes(Exclusivity, Disease, fill = Disease), stat = "identity") +
-        ggplot2::geom_vline(ggplot2::aes(xintercept = 0.25), linetype = "dashed") +
+        ggplot2::geom_vline(ggplot2::aes(xintercept = cutoff_Ex), linetype = "dashed") +
         ggplot2::facet_grid(. ~ `Multimorbidity profile`) +
         ggplot2::scale_y_discrete("Chronic conditions") +
         ggplot2::scale_x_continuous(limits = c(0, 1)) +

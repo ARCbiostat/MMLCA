@@ -1,9 +1,9 @@
 #' Obtain Entropy plot and train and test data
 #'
-#' @param obj
-#' @param train
-#' @param test
-#' @param ratio
+#' @param obj obtained from select_LCA
+#' @param train train data
+#' @param test test data
+#' @param ratio should the ratio be calculated? Deafult to TRUE.
 #'
 #' @return ggplot2 object
 #' @export
@@ -21,7 +21,7 @@ ggentropy <- function(obj, train, test=NULL,ratio=T){
     geom_point(aes(nclass,entropy_train))+
     geom_hline(aes(yintercept=0.6),linetype="dashed")+
     geom_hline(aes(yintercept=0.8),linetype="dashed")+
-    scale_y_continuous("Entropy ratio",limits = c(0,1))+
+    scale_y_continuous("Entropy",limits = c(0,1))+
     scale_x_continuous("Number of latent classes",breaks = dat$nclass)+
     theme_bw()+
     theme(axis.title = element_text(face = "bold",size=14),axis.text = element_text(face = "bold",size=12))
@@ -39,7 +39,7 @@ ggentropy <- function(obj, train, test=NULL,ratio=T){
       geom_point(aes(nclass,entropy_test,col="Test"))+
       geom_hline(aes(yintercept=0.6),linetype="dashed")+
       geom_hline(aes(yintercept=0.8),linetype="dashed")+
-      scale_y_continuous("Entropy ratio",limits = c(0,1))+
+      scale_y_continuous("Entropy",limits = c(0,1))+
       scale_x_continuous("Number of latent classes",breaks = dat$nclass)+
       theme_bw()+
       theme(axis.title = element_text(face = "bold",size=14),axis.text = element_text(face = "bold",size=12))

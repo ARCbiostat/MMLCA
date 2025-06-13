@@ -7,7 +7,13 @@
 ggentropy(obj, train, test = NULL, ratio = T)
 }
 \arguments{
-\item{ratio}{}
+\item{obj}{obtained from select_LCA}
+
+\item{train}{train data}
+
+\item{test}{test data}
+
+\item{ratio}{should the ratio be calculated? Deafult to TRUE.}
 }
 \value{
 ggplot2 object

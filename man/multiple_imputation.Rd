@@ -9,7 +9,12 @@ multiple_imputation(obj, data, nimp)
 \arguments{
 \item{obj}{LCA object}
 
-\item{nimp}{}
+\item{data}{your dataset}
+
+\item{nimp}{number of imputated datasets}
+}
+\value{
+list of nimp dataset with assigned MM pattern according to posterior distribution probabilities
 }
 \description{
 Function to obtain imputate multiple imputations of the assigned MM patterns

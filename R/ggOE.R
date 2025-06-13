@@ -31,7 +31,7 @@ ggOE <- function(obj, cutoff_OE = 2, cutoff_P = NULL, table = F,boot=F,nboot=100
       R <- O / E
 
       if(boot){
-        warning("cutoff_OE not used if 95% CI are calculated!")
+
 
         observed_boot <- array(NA, dim=c(nclass,nboot,ncol(obj$y)))
         expected_boot <- matrix(NA,nrow=nboot,ncol=ncol(obj$y))
@@ -113,13 +113,13 @@ ggOE <- function(obj, cutoff_OE = 2, cutoff_P = NULL, table = F,boot=F,nboot=100
           dplyr::mutate(`Multimorbidity profile` = paste0(`Multimorbidity profile`, " (", P, "%)")) %>%
           dplyr::mutate(label3 = ifelse(!is.na(label) & !is.na(label2), Disease, NA_integer_))
 
-        Char_MP %<>% mutate(sign=ifelse(`Lower O/E`>1 & Prevalence >= cutoff_P ,Disease,NA_integer_))
+        Char_MP %<>% mutate(sign=ifelse(`Lower O/E`>cutoff_OE & Prevalence >= cutoff_P ,Disease,NA_integer_))
 
         ggOE <- ggplot2::ggplot(Char_MP) +
           ggplot2::geom_text(ggplot2::aes(`Upper O/E`, Disease, label = sign, hjust = "left"), size = 6) +
           ggplot2::geom_pointrange(ggplot2::aes(xmin=`Lower O/E`,xmax=`Upper O/E`,y=Disease,x=`O/E`),linewidth=1)+
           ggplot2::geom_bar(ggplot2::aes(`O/E`, Disease, fill = Disease), stat = "identity",alpha=0.5) +
-          ggplot2::geom_vline(ggplot2::aes(xintercept = 1), linetype = "dashed") +
+          ggplot2::geom_vline(ggplot2::aes(xintercept = cutoff_OE), linetype = "dashed") +
           ggplot2::facet_grid(. ~ `Multimorbidity profile`) +
           ggplot2::scale_y_discrete("Chronic conditions") +
           ggplot2::scale_x_continuous("O/E") +

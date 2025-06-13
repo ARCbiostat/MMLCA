@@ -4,7 +4,7 @@
 \alias{ggOE}
 \title{Plot the Observed/Expected Ratios}
 \usage{
-ggOE(obj, cutoff_OE = 2, cutoff_P = NULL, table = F)
+ggOE(obj, cutoff_OE = 2, cutoff_P = NULL, table = F, boot = F, nboot = 1000)
 }
 \arguments{
 \item{obj}{poLCA object}

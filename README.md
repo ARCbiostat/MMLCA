@@ -14,7 +14,7 @@ an accessible and efficient tool for researchers.
 ## Installation
 
 You can install the development version of MMLCA from
-[GitHub](https://github.com/) with:
+[GitHub](https://github.com/) using personal toke if needed with:
 
 ``` r
 # install.packages("devtools")

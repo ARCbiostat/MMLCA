@@ -22,7 +22,8 @@ prepare_data <- function(data, dis_string, keepmm = TRUE) {
   if (keepmm) {
     if (nomm > 0) {
       X <- X[-which(ndis < 2), ]
-      message(paste(nomm, "subject are removed because having less than 2 chornic conditions."))
+      message(paste(nomm, "rows are removed because corrisponding to subjects having less than 2 chornic conditions."))
+      message(paste("rows removed:",which(ndis < 2)))
     } else {
       message("All subjects have at least 2 chronic conditions.")
     }

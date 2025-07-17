@@ -1,4 +1,4 @@
-run_lca_cv <- function(fold){
+run_lca_cv <- function(fold,nclasses,X,conditions,nrep){
   res <- lapply(nclasses, function(x) run_LCA(x, X = X[-fold,], conditions = conditions, nrep = nrep))
   objects <- lapply(res, function(x) x$obj)
   names(objects) <- nclasses

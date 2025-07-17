@@ -54,6 +54,50 @@ ggOEx <- function(obj, cutoff_OE = 2, cutoff_Ex = 0.25, table = F) {
         dplyr::mutate(label2 = ifelse(`Exclusivity` < cutoff_Ex, NA_integer_, Disease))
 
 
+
+      if(boot){
+
+
+        observed_boot <- array(NA, dim=c(nclass,nboot,ncol(obj$y)))
+        expected_boot <- matrix(NA,nrow=nboot,ncol=ncol(obj$y))
+        OE_boot <- array(NA, dim=c(nclass,nboot,ncol(obj$y)))
+
+        for (i in 1:ncol(obj$y)) {
+          expected_boot[,i] <- rnorm(nboot,mean=E[i],sd=sqrt((E[i]*(1-E[i])/nrow(obj$y))))
+        }
+        for (j in 1:nclass) {
+          for (i in 1:ncol(obj$y)) {
+            observed_boot[j,,i] <- rnorm(nboot,mean=obj$probs[[i]][j, 2],sd=obj$probs.se[[i]][j, 2])
+            OE_boot[j,,i] <- observed_boot[j,,i]/expected_boot[,i]
+          }
+
+        }
+
+        lower <- apply(OE_boot,c(1,3) , quantile,prob=0.025,na.rm=T)
+        upper <- apply(OE_boot,c(1,3) , quantile,prob=0.975,na.rm=T)
+
+        colnames(lower) <- colnames(upper) <- colnames(obj$y)
+
+
+        lower %<>% t() %>% as.data.frame() %>%
+          tibble::rownames_to_column("Disease") %>%
+          tidyr::pivot_longer(2:(nclass + 1),
+                              names_to = "Multimorbidity profile",
+                              values_to = "Lower O/E"
+          )%>%
+          dplyr::mutate(`Multimorbidity profile` = as.numeric(gsub("\\D", "", `Multimorbidity profile`)))
+
+
+        upper %<>% t() %>% as.data.frame() %>%
+          tibble::rownames_to_column("Disease") %>%
+          tidyr::pivot_longer(2:(nclass + 1),
+                              names_to = "Multimorbidity profile",
+                              values_to = "Upper O/E"
+          )%>%
+          dplyr::mutate(`Multimorbidity profile` = as.numeric(gsub("\\D", "", `Multimorbidity profile`)))
+
+      }
+
       Char_MP <- R %>% left_join(Ex)
       Char_MP %<>% mutate(char = ifelse(!is.na(label) & !is.na(label2), 1, NA_integer_))
       datn <- data.frame(

@@ -20,7 +20,7 @@ select_number_LCA <- function(nclasses, X, conditions, plot = T, nrep = 50,cvfol
   if(!is.null(cvfolds)){
   future::plan(future::multisession)
   folds <- sample(rep(1:cvfolds, length.out = nrow(X)))
-  results <- do.call("rbind",future.apply::future_lapply(1:cvfolds,function(x) run_lca_cv(x,nclasses,X,conditions,nrep)))
+  results <- do.call("rbind",future.apply::future_lapply(1:cvfolds,FUN=run_lca_cv,nclasses,X,conditions,nrep))
   results %<>% dplyr::group_by(nclass) %>% dplyr::summarise_all(mean) %>% dplyr::select(-CV)
 
   if (plot) {

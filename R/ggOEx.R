@@ -9,7 +9,7 @@
 #' @export
 #'
 #' @examples
-ggOEx <- function(obj, cutoff_OE = 2, cutoff_Ex = 0.25, table = F) {
+ggOEx <- function(obj, cutoff_OE = 2, cutoff_Ex = 0.25, table = F,boot=F,nboot=1000) {
   suppressMessages({
     suppressWarnings({
       nclass <- nrow(obj$probs[[1]])

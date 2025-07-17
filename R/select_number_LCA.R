@@ -18,7 +18,7 @@
 select_number_LCA <- function(nclasses, X, conditions, plot = T, nrep = 50,cvfolds=NULL) {
   tictoc::tic()
   if(!is.null(cvfolds)){
-  future.apply::plan(multisession)
+  future::plan(future::multisession)
   folds <- sample(rep(1:cvfolds, length.out = nrow(X)))
   results <- do.call("rbind",future.apply::future_lapply(1:cvfolds, run_lca_cv))
   results %<>% dplyr::group_by(nclass) %>% dplyr::summarise_all(mean) %>% dplyr::select(-CV)

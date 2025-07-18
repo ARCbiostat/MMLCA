@@ -178,7 +178,7 @@ ggOEx <- function(obj, cutoff_OE = 2, cutoff_Ex = 0.25, table = F,boot=F,nboot=1
         print(colnames(table))
         colnames(Char_MP)[4] <- "O/E above threshold"
         colnames(Char_MP)[6] <- "Exclusivity above threshold"
-        colnames(Char_MP)[7] <- "Flag for O/E and exclusivity above threshold"
+        colnames(Char_MP)[8] <- "Flag for O/E and exclusivity above threshold"
 
         return(list(plot = gg, table = Char_MP))
       } else {

@@ -20,8 +20,11 @@ select_number_LCA <- function(nclasses, X, conditions, plot = T, nrep = 50,cvfol
   if(!is.null(cvfolds)){
   future::plan(future::multisession)
   folds <- sample(rep(1:cvfolds, length.out = nrow(X)))
-  results <- do.call("rbind",future.apply::future_lapply(1:cvfolds,FUN=run_lca_cv,nclasses,X,conditions,nrep))
-  results %<>% dplyr::group_by(nclass) %>% dplyr::summarise_all(mean) %>% dplyr::select(-CV)
+  results <- do.call("rbind",future.apply::future_lapply(1:cvfolds,FUN=run_lca_cv,nclasses,X,conditions,nrep,folds))
+  results_sum <- results %>%
+    dplyr::group_by(nclass) %>%
+    dplyr::summarise_all(mean,na.rm=T) %>%
+    dplyr::select(-CV)
 
   if (plot) {
     dat_res_wide <- results %>%
@@ -46,7 +49,7 @@ select_number_LCA <- function(nclasses, X, conditions, plot = T, nrep = 50,cvfol
     gg <- NULL
   }
 
-  return(gg)
+  return(list(plot=gg,results=results_sum,results_sum=results_sum))
   }else{
     res <- lapply(nclasses, function(x) run_LCA(x, X = X, conditions = conditions, nrep = nrep))
     dat_res <- do.call("rbind", lapply(res, function(x) x$metrics))

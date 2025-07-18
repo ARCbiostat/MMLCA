@@ -175,7 +175,6 @@ ggOEx <- function(obj, cutoff_OE = 2, cutoff_Ex = 0.25, table = F,boot=F,nboot=1
       gg <- ggpubr::ggarrange(ggOE, ggex, ggnames, nrow = 3, align = "v")
       print(gg)
       if (table) {
-        print(colnames(table))
         colnames(Char_MP)[4] <- "O/E above threshold"
         colnames(Char_MP)[6] <- "Exclusivity above threshold"
         colnames(Char_MP)[8] <- "Flag for O/E and exclusivity above threshold"

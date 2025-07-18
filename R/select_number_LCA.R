@@ -26,6 +26,7 @@ select_number_LCA <- function(nclasses, X, conditions, plot = T, nrep = 50,cvfol
     dplyr::summarise_all(mean,na.rm=T) %>%
     dplyr::select(-CV)
 
+  return(list(results_sum,results))
   if (plot) {
     dat_res_wide <- results %>%
       as.data.frame() %>%

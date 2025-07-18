@@ -53,6 +53,14 @@ ggOEx <- function(obj, cutoff_OE = 2, cutoff_Ex = 0.25, table = F,boot=F,nboot=1
         dplyr::mutate(`Multimorbidity profile` = as.numeric(gsub("\\D", "", `Multimorbidity profile`))) %>%
         dplyr::mutate(label2 = ifelse(`Exclusivity` < cutoff_Ex, NA_integer_, Disease))
 
+      O %<>% as.data.frame() %>%
+        tibble::rownames_to_column("Disease") %>%
+        tidyr::pivot_longer(2:(nclass + 1),
+                            names_to = "Multimorbidity profile",
+                            values_to = "Prevalence"
+        ) %>%
+        dplyr::mutate(`Multimorbidity profile` = as.numeric(gsub("\\D", "", `Multimorbidity profile`))) %>%
+        dplyr::mutate(label2 = ifelse(Prevalence < cutoff_P, NA_integer_, Disease))
 
 
       if(boot){
@@ -98,7 +106,7 @@ ggOEx <- function(obj, cutoff_OE = 2, cutoff_Ex = 0.25, table = F,boot=F,nboot=1
 
       }
 
-      Char_MP <- R %>% left_join(Ex)
+      Char_MP <- R %>% left_join(Ex) %>% left_join(O)
       Char_MP %<>% mutate(char = ifelse(!is.na(label) & !is.na(label2), 1, NA_integer_))
       datn <- data.frame(
         `Multimorbidity profile` = 1:nclass,

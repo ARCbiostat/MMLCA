@@ -59,8 +59,7 @@ ggOEx <- function(obj, cutoff_OE = 2, cutoff_Ex = 0.25, table = F,boot=F,nboot=1
                             names_to = "Multimorbidity profile",
                             values_to = "Prevalence"
         ) %>%
-        dplyr::mutate(`Multimorbidity profile` = as.numeric(gsub("\\D", "", `Multimorbidity profile`))) %>%
-        dplyr::mutate(label2 = ifelse(Prevalence < cutoff_P, NA_integer_, Disease))
+        dplyr::mutate(`Multimorbidity profile` = as.numeric(gsub("\\D", "", `Multimorbidity profile`)))
 
 
       if(boot){

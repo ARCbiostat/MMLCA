@@ -4,7 +4,7 @@
 \alias{select_number_LCA}
 \title{Function to run LCA with different number of classes and compare the goodness-of-fit}
 \usage{
-select_number_LCA(nclasses, X, conditions, plot = T, nrep = 50)
+select_number_LCA(nclasses, X, conditions, plot = T, nrep = 50, cvfolds = NULL)
 }
 \arguments{
 \item{nclasses}{Numeric vector indicating the number of latent classes to investigate.}
@@ -16,6 +16,8 @@ select_number_LCA(nclasses, X, conditions, plot = T, nrep = 50)
 \item{plot}{Boolean indicating whether the goodness-of-fit measures should be plotted.}
 
 \item{nrep}{Number of times to estimate the model, using different values of probs.start. The default is one. Setting nrep>1 automates the search for the global—rather than just a local—maximum of the log-likelihood function. poLCA returns the parameter estimates corresponding to the model with the greatest log-likelihood. Default to 50. Reduce to save computation time.}
+
+\item{cvfolds}{Number of folds of the cross-validation, default to NULL (no CV is performed)}
 }
 \value{
 A list containing the following elements:

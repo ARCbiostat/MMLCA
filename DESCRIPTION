@@ -19,7 +19,8 @@ Imports:
     tibble,
     tictoc,
     tidyr,
-    ggsankey
+    ggsankey,
+    future.apply
 URL: https://github.com/caterinagregorio/MMLCA
 BugReports: https://github.com/caterinagregorio/MMLCA/issues
 Suggests: 

@@ -8,6 +8,7 @@
 #'
 #' @examples
 assign_LCA <- function(obj, X) {
+  if(ncol(X %>% dplyr::select(any_of(colnames(obj$y))))!=length(colnames(obj$y))) stop("Some diseases used for the LCA are missing from X")
   pClY <- poLCA::poLCA.posterior(obj, y = X %>% dplyr::select(any_of(colnames(obj$y))))
   ng <- ncol(pClY)
   pred <- as.numeric(apply(pClY, 1, function(x) which.max(x))) # MODE

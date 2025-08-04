@@ -102,23 +102,19 @@ We now consider the result with 5 classes and try different method to characteri
 **Method 1:** O/E and Exclusivity:
 
 ```{r,fig.height=50,fig.width=20}
-
 OEx_sol5 <- ggOEx(res$obj[[4]], table = F)
-
 ```
 
 **Method 2:** O/E and overall prevalence:
 
 ```{r,fig.height=20}
-
 OE_sol5 <- ggOE(res$obj[[4]], table = F)
-
 ```
 
 Same method but with 95% CI:
 
 ```{r,fig.height=20}
-OEx_sol5 <- ggOE(res$obj[[4]], table = F,boot = T)
+OEx_sol5 <- ggOE(res$obj[[4]], table = F, boot = T)
 ```
 
 
@@ -126,17 +122,13 @@ OEx_sol5 <- ggOE(res$obj[[4]], table = F,boot = T)
 **Method 3:**
 
 ```{r,fig.height=20}
-
 prev_sol5 <- ggprev(res$obj[[4]])
-
 ```
 
 **Method 4:**
 
 ```{r,fig.height=10,fig.width=50}
-
 prev_sol5 <- ggprev_spaghetti(res$obj[[4]])
-
 ```
 
 ### Assignment of subjects into the latent classes
@@ -144,6 +136,6 @@ prev_sol5 <- ggprev_spaghetti(res$obj[[4]])
 **Warning**: If additional analyses are performed, it is recommended to take into account for the uncertainty in the classification.
 
 ```{r}
-mm_pattern <- assign_LCA(res$obj[[4]],X)
+mm_pattern <- assign_LCA(res$obj[[4]], X)
 table(mm_pattern)
 ```

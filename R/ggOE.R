@@ -10,15 +10,15 @@
 #' @export
 #'
 #' @examples
-ggOE <- function(obj, cutoff_OE = 2, cutoff_P = NULL, table = F,boot=F,nboot=1000) {
+ggOE <- function(obj, cutoff_OE = 2, cutoff_P = NULL, table = F, boot = F, nboot = 1000) {
   suppressMessages({
     suppressWarnings({
       nclass <- nrow(obj$probs[[1]])
 
       E <- apply(obj$y - 1, 2, mean)
       n <- list()
-      for (j in 1:nclass){
-        n[[j]] <- apply(obj$y[obj$predclass==j,]-1,2,mean)
+      for (j in 1:nclass) {
+        n[[j]] <- apply(obj$y[obj$predclass == j, ] - 1, 2, mean)
       }
 
 
@@ -27,47 +27,45 @@ ggOE <- function(obj, cutoff_OE = 2, cutoff_P = NULL, table = F,boot=F,nboot=100
       rownames(O) <- colnames(obj$y)
       R <- O / E
 
-      if(boot){
-
-
-        observed_boot <- array(NA, dim=c(nclass,nboot,ncol(obj$y)))
-        expected_boot <- matrix(NA,nrow=nboot,ncol=ncol(obj$y))
-        OE_boot <- array(NA, dim=c(nclass,nboot,ncol(obj$y)))
+      if (boot) {
+        observed_boot <- array(NA, dim = c(nclass, nboot, ncol(obj$y)))
+        expected_boot <- matrix(NA, nrow = nboot, ncol = ncol(obj$y))
+        OE_boot <- array(NA, dim = c(nclass, nboot, ncol(obj$y)))
 
         for (i in 1:ncol(obj$y)) {
-          expected_boot[,i] <- rnorm(nboot,mean=E[i],sd=sqrt((E[i]*(1-E[i])/nrow(obj$y))))
+          expected_boot[, i] <- rnorm(nboot, mean = E[i], sd = sqrt((E[i] * (1 - E[i]) / nrow(obj$y))))
         }
         for (j in 1:nclass) {
           for (i in 1:ncol(obj$y)) {
-            observed_boot[j,,i] <- rnorm(nboot,mean=obj$probs[[i]][j, 2],sd=obj$probs.se[[i]][j, 2])
-            OE_boot[j,,i] <- observed_boot[j,,i]/expected_boot[,i]
+            observed_boot[j, , i] <- rnorm(nboot, mean = obj$probs[[i]][j, 2], sd = obj$probs.se[[i]][j, 2])
+            OE_boot[j, , i] <- observed_boot[j, , i] / expected_boot[, i]
           }
-
         }
 
-      lower <- apply(OE_boot,c(1,3) , quantile,prob=0.025,na.rm=T)
-      upper <- apply(OE_boot,c(1,3) , quantile,prob=0.975,na.rm=T)
+        lower <- apply(OE_boot, c(1, 3), quantile, prob = 0.025, na.rm = T)
+        upper <- apply(OE_boot, c(1, 3), quantile, prob = 0.975, na.rm = T)
 
-      colnames(lower) <- colnames(upper) <- colnames(obj$y)
-
-
-      lower %<>% t() %>% as.data.frame() %>%
-        tibble::rownames_to_column("Disease") %>%
-        tidyr::pivot_longer(2:(nclass + 1),
-                            names_to = "Multimorbidity profile",
-                            values_to = "Lower O/E"
-        )%>%
-        dplyr::mutate(`Multimorbidity profile` = as.numeric(gsub("\\D", "", `Multimorbidity profile`)))
+        colnames(lower) <- colnames(upper) <- colnames(obj$y)
 
 
-       upper %<>% t() %>% as.data.frame() %>%
-        tibble::rownames_to_column("Disease") %>%
-        tidyr::pivot_longer(2:(nclass + 1),
-                            names_to = "Multimorbidity profile",
-                            values_to = "Upper O/E"
-        )%>%
-         dplyr::mutate(`Multimorbidity profile` = as.numeric(gsub("\\D", "", `Multimorbidity profile`)))
+        lower %<>% t() %>%
+          as.data.frame() %>%
+          tibble::rownames_to_column("Disease") %>%
+          tidyr::pivot_longer(2:(nclass + 1),
+            names_to = "Multimorbidity profile",
+            values_to = "Lower O/E"
+          ) %>%
+          dplyr::mutate(`Multimorbidity profile` = as.numeric(gsub("\\D", "", `Multimorbidity profile`)))
 
+
+        upper %<>% t() %>%
+          as.data.frame() %>%
+          tibble::rownames_to_column("Disease") %>%
+          tidyr::pivot_longer(2:(nclass + 1),
+            names_to = "Multimorbidity profile",
+            values_to = "Upper O/E"
+          ) %>%
+          dplyr::mutate(`Multimorbidity profile` = as.numeric(gsub("\\D", "", `Multimorbidity profile`)))
       }
 
       if (is.null(cutoff_P)) cutoff_P <- 0
@@ -104,18 +102,18 @@ ggOE <- function(obj, cutoff_OE = 2, cutoff_P = NULL, table = F,boot=F,nboot=100
       colnames(datn)[1] <- "Multimorbidity profile"
 
 
-      if(boot){
+      if (boot) {
         Char_MP %<>% left_join(lower) %>% left_join(upper)
         Char_MP %<>% dplyr::left_join(datn) %>%
           dplyr::mutate(`Multimorbidity profile` = paste0(`Multimorbidity profile`, " (", P, "%)")) %>%
           dplyr::mutate(label3 = ifelse(!is.na(label) & !is.na(label2), Disease, NA_integer_))
 
-        Char_MP %<>% mutate(sign=ifelse(`Lower O/E`>cutoff_OE & Prevalence >= cutoff_P ,Disease,NA_integer_))
+        Char_MP %<>% mutate(sign = ifelse(`Lower O/E` > cutoff_OE & Prevalence >= cutoff_P, Disease, NA_integer_))
 
         ggOE <- ggplot2::ggplot(Char_MP) +
           ggplot2::geom_text(ggplot2::aes(`Upper O/E`, Disease, label = sign, hjust = "left"), size = 6) +
-          ggplot2::geom_pointrange(ggplot2::aes(xmin=`Lower O/E`,xmax=`Upper O/E`,y=Disease,x=`O/E`),linewidth=1)+
-          ggplot2::geom_bar(ggplot2::aes(`O/E`, Disease, fill = Disease), stat = "identity",alpha=0.5) +
+          ggplot2::geom_pointrange(ggplot2::aes(xmin = `Lower O/E`, xmax = `Upper O/E`, y = Disease, x = `O/E`), linewidth = 1) +
+          ggplot2::geom_bar(ggplot2::aes(`O/E`, Disease, fill = Disease), stat = "identity", alpha = 0.5) +
           ggplot2::geom_vline(ggplot2::aes(xintercept = cutoff_OE), linetype = "dashed") +
           ggplot2::facet_grid(. ~ `Multimorbidity profile`) +
           ggplot2::scale_y_discrete("Chronic conditions") +
@@ -132,8 +130,7 @@ ggOE <- function(obj, cutoff_OE = 2, cutoff_P = NULL, table = F,boot=F,nboot=100
 
 
         print(ggOE)
-
-      }else{
+      } else {
         Char_MP %<>% dplyr::left_join(datn) %>%
           dplyr::mutate(`Multimorbidity profile` = paste0(`Multimorbidity profile`, " (", P, "%)")) %>%
           dplyr::mutate(label3 = ifelse(!is.na(label) & !is.na(label2), Disease, NA_integer_))

@@ -1,5 +1,3 @@
-
-
 #' Describe mm patterns longitudinally through an alluvial plot
 #'
 #' @param data dataset to use.
@@ -44,8 +42,10 @@ ggalluvial <- function(data,
     dplyr::full_join(expanded_dat) %>%
     dplyr::arrange(.data[[id_var]], time) %>%
     dplyr::group_by(.data[[id_var]]) %>%
-    dplyr::mutate(min_time = round(min(.data[[time_var]], na.rm = T)), max_time =
-                    round(max(.data[[time_var]], na.rm = T))) %>%
+    dplyr::mutate(
+      min_time = round(min(.data[[time_var]], na.rm = T)), max_time =
+        round(max(.data[[time_var]], na.rm = T))
+    ) %>%
     dplyr::filter(time >= min_time) %>%
     tidyr::fill(.data[[mm_var]], .direction = "down") %>%
     dplyr::mutate(mm_pattern = .data[[mm_var]]) %>%
@@ -77,10 +77,12 @@ ggalluvial <- function(data,
       node.fill = mm_pattern
     )
   ) +
-    ggsankey::geom_sankey(flow.alpha = 0.8,
-                          node.col = 1,
-                          space = space) +
-    ggplot2::scale_fill_manual("", values = colors,labels=lab_mm) +
+    ggsankey::geom_sankey(
+      flow.alpha = 0.8,
+      node.col = 1,
+      space = space
+    ) +
+    ggplot2::scale_fill_manual("", values = colors, labels = lab_mm) +
     ggsankey::theme_sankey(base_size = 30) +
     ggplot2::scale_x_continuous(time_var) +
     ggplot2::theme(
@@ -103,13 +105,14 @@ ggalluvial <- function(data,
 
   print(ggalluvial)
 
-  dat_alluvial %<>% left_join(duplicated) %>% select(.data[[id_var]],
-                                                     .data[[time_var]],
-                                                     time,
-                                                     next_time,
-                                                     mm_pattern,
-                                                     next_mm_pattern,
-                                                     duplicated_status)
+  dat_alluvial %<>% left_join(duplicated) %>% select(
+    .data[[id_var]],
+    .data[[time_var]],
+    time,
+    next_time,
+    mm_pattern,
+    next_mm_pattern,
+    duplicated_status
+  )
   return(list(plot = ggalluvial, data = dat_alluvial))
-
 }

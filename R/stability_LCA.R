@@ -12,6 +12,6 @@
 #' @export
 #'
 #' @examples
-stability_LCA <- function(nclass, X, conditions, nrep = 50, fcov = NULL, probstart = NULL,nboot){
+stability_LCA <- function(nclass, X, conditions, nrep = 50, fcov = NULL, probstart = NULL, nboot) {
 
 }

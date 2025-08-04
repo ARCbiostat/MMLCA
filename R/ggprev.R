@@ -20,8 +20,8 @@ ggprev <- function(obj, nclass, cutoff_OE = 2, cutoff_Ex = 0.25, cutoff_P = NULL
 
       E <- apply(obj$y - 1, 2, mean)
       n <- list()
-      for (j in 1:nclass){
-        n[[j]] <- apply(obj$y[obj$predclass==j,]-1,2,mean)
+      for (j in 1:nclass) {
+        n[[j]] <- apply(obj$y[obj$predclass == j, ] - 1, 2, mean)
       }
 
       O <- do.call("cbind", n)
@@ -34,8 +34,10 @@ ggprev <- function(obj, nclass, cutoff_OE = 2, cutoff_Ex = 0.25, cutoff_P = NULL
           names_to = "Multimorbidity profile",
           values_to = "Prevalence"
         ) %>%
-        dplyr::mutate(`Multimorbidity profile` = as.numeric(gsub("\\D", "", `Multimorbidity profile`)),
-                      label_P = ifelse(Prevalence < cutoff_P, NA_integer_, Disease))
+        dplyr::mutate(
+          `Multimorbidity profile` = as.numeric(gsub("\\D", "", `Multimorbidity profile`)),
+          label_P = ifelse(Prevalence < cutoff_P, NA_integer_, Disease)
+        )
 
 
       R %<>% as.data.frame() %>%
@@ -74,7 +76,7 @@ ggprev <- function(obj, nclass, cutoff_OE = 2, cutoff_Ex = 0.25, cutoff_P = NULL
         dplyr::left_join(Ex) %>%
         dplyr::left_join(O)
 
-      Char_MP %<>% dplyr::mutate(char = ifelse(!is.na(label) & !is.na(label2) & !is.na(label_P), 1,0))
+      Char_MP %<>% dplyr::mutate(char = ifelse(!is.na(label) & !is.na(label2) & !is.na(label_P), 1, 0))
 
 
       Char_MP %<>%
@@ -108,13 +110,12 @@ ggprev <- function(obj, nclass, cutoff_OE = 2, cutoff_Ex = 0.25, cutoff_P = NULL
           labels = c(10, 25, 50, 80)
         ) +
         ggplot2::ggtitle("Multimorbidity Profiles")
-        ggplot2::theme(
-          axis.ticks.x = ggplot2::element_blank(),
-          legend.title = ggplot2::element_text(),
-          legend.position = "bottom",
-          panel.grid.major.y = ggplot2::element_line(color = "grey90", linetype = "dashed", linewidth = 0.3)
-
-        )
+      ggplot2::theme(
+        axis.ticks.x = ggplot2::element_blank(),
+        legend.title = ggplot2::element_text(),
+        legend.position = "bottom",
+        panel.grid.major.y = ggplot2::element_line(color = "grey90", linetype = "dashed", linewidth = 0.3)
+      )
 
 
       print(gg)

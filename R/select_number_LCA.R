@@ -15,43 +15,42 @@
 #' @export
 #'
 #' @examples
-select_number_LCA <- function(nclasses, X, conditions, plot = T, nrep = 50,cvfolds=NULL) {
+select_number_LCA <- function(nclasses, X, conditions, plot = T, nrep = 50, cvfolds = NULL) {
   tictoc::tic()
-  if(!is.null(cvfolds)){
-  future::plan(future::multisession)
-  folds <- sample(rep(1:cvfolds, length.out = nrow(X)))
-  results <- do.call("rbind",future.apply::future_lapply(1:cvfolds,FUN=run_lca_cv,nclasses,X,conditions,nrep,folds))
-  results_sum <- results %>%
-    dplyr::group_by(nclass) %>%
-    dplyr::summarise_all(mean,na.rm=T) %>%
-    dplyr::select(-CV)
+  if (!is.null(cvfolds)) {
+    future::plan(future::multisession)
+    folds <- sample(rep(1:cvfolds, length.out = nrow(X)))
+    results <- do.call("rbind", future.apply::future_lapply(1:cvfolds, FUN = run_lca_cv, nclasses, X, conditions, nrep, folds))
+    results_sum <- results %>%
+      dplyr::group_by(nclass) %>%
+      dplyr::summarise_all(mean, na.rm = T) %>%
+      dplyr::select(-CV)
 
-  return(list(results_sum,results))
-  if (plot) {
-    dat_res_wide <- results %>%
-      as.data.frame() %>%
-      tidyr::pivot_longer(2:3, values_to = "metrics", names_to = "name") %>%
-      dplyr::mutate(
-        metrics = as.numeric(metrics),
-        nclass = as.numeric(nclass)
-      )
+    return(list(results_sum, results))
+    if (plot) {
+      dat_res_wide <- results %>%
+        as.data.frame() %>%
+        tidyr::pivot_longer(2:3, values_to = "metrics", names_to = "name") %>%
+        dplyr::mutate(
+          metrics = as.numeric(metrics),
+          nclass = as.numeric(nclass)
+        )
 
-    gg <- ggplot2::ggplot(dat_res_wide) +
-      ggplot2::geom_line(ggplot2::aes(nclass, metrics)) +
-      ggplot2::geom_point(ggplot2::aes(nclass, metrics)) +
-      ggplot2::facet_wrap(~name, scales = "free_y") +
-      ggplot2::scale_y_continuous("") +
-      ggplot2::scale_x_continuous("Number of latent classes", breaks = nclasses) +
-      ggplot2::theme_bw()
+      gg <- ggplot2::ggplot(dat_res_wide) +
+        ggplot2::geom_line(ggplot2::aes(nclass, metrics)) +
+        ggplot2::geom_point(ggplot2::aes(nclass, metrics)) +
+        ggplot2::facet_wrap(~name, scales = "free_y") +
+        ggplot2::scale_y_continuous("") +
+        ggplot2::scale_x_continuous("Number of latent classes", breaks = nclasses) +
+        ggplot2::theme_bw()
 
-    print(gg)
-  }
-  else {
-    gg <- NULL
-  }
+      print(gg)
+    } else {
+      gg <- NULL
+    }
 
-  return(list(plot=gg,results=results_sum,results_sum=results_sum))
-  }else{
+    return(list(plot = gg, results = results_sum, results_sum = results_sum))
+  } else {
     res <- lapply(nclasses, function(x) run_LCA(x, X = X, conditions = conditions, nrep = nrep))
     dat_res <- do.call("rbind", lapply(res, function(x) x$metrics))
     objects <- lapply(res, function(x) x$obj)
@@ -85,19 +84,19 @@ select_number_LCA <- function(nclasses, X, conditions, plot = T, nrep = 50,cvfol
 
 
 
-    gg <- ggplot2::ggplot(dat_res_wide) +
-      ggplot2::geom_line(ggplot2::aes(nclass, metrics)) +
-      ggplot2::geom_point(ggplot2::aes(nclass, metrics)) +
-      ggplot2::facet_wrap(~name, scales = "free_y") +
-      ggplot2::scale_y_continuous("") +
-      ggplot2::scale_x_continuous("Number of latent classes", breaks = nclasses) +
-      ggplot2::theme_bw()
+      gg <- ggplot2::ggplot(dat_res_wide) +
+        ggplot2::geom_line(ggplot2::aes(nclass, metrics)) +
+        ggplot2::geom_point(ggplot2::aes(nclass, metrics)) +
+        ggplot2::facet_wrap(~name, scales = "free_y") +
+        ggplot2::scale_y_continuous("") +
+        ggplot2::scale_x_continuous("Number of latent classes", breaks = nclasses) +
+        ggplot2::theme_bw()
 
-    print(gg)
+      print(gg)
+    } else {
+      gg <- NULL
     }
-  else {
-    gg <- NULL
-  }}
+  }
   elapsed_time <- tictoc::toc(quiet = TRUE)$toc - tictoc::toc(quiet = TRUE)$tic
   return(list(metrics = dat_res, obj = objects, plot = gg, accuracy_matrix = internal_val, elapsed_time = elapsed_time))
 }

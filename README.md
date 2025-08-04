@@ -14,7 +14,7 @@ an accessible and efficient tool for researchers.
 ## Installation
 
 You can install the development version of MMLCA from
-[GitHub](https://github.com/) using personal toke if needed with:
+[GitHub](https://github.com/) with:
 
 ``` r
 # install.packages("devtools")
@@ -38,6 +38,9 @@ Load the package and the data:
 library(MMLCA)
 #> Warning: replacing previous import 'magrittr::extract' by 'tidyr::extract' when
 #> loading 'MMLCA'
+```
+
+``` r
 data(mmdata)
 ```
 
@@ -45,7 +48,8 @@ Prepare the dataset:
 
 ``` r
 X <- prepare_data(mmdata, dis_string = "dis", keepmm = T)
-#> 139 subject are removed because having less than 2 chornic conditions.
+#> 139 rows are removed because corrisponding to subjects having less than 2 chornic conditions.
+#> rows removed: 37rows removed: 45rows removed: 51rows removed: 73rows removed: 75rows removed: 79rows removed: 100rows removed: 131rows removed: 154rows removed: 155rows removed: 177rows removed: 210rows removed: 243rows removed: 244rows removed: 250rows removed: 254rows removed: 263rows removed: 292rows removed: 305rows removed: 314rows removed: 354rows removed: 439rows removed: 445rows removed: 456rows removed: 470rows removed: 477rows removed: 482rows removed: 509rows removed: 530rows removed: 544rows removed: 564rows removed: 568rows removed: 585rows removed: 610rows removed: 631rows removed: 636rows removed: 738rows removed: 793rows removed: 824rows removed: 881rows removed: 895rows removed: 904rows removed: 931rows removed: 979rows removed: 992rows removed: 1008rows removed: 1052rows removed: 1098rows removed: 1121rows removed: 1134rows removed: 1162rows removed: 1175rows removed: 1196rows removed: 1202rows removed: 1208rows removed: 1229rows removed: 1232rows removed: 1279rows removed: 1334rows removed: 1387rows removed: 1444rows removed: 1445rows removed: 1450rows removed: 1485rows removed: 1500rows removed: 1506rows removed: 1528rows removed: 1570rows removed: 1572rows removed: 1576rows removed: 1605rows removed: 1607rows removed: 1626rows removed: 1637rows removed: 1661rows removed: 1690rows removed: 1693rows removed: 1717rows removed: 1729rows removed: 1741rows removed: 1743rows removed: 1749rows removed: 1804rows removed: 1811rows removed: 1821rows removed: 1838rows removed: 1864rows removed: 1878rows removed: 1905rows removed: 1960rows removed: 1967rows removed: 1986rows removed: 2040rows removed: 2041rows removed: 2061rows removed: 2089rows removed: 2108rows removed: 2130rows removed: 2134rows removed: 2143rows removed: 2145rows removed: 2152rows removed: 2157rows removed: 2160rows removed: 2192rows removed: 2217rows removed: 2247rows removed: 2264rows removed: 2298rows removed: 2323rows removed: 2327rows removed: 2338rows removed: 2362rows removed: 2421rows removed: 2436rows removed: 2443rows removed: 2467rows removed: 2478rows removed: 2495rows removed: 2503rows removed: 2519rows removed: 2528rows removed: 2554rows removed: 2565rows removed: 2574rows removed: 2600rows removed: 2638rows removed: 2646rows removed: 2652rows removed: 2667rows removed: 2701rows removed: 2761rows removed: 2794rows removed: 2811rows removed: 2812rows removed: 2834rows removed: 2849rows removed: 2858rows removed: 2893
 ```
 
 The chronic diseases data has 2761 subjects since we removed individuals
@@ -160,5 +164,5 @@ mm_pattern <- assign_LCA(res$obj[[4]],X)
 table(mm_pattern)
 #> mm_pattern
 #>    1    2    3    4    5 
-#>  425 1087  555  207  487
+#>  267  467 1160  322  545
 ```

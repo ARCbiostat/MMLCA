@@ -15,11 +15,8 @@ ggOEx <- function(obj, cutoff_OE = 2, cutoff_Ex = 0.25, table = F,boot=F,nboot=1
       nclass <- nrow(obj$probs[[1]])
       E <- apply(obj$y - 1, 2, mean)
       n <- list()
-      for (j in 1:nclass) {
-        n[[j]] <- rep(NA, ncol(obj$y))
-        for (i in 1:ncol(obj$y)) {
-          n[[j]][i] <- obj$probs[[i]][j, 2]
-        }
+      for (j in 1:nclass){
+        n[[j]] <- apply(obj$y[obj$predclass==j,]-1,2,mean)
       }
 
       O <- do.call("cbind", n)

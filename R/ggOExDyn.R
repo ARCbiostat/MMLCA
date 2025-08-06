@@ -1,15 +1,13 @@
 #' Plot the Observed/Expected Ratios and Exclusivity
 #' @description The function calculates the Observed/Expected Ratios and the Exclusivity and plot it highlighting diseases above the threshold.
 #' @param obj poLCA object
-#' @param cutoff_OE Numeric indicating the cut-off for the Observed/Expected ratio.
-#' @param cutoff_Ex Numeric indicating the cut-off for the Exclusivity.
 #' @param table Boolean indicating whether the table of the O/E should be returned in addition to the plot.
 #' @details The Observed/expected (O/E) ratios is calculated by dividing the prevalence of the condition within the pattern by its prevalence in the total sample. Disease exclusivity refers to the number of participants with the condition within the pattern compared to the total number of participants with the condition in the sample.
 #' @return ggplot object. if table=T then a list of plot and data.frame is returned.
 #' @export
 #'
 #' @examples
-ggOEx <- function(obj, cutoff_OE = 2, cutoff_Ex = 0.25, table = F, boot = F, nboot = 1000) {
+ggOExDyn <- function(obj, table = F, boot = F, nboot = 1000) {
   suppressMessages({
     suppressWarnings({
       nclass <- nrow(obj$probs[[1]])
@@ -28,8 +26,7 @@ ggOEx <- function(obj, cutoff_OE = 2, cutoff_Ex = 0.25, table = F, boot = F, nbo
           names_to = "Multimorbidity profile",
           values_to = "O/E"
         ) %>%
-        dplyr::mutate(`Multimorbidity profile` = as.numeric(gsub("\\D", "", `Multimorbidity profile`))) %>%
-        dplyr::mutate(label = ifelse(`O/E` < cutoff_OE, NA_integer_, Disease))
+        dplyr::mutate(`Multimorbidity profile` = as.numeric(gsub("\\D", "", `Multimorbidity profile`)))
 
       N <- apply(obj$y - 1, 2, sum)
 
@@ -47,8 +44,7 @@ ggOEx <- function(obj, cutoff_OE = 2, cutoff_Ex = 0.25, table = F, boot = F, nbo
           names_to = "Multimorbidity profile",
           values_to = "Exclusivity"
         ) %>%
-        dplyr::mutate(`Multimorbidity profile` = as.numeric(gsub("\\D", "", `Multimorbidity profile`))) %>%
-        dplyr::mutate(label2 = ifelse(`Exclusivity` < cutoff_Ex, NA_integer_, Disease))
+        dplyr::mutate(`Multimorbidity profile` = as.numeric(gsub("\\D", "", `Multimorbidity profile`)))
 
       O %<>% as.data.frame() %>%
         tibble::rownames_to_column("Disease") %>%
@@ -59,66 +55,41 @@ ggOEx <- function(obj, cutoff_OE = 2, cutoff_Ex = 0.25, table = F, boot = F, nbo
         dplyr::mutate(`Multimorbidity profile` = as.numeric(gsub("\\D", "", `Multimorbidity profile`)))
 
 
-      if (boot) {
-        observed_boot <- array(NA, dim = c(nclass, nboot, ncol(obj$y)))
-        expected_boot <- matrix(NA, nrow = nboot, ncol = ncol(obj$y))
-        OE_boot <- array(NA, dim = c(nclass, nboot, ncol(obj$y)))
-
-        for (i in 1:ncol(obj$y)) {
-          expected_boot[, i] <- rnorm(nboot, mean = E[i], sd = sqrt((E[i] * (1 - E[i]) / nrow(obj$y))))
-        }
-        for (j in 1:nclass) {
-          for (i in 1:ncol(obj$y)) {
-            observed_boot[j, , i] <- rnorm(nboot, mean = obj$probs[[i]][j, 2], sd = obj$probs.se[[i]][j, 2])
-            OE_boot[j, , i] <- observed_boot[j, , i] / expected_boot[, i]
-          }
-        }
-
-        lower <- apply(OE_boot, c(1, 3), quantile, prob = 0.025, na.rm = T)
-        upper <- apply(OE_boot, c(1, 3), quantile, prob = 0.975, na.rm = T)
-
-        colnames(lower) <- colnames(upper) <- colnames(obj$y)
-
-
-        lower %<>% t() %>%
-          as.data.frame() %>%
-          tibble::rownames_to_column("Disease") %>%
-          tidyr::pivot_longer(2:(nclass + 1),
-            names_to = "Multimorbidity profile",
-            values_to = "Lower O/E"
-          ) %>%
-          dplyr::mutate(`Multimorbidity profile` = as.numeric(gsub("\\D", "", `Multimorbidity profile`)))
-
-
-        upper %<>% t() %>%
-          as.data.frame() %>%
-          tibble::rownames_to_column("Disease") %>%
-          tidyr::pivot_longer(2:(nclass + 1),
-            names_to = "Multimorbidity profile",
-            values_to = "Upper O/E"
-          ) %>%
-          dplyr::mutate(`Multimorbidity profile` = as.numeric(gsub("\\D", "", `Multimorbidity profile`)))
-      }
 
       Char_MP <- R %>%
         left_join(Ex) %>%
         left_join(O)
-      Char_MP %<>% mutate(char = ifelse(!is.na(label) & !is.na(label2), 1, NA_integer_))
+
       datn <- data.frame(
         `Multimorbidity profile` = 1:nclass,
         N = as.numeric(table(obj$predclass)),
         P = round(as.numeric(table(obj$predclass)) / length(obj$predclass) * 100, 0)
-      )
+      ) %>%
+        mutate(cut_OE=case_when(P>35~1.25,
+                                P<=35 & P>25~1.5,
+                                P<=0.25 & P>15~1.75
+                                P<=15~2),
+               cut_Ex=case_when(P>35~0.10,
+                                P<=35 & P>25~0.15,
+                                P<=0.25 & P>15~0.20,
+                                P<=15~0.25),
+               cut_p=case_when(P>35~0.015,
+                               P<=35 & P>25~0.02,
+                               P<=0.25 & P>15~0.025
+                               P<=15~0.03))
+
 
       colnames(datn)[1] <- "Multimorbidity profile"
 
 
       Char_MP %<>% dplyr::left_join(datn) %>%
-        dplyr::mutate(`Multimorbidity profile` = paste0(`Multimorbidity profile`, " (", P, "%)"))
+      dplyr::mutate(`Multimorbidity profile` = paste0(`Multimorbidity profile`, " (", P, "%)")) %>%
+        dplyr::mutate(char = ifelse(Prevalence>cut_p & `O/E`>cut_OE & Exclusivity>cut_Ex, 1, NA_integer_),
+                      label=ifelse(char==1,Disease,NA_character_))
 
       ggOE <- ggplot2::ggplot(Char_MP) +
         ggplot2::geom_bar(ggplot2::aes(`O/E`, Disease, fill = Disease), stat = "identity") +
-        ggplot2::geom_vline(ggplot2::aes(xintercept = cutoff_OE), linetype = "dashed") +
+        ggplot2::geom_vline(ggplot2::aes(xintercept = cut_OE), linetype = "dashed") +
         ggplot2::facet_grid(. ~ `Multimorbidity profile`) +
         ggplot2::scale_y_discrete("Chronic conditions") +
         ggprism::theme_prism() +
@@ -133,7 +104,7 @@ ggOEx <- function(obj, cutoff_OE = 2, cutoff_Ex = 0.25, table = F, boot = F, nbo
 
       ggex <- ggplot2::ggplot(Char_MP) +
         ggplot2::geom_bar(ggplot2::aes(Exclusivity, Disease, fill = Disease), stat = "identity") +
-        ggplot2::geom_vline(ggplot2::aes(xintercept = cutoff_Ex), linetype = "dashed") +
+        ggplot2::geom_vline(ggplot2::aes(xintercept = cut_Ex), linetype = "dashed") +
         ggplot2::facet_grid(. ~ `Multimorbidity profile`) +
         ggplot2::scale_y_discrete("Chronic conditions") +
         ggplot2::scale_x_continuous(limits = c(0, 1)) +
@@ -154,7 +125,7 @@ ggOEx <- function(obj, cutoff_OE = 2, cutoff_Ex = 0.25, table = F, boot = F, nbo
         dplyr::mutate(index = row_number())
 
       ggnames <- ggplot2::ggplot(Char_MP2) +
-        ggplot2::geom_text(ggplot2::aes(0.1, index, label = label2, hjust = "left"), size = 8) +
+        ggplot2::geom_text(ggplot2::aes(0.1, index, label = label, hjust = "left"), size = 8) +
         ggplot2::facet_grid(. ~ `Multimorbidity profile`, drop = F) +
         ggplot2::scale_y_reverse("Chronic conditions") +
         ggplot2::scale_x_continuous(limits = c(0, 1)) +
@@ -168,14 +139,13 @@ ggOEx <- function(obj, cutoff_OE = 2, cutoff_Ex = 0.25, table = F, boot = F, nbo
           text = ggplot2::element_text(face = "bold", size = 16)
         )
 
-
+if(min(datn$P)<0.05) warning("Attention! MM patterns with less than 5% prevalence!")
       gg <- ggpubr::ggarrange(ggOE, ggex, ggnames, nrow = 3, align = "v")
       print(gg)
-      if(min(datn$P)<0.05) warning("Attention! MM patterns with less than 5% prevalence!")
       if (table) {
-        colnames(Char_MP)[4] <- "O/E above threshold"
-        colnames(Char_MP)[6] <- "Exclusivity above threshold"
-        colnames(Char_MP)[8] <- "Flag for O/E and exclusivity above threshold"
+        # colnames(Char_MP)[4] <- "O/E above threshold"
+        # colnames(Char_MP)[6] <- "Exclusivity above threshold"
+        # colnames(Char_MP)[8] <- "Flag for O/E and exclusivity above threshold"
 
         return(list(plot = gg, table = Char_MP))
       } else {

@@ -155,7 +155,7 @@ ggOE <- function(obj, cutoff_OE = 2, cutoff_P = NULL, table = F, boot = F, nboot
         print(ggOE)
       }
 
-
+      if(min(datn$P)<0.05) warning("Attention! MM patterns with less than 5% prevalence!")
 
       if (table) {
         colnames(Char_MP)[4] <- "O/E above threshold"

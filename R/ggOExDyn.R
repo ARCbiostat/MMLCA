@@ -65,18 +65,13 @@ ggOExDyn <- function(obj, table = F, boot = F, nboot = 1000) {
         N = as.numeric(table(obj$predclass)),
         P = round(as.numeric(table(obj$predclass)) / length(obj$predclass) * 100, 0)
       ) %>%
-        mutate(cut_OE=case_when(P>35~1,
-                                P<=35 & P>25~1.25,
-                                P<=25 & P>15~1.5,
-                                P<=15~1.75),
-               cut_Ex=case_when(P>35~0.5,
-                                P<=35 & P>25~0.3,
-                                P<=25 & P>15~0.25,
-                                P<=15~0.20),
-               cut_p=case_when(P>35~0.015,
-                               P<=35 & P>25~0.02,
-                               P<=25 & P>15~0.025,
-                               P<=15~0.03))
+        mutate(cut_OE=case_when(P>=25~1.25,
+                                P<25 & P>=15~1.5,
+                                P<15 & P>=10~1.75,
+                                P<10 ~2),
+               cut_Ex=case_when(P>=25~0.3,
+                                P<25 & P>=15~0.25,
+                                P<15~0.20))
 
 
       colnames(datn)[1] <- "Multimorbidity profile"
@@ -84,7 +79,7 @@ ggOExDyn <- function(obj, table = F, boot = F, nboot = 1000) {
 
       Char_MP %<>% dplyr::left_join(datn) %>%
       dplyr::mutate(`Multimorbidity profile` = paste0(`Multimorbidity profile`, " (", P, "%)")) %>%
-        dplyr::mutate(char = ifelse(Prevalence>cut_p & `O/E`>cut_OE & Exclusivity>cut_Ex, 1, NA_integer_),
+        dplyr::mutate(char = ifelse(Prevalence>cut_p & `O/E`>=cut_OE & Exclusivity>=cut_Ex, 1, NA_integer_),
                       label=ifelse(char==1,Disease,NA_character_))
 
       ggOE <- ggplot2::ggplot(Char_MP) +

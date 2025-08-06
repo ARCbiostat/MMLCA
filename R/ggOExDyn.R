@@ -67,7 +67,7 @@ ggOExDyn <- function(obj, table = F, boot = F, nboot = 1000) {
       ) %>%
         mutate(cut_OE=case_when(P>35~1.25,
                                 P<=35 & P>25~1.5,
-                                P<=0.25 & P>15~1.75
+                                P<=0.25 & P>15~1.75,
                                 P<=15~2),
                cut_Ex=case_when(P>35~0.10,
                                 P<=35 & P>25~0.15,
@@ -75,7 +75,7 @@ ggOExDyn <- function(obj, table = F, boot = F, nboot = 1000) {
                                 P<=15~0.25),
                cut_p=case_when(P>35~0.015,
                                P<=35 & P>25~0.02,
-                               P<=0.25 & P>15~0.025
+                               P<=0.25 & P>15~0.025,
                                P<=15~0.03))
 
 

@@ -79,7 +79,7 @@ ggOExDyn <- function(obj, table = F, boot = F, nboot = 1000) {
 
       Char_MP %<>% dplyr::left_join(datn) %>%
       dplyr::mutate(`Multimorbidity profile` = paste0(`Multimorbidity profile`, " (", P, "%)")) %>%
-        dplyr::mutate(char = ifelse(Prevalence>cut_p & `O/E`>=cut_OE & Exclusivity>=cut_Ex, 1, NA_integer_),
+        dplyr::mutate(char = ifelse(`O/E`>=cut_OE & Exclusivity>=cut_Ex, 1, NA_integer_),
                       label=ifelse(char==1,Disease,NA_character_))
 
       ggOE <- ggplot2::ggplot(Char_MP) +

@@ -67,15 +67,15 @@ ggOExDyn <- function(obj, table = F, boot = F, nboot = 1000) {
       ) %>%
         mutate(cut_OE=case_when(P>35~1.25,
                                 P<=35 & P>25~1.5,
-                                P<=0.25 & P>15~1.75,
+                                P<=25 & P>15~1.75,
                                 P<=15~2),
-               cut_Ex=case_when(P>35~0.10,
-                                P<=35 & P>25~0.15,
-                                P<=0.25 & P>15~0.20,
-                                P<=15~0.25),
+               cut_Ex=case_when(P>35~0.30,
+                                P<=35 & P>25~0.25,
+                                P<=25 & P>15~0.20,
+                                P<=15~0.15),
                cut_p=case_when(P>35~0.015,
                                P<=35 & P>25~0.02,
-                               P<=0.25 & P>15~0.025,
+                               P<=25 & P>15~0.025,
                                P<=15~0.03))
 
 
@@ -120,6 +120,7 @@ ggOExDyn <- function(obj, table = F, boot = F, nboot = 1000) {
       Char_MP %<>% mutate(`Multimorbidity profile` = as.factor(`Multimorbidity profile`))
 
       Char_MP2 <- Char_MP %>%
+        dplyr::ungroup() %>%
         dplyr::filter(char == 1) %>%
         dplyr::group_by(`Multimorbidity profile`) %>%
         dplyr::mutate(index = row_number())

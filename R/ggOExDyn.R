@@ -1,5 +1,5 @@
 #' Plot the Observed/Expected Ratios and Exclusivity
-#' @description The function calculates the Observed/Expected Ratios and the Exclusivity and plot it highlighting diseases above the threshold.
+#' @description The function calculates the Observed/Expected Ratios and the Exclusivity and plot it highlighting diseases above the thresholds. Thresholds are automatically calculated based on pattern size.
 #' @param obj poLCA object
 #' @param table Boolean indicating whether the table of the O/E should be returned in addition to the plot.
 #' @details The Observed/expected (O/E) ratios is calculated by dividing the prevalence of the condition within the pattern by its prevalence in the total sample. Disease exclusivity refers to the number of participants with the condition within the pattern compared to the total number of participants with the condition in the sample.

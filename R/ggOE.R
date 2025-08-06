@@ -111,7 +111,7 @@ ggOE <- function(obj, cutoff_OE = 2, cutoff_P = NULL, table = F, boot = F, nboot
         Char_MP %<>% mutate(sign = ifelse(`Lower O/E` > cutoff_OE & Prevalence >= cutoff_P, Disease, NA_integer_))
 
         ggOE <- ggplot2::ggplot(Char_MP) +
-          ggplot2::geom_text(ggplot2::aes(`Upper O/E`, Disease, label = sign, hjust = "left"), size = 6) +
+          ggplot2::geom_text(ggplot2::aes(`Lower O/E`, Disease, label = sign, hjust = "left"), size = 6) +
           ggplot2::geom_pointrange(ggplot2::aes(xmin = `Lower O/E`, xmax = `Upper O/E`, y = Disease, x = `O/E`), linewidth = 1) +
           ggplot2::geom_bar(ggplot2::aes(`O/E`, Disease, fill = Disease), stat = "identity", alpha = 0.5) +
           ggplot2::geom_vline(ggplot2::aes(xintercept = cutoff_OE), linetype = "dashed") +
@@ -136,7 +136,7 @@ ggOE <- function(obj, cutoff_OE = 2, cutoff_P = NULL, table = F, boot = F, nboot
           dplyr::mutate(label3 = ifelse(!is.na(label) & !is.na(label2), Disease, NA_integer_))
 
         ggOE <- ggplot2::ggplot(Char_MP) +
-          ggplot2::geom_text(ggplot2::aes(`O/E`, Disease, label = label3, hjust = "left"), size = 6) +
+          ggplot2::geom_text(ggplot2::aes(`O/E`-0.2, Disease, label = label3, hjust = "left"), size = 6) +
           ggplot2::geom_bar(ggplot2::aes(`O/E`, Disease, fill = Disease), stat = "identity") +
           ggplot2::geom_vline(ggplot2::aes(xintercept = cutoff_OE), linetype = "dashed") +
           ggplot2::facet_grid(. ~ `Multimorbidity profile`) +

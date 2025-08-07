@@ -65,14 +65,14 @@ ggOExDyn <- function(obj, table = F, boot = F, nboot = 1000) {
         N = as.numeric(table(obj$predclass)),
         P = round(as.numeric(table(obj$predclass)) / length(obj$predclass) * 100, 0)
       ) %>%
-        mutate(cut_OE=case_when(P>=25~1.25,
+        mutate(cut_OE=case_when(P>=25~0,
                                 P<25 & P>=15~1.5,
                                 P<15 & P>=10~1.75,
                                 P<10 ~2),
                cut_Ex=case_when(P>25~0.3,
                                 P<=25 & P>15~0.25,
                                 P<=15 & P>10~0.20,
-                                P<=10 ~0.15))
+                                P<=10 ~0))
 
 
       colnames(datn)[1] <- "Multimorbidity profile"

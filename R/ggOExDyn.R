@@ -91,7 +91,7 @@ ggOExDyn <- function(obj, table = F, boot = F, nboot = 1000) {
         ggprism::theme_prism() +
         ggplot2::theme(
           legend.position = "null",
-          axis.text.y = ggplot2::element_text(hjust = 1),
+          axis.text.y = ggplot2::element_text(hjust = 1,size=15),
           strip.text.x.top = ggplot2::element_text(size = 16),
           axis.ticks.y = ggplot2::element_blank(),
           panel.grid.major.y = ggplot2::element_line(color = "grey", linewidth = 0.5)
@@ -107,7 +107,7 @@ ggOExDyn <- function(obj, table = F, boot = F, nboot = 1000) {
         ggprism::theme_prism() +
         ggplot2::theme(
           legend.position = "null",
-          axis.text.y = ggplot2::element_text(hjust = 1),
+          axis.text.y = ggplot2::element_text(hjust = 1,size=15),
           strip.text.x.top = ggplot2::element_blank(),
           axis.ticks.y = ggplot2::element_blank(),
           panel.grid.major.y = ggplot2::element_line(color = "grey", linewidth = 0.5)
@@ -123,7 +123,7 @@ ggOExDyn <- function(obj, table = F, boot = F, nboot = 1000) {
         dplyr::mutate(index = row_number())
 
       ggnames <- ggplot2::ggplot(Char_MP2) +
-        ggplot2::geom_text(ggplot2::aes(0.1, index, label = label, hjust = "left",col=ifelse(index%in%c(1,3),2,1)), size = 8) +
+        ggplot2::geom_text(ggplot2::aes(0.1, index, label = label, hjust = "left",col=ifelse(index%in%c(1:3),"red","black")), size = 8) +
         ggplot2::facet_grid(. ~ `Multimorbidity profile`, drop = F) +
         ggplot2::scale_y_reverse("Chronic conditions") +
         ggplot2::scale_x_continuous(limits = c(0, 1)) +

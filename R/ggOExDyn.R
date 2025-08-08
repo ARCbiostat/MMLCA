@@ -118,15 +118,16 @@ ggOExDyn <- function(obj, table = F, boot = F, nboot = 1000) {
       Char_MP2 <- Char_MP %>%
         dplyr::ungroup() %>%
         dplyr::filter(char == 1) %>%
-        dplyr::arrange(desc(`O/E`),desc(Exclusivity)) %>%
         dplyr::group_by(`Multimorbidity profile`) %>%
+        dplyr::arrange(desc(`O/E`),desc(Exclusivity)) %>%
         dplyr::mutate(index = row_number())
 
       ggnames <- ggplot2::ggplot(Char_MP2) +
-        ggplot2::geom_text(ggplot2::aes(0.1, index, label = label, hjust = "left",col=ifelse(index%in%c(1:3),"red","black")), size = 8) +
+        ggplot2::geom_text(ggplot2::aes(0.1, index, label = label, hjust = "left",col=ifelse(index%in%c(1:3),2,1)), size = 8) +
         ggplot2::facet_grid(. ~ `Multimorbidity profile`, drop = F) +
         ggplot2::scale_y_reverse("Chronic conditions") +
         ggplot2::scale_x_continuous(limits = c(0, 1)) +
+        ggplot2::scale_color_manual(values = c("black","red"))+
         ggplot2::theme_void() +
         ggplot2::ggtitle("Diseases above thresholds:") +
         ggplot2::theme(
@@ -141,6 +142,10 @@ if(min(datn$P)<0.05) warning("Attention! MM patterns with less than 5% prevalenc
       gg <- ggpubr::ggarrange(ggOE, ggex, ggnames, nrow = 3, align = "v")
       print(gg)
       if (table) {
+        Char_MP %<>%
+          dplyr::group_by(`Multimorbidity profile`) %>%
+          dplyr::arrange(desc(`O/E`),desc(Exclusivity)) %>%
+          dplyr::mutate(index = row_number())
         # colnames(Char_MP)[4] <- "O/E above threshold"
         # colnames(Char_MP)[6] <- "Exclusivity above threshold"
         # colnames(Char_MP)[8] <- "Flag for O/E and exclusivity above threshold"

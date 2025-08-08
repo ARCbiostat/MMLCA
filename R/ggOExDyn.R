@@ -118,11 +118,12 @@ ggOExDyn <- function(obj, table = F, boot = F, nboot = 1000) {
       Char_MP2 <- Char_MP %>%
         dplyr::ungroup() %>%
         dplyr::filter(char == 1) %>%
+        dplyr::arrange(desc(`O/E`),desc(Exclusivity)) %>%
         dplyr::group_by(`Multimorbidity profile`) %>%
         dplyr::mutate(index = row_number())
 
       ggnames <- ggplot2::ggplot(Char_MP2) +
-        ggplot2::geom_text(ggplot2::aes(0.1, index, label = label, hjust = "left"), size = 8) +
+        ggplot2::geom_text(ggplot2::aes(0.1, index, label = label, hjust = "left",col=ifelse(index%in%c(1,3),2,1)), size = 8) +
         ggplot2::facet_grid(. ~ `Multimorbidity profile`, drop = F) +
         ggplot2::scale_y_reverse("Chronic conditions") +
         ggplot2::scale_x_continuous(limits = c(0, 1)) +

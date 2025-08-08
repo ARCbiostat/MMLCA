@@ -123,7 +123,7 @@ ggOExDyn <- function(obj, table = F, boot = F, nboot = 1000) {
         dplyr::mutate(index = row_number())
 
       ggnames <- ggplot2::ggplot(Char_MP2) +
-        ggplot2::geom_text(ggplot2::aes(0.1, index, label = label, hjust = "left",col=ifelse(index%in%c(1:3),2,1)), size = 8) +
+        ggplot2::geom_text(ggplot2::aes(0.1, index, label = label, hjust = "left",col=ifelse(index%in%c(1:3),"2","1")), size = 8) +
         ggplot2::facet_grid(. ~ `Multimorbidity profile`, drop = F) +
         ggplot2::scale_y_reverse("Chronic conditions") +
         ggplot2::scale_x_continuous(limits = c(0, 1)) +
@@ -144,11 +144,12 @@ if(min(datn$P)<0.05) warning("Attention! MM patterns with less than 5% prevalenc
       if (table) {
         Char_MP %<>%
           dplyr::group_by(`Multimorbidity profile`) %>%
-          dplyr::arrange(desc(`O/E`),desc(Exclusivity)) %>%
-          dplyr::mutate(index = row_number())
+          dplyr::arrange(`Multimorbidity profile`,desc(`O/E`),desc(Exclusivity)) %>%
+          dplyr::mutate(index = row_number()) %>%
+          dplyr::select(`Multimorbidity profile`,Disease,index,char,`O/E`,Exclusivity,Prevalence,cut_OE,cut_Ex)
         # colnames(Char_MP)[4] <- "O/E above threshold"
         # colnames(Char_MP)[6] <- "Exclusivity above threshold"
-        # colnames(Char_MP)[8] <- "Flag for O/E and exclusivity above threshold"
+        colnames(Char_MP)[4] <- "Flag for O/E and exclusivity above threshold"
 
         return(list(plot = gg, table = Char_MP))
       } else {

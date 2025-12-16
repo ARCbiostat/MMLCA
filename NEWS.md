@@ -13,5 +13,6 @@
  TO DO:
  - make it more general not only diseases
  - insted of prefix in prepare_data use number columns
+ - make keepMM in prepare more general (for example exclude people who don't have any of the conditions)
  - fix train/test
  - alluvial to compare solutions with multiple imputation

@@ -13,7 +13,9 @@ knitr::opts_chunk$set(
 )
 ```
 
-# MMLCA
+# MMLCA: an R package to identify multimorbidity patterns
+
+# <img src="man/figures/logo.png" align="right" width="150"/>
 
 <!-- badges: start -->
 
@@ -116,8 +118,6 @@ Same method but with 95% CI:
 ```{r,fig.height=20}
 OEx_sol5 <- ggOE(res$obj[[4]], table = F, boot = T)
 ```
-
-
 
 **Method 3:**
 

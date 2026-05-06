@@ -1,9 +1,12 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# MMLCA
+# MMLCA: an R package to identify multimorbidity patterns
+
+# <img src="man/figures/logo.png" align="right" width="150"/>
 
 <!-- badges: start -->
+
 <!-- badges: end -->
 
 **MMLCA** aims to simplify the identification of multimorbidity patterns
@@ -38,9 +41,6 @@ Load the package and the data:
 library(MMLCA)
 #> Warning: replacing previous import 'magrittr::extract' by 'tidyr::extract' when
 #> loading 'MMLCA'
-```
-
-``` r
 data(mmdata)
 ```
 
@@ -92,7 +92,7 @@ res <- select_number_LCA(
 )
 ```
 
-<img src="man/figures/README-unnamed-chunk-6-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-6-1.png" alt="" width="100%" />
 
 **Note**: a higher number of repetitions may be needed. Default is 50.
 See the documentation for further details.
@@ -103,7 +103,7 @@ Compare the classification accuracy on the train vs. test data:
 ggacc <- ggaccuracy_LCA(res, test = X[test, ])
 ```
 
-<img src="man/figures/README-unnamed-chunk-7-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-7-1.png" alt="" width="100%" />
 
 ### Interpretation of the MM patterns
 
@@ -113,46 +113,42 @@ characterize the patterns in terms of over expressed diseases.
 **Method 1:** O/E and Exclusivity:
 
 ``` r
-
 OEx_sol5 <- ggOEx(res$obj[[4]], table = F)
 ```
 
-<img src="man/figures/README-unnamed-chunk-8-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-8-1.png" alt="" width="100%" />
 
 **Method 2:** O/E and overall prevalence:
 
 ``` r
-
 OE_sol5 <- ggOE(res$obj[[4]], table = F)
 ```
 
-<img src="man/figures/README-unnamed-chunk-9-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-9-1.png" alt="" width="100%" />
 
 Same method but with 95% CI:
 
 ``` r
-OEx_sol5 <- ggOE(res$obj[[4]], table = F,boot = T)
+OEx_sol5 <- ggOE(res$obj[[4]], table = F, boot = T)
 ```
 
-<img src="man/figures/README-unnamed-chunk-10-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-10-1.png" alt="" width="100%" />
 
 **Method 3:**
 
 ``` r
-
 prev_sol5 <- ggprev(res$obj[[4]])
 ```
 
-<img src="man/figures/README-unnamed-chunk-11-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-11-1.png" alt="" width="100%" />
 
 **Method 4:**
 
 ``` r
-
 prev_sol5 <- ggprev_spaghetti(res$obj[[4]])
 ```
 
-<img src="man/figures/README-unnamed-chunk-12-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-12-1.png" alt="" width="100%" />
 
 ### Assignment of subjects into the latent classes
 
@@ -160,7 +156,7 @@ prev_sol5 <- ggprev_spaghetti(res$obj[[4]])
 take into account for the uncertainty in the classification.
 
 ``` r
-mm_pattern <- assign_LCA(res$obj[[4]],X)
+mm_pattern <- assign_LCA(res$obj[[4]], X)
 table(mm_pattern)
 #> mm_pattern
 #>    1    2    3    4    5 

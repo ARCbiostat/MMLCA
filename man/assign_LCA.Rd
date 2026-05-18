@@ -4,15 +4,17 @@
 \alias{assign_LCA}
 \title{Assign subjects to the their most probable mm pattern according to LCA model}
 \usage{
-assign_LCA(obj, X)
+assign_LCA(obj, X, returnprob = F)
 }
 \arguments{
 \item{obj}{poLCA object}
 
 \item{X}{matrix with chronic diseases variables (coded as 1:no and 2:yes) to use for the calculation.}
+
+\item{returnprob}{boolean indicating whether posterior probabilities are returned along side assignment (default to FALSE).}
 }
 \value{
-numeric vector with LCA class assignment for each row in X
+numeric vector with LCA class assignment for each row in X or matrix containing posterior probability classes (see  also \link{poLCA.posterior}) and LCA class assignement
 }
 \description{
 This function assign a subject to a latent mm pattern according to a LCA model and disease combinations at a specific point in time. The assignment is done according to the mode of the posterior membership probability given by the LCA model.

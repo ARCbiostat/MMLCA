@@ -1,4 +1,4 @@
-# MMLCA 0.1.0
+# MMLCA 1.0
 
 ## April 2025 
 - basic functions to run LCA
@@ -16,3 +16,8 @@
  - make keepMM in prepare more general (for example exclude people who don't have any of the conditions)
  - fix train/test
  - alluvial to compare solutions with multiple imputation
+
+# MMLCA 2.0
+## August 2026
+- functions renamed for consistency, old ones are mantained for backward compatibility
+- alluvial moved to package for longitudinal analyses

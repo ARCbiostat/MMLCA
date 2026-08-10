@@ -154,7 +154,7 @@ prev_sol4 <- ggprev_spaghetti(res$obj$`4classes`)
 ### Run the LCA with cross validation to assess stability
 
 ```{r,results='hide'}
-res <- stability_mmlca(
+res_stab <- stability_mmlca(
   nclasses = 2:6,
   X = X,
   nboot=5,

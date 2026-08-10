@@ -26,10 +26,32 @@ devtools::install_github("ARCbiostat/MMLCA")
 
 ## Overview of the package
 
-For the index of all functions, please visit the [Reference
-Documentation](docs/reference/index.html).
+## Overview of the package
 
-## Example
+Main functions are grouped into four analytical steps:
+
+- **Data preparation**
+  - `prepare_data()`
+  - `select_conditions()`
+- **Estimation and model selection**
+  - `fit_mmlca()`
+  - `fit_mmlca_cv()`
+  - `select_mmlca()`
+  - `ggaccuracy()`
+- **Pattern interpretation**
+  - `ggOE()`
+  - `ggOEx()`
+  - `ggOEx_adaptive()`
+  - `ggprev()`
+  - `ggprev_spaghetti()`
+- **Subsequent analyses**
+  - `assign_mmlca()`
+  - `impute_mmlca()`
+
+Legacy function names remain supported for backward compatibility.
+
+For the complete index of functions, please visit the
+docs/reference/index.html. \## Example
 
 This is an example with all the steps to identify MM patterns using LCA.
 
@@ -47,9 +69,9 @@ data(mmdata)
 Prepare the dataset:
 
 ``` r
-X <- prepare_data(mmdata, dis_string = "dis", keepmm = T)
-#> 139 rows are removed because corrisponding to subjects having less than 2 chornic conditions.
-#> rows removed: 37rows removed: 45rows removed: 51rows removed: 73rows removed: 75rows removed: 79rows removed: 100rows removed: 131rows removed: 154rows removed: 155rows removed: 177rows removed: 210rows removed: 243rows removed: 244rows removed: 250rows removed: 254rows removed: 263rows removed: 292rows removed: 305rows removed: 314rows removed: 354rows removed: 439rows removed: 445rows removed: 456rows removed: 470rows removed: 477rows removed: 482rows removed: 509rows removed: 530rows removed: 544rows removed: 564rows removed: 568rows removed: 585rows removed: 610rows removed: 631rows removed: 636rows removed: 738rows removed: 793rows removed: 824rows removed: 881rows removed: 895rows removed: 904rows removed: 931rows removed: 979rows removed: 992rows removed: 1008rows removed: 1052rows removed: 1098rows removed: 1121rows removed: 1134rows removed: 1162rows removed: 1175rows removed: 1196rows removed: 1202rows removed: 1208rows removed: 1229rows removed: 1232rows removed: 1279rows removed: 1334rows removed: 1387rows removed: 1444rows removed: 1445rows removed: 1450rows removed: 1485rows removed: 1500rows removed: 1506rows removed: 1528rows removed: 1570rows removed: 1572rows removed: 1576rows removed: 1605rows removed: 1607rows removed: 1626rows removed: 1637rows removed: 1661rows removed: 1690rows removed: 1693rows removed: 1717rows removed: 1729rows removed: 1741rows removed: 1743rows removed: 1749rows removed: 1804rows removed: 1811rows removed: 1821rows removed: 1838rows removed: 1864rows removed: 1878rows removed: 1905rows removed: 1960rows removed: 1967rows removed: 1986rows removed: 2040rows removed: 2041rows removed: 2061rows removed: 2089rows removed: 2108rows removed: 2130rows removed: 2134rows removed: 2143rows removed: 2145rows removed: 2152rows removed: 2157rows removed: 2160rows removed: 2192rows removed: 2217rows removed: 2247rows removed: 2264rows removed: 2298rows removed: 2323rows removed: 2327rows removed: 2338rows removed: 2362rows removed: 2421rows removed: 2436rows removed: 2443rows removed: 2467rows removed: 2478rows removed: 2495rows removed: 2503rows removed: 2519rows removed: 2528rows removed: 2554rows removed: 2565rows removed: 2574rows removed: 2600rows removed: 2638rows removed: 2646rows removed: 2652rows removed: 2667rows removed: 2701rows removed: 2761rows removed: 2794rows removed: 2811rows removed: 2812rows removed: 2834rows removed: 2849rows removed: 2858rows removed: 2893
+X <- prepare_data(mmdata, dis_cols = "dis", keepmm = T)
+#> Number of disease columns detected: 59
+#> 139 rows are removed because corrisponding to subjects having less than 2 diseases.
 ```
 
 The chronic diseases data has 2761 subjects since we removed individuals
@@ -71,39 +93,22 @@ disease_names
 #> [37] "dis37" "dis38" "dis39"
 ```
 
-Divide the data in train/test
-
-``` r
-set.seed(202112)
-train <- sample(1:nrow(X), round(nrow(X) * 0.7))
-test <- setdiff(1:nrow(X), train)
-```
-
 ### Run the LCA
 
 Run the LCA with different number of classes and compare the metrics:
 
 ``` r
-res <- select_number_LCA(
+res <- select_mmlca(
   nclasses = 2:7,
-  X = X[train, ],
+  X = X,
   conditions = disease_names,
-  nrep = 5
+  nrep = 10
 )
 ```
 
-<img src="man/figures/README-unnamed-chunk-6-1.png" alt="" width="100%" />
+<img src="man/figures/README-unnamed-chunk-5-1.png" alt="" width="100%" />
 
-**Note**: a higher number of repetitions may be needed. Default is 50.
-See the documentation for further details.
-
-Compare the classification accuracy on the train vs. test data:
-
-``` r
-ggacc <- ggaccuracy_LCA(res, test = X[test, ])
-```
-
-<img src="man/figures/README-unnamed-chunk-7-1.png" alt="" width="100%" />
+It is important to check that the number of repetition is enough.
 
 ### Interpretation of the MM patterns
 
@@ -113,39 +118,216 @@ characterize the patterns in terms of over expressed diseases.
 **Method 1:** O/E and Exclusivity:
 
 ``` r
-OEx_sol5 <- ggOEx(res$obj[[4]], table = F)
+OEx_sol4 <- ggOEx(res$obj$`4classes`, table = F)
 ```
 
-<img src="man/figures/README-unnamed-chunk-8-1.png" alt="" width="100%" />
+<img src="man/figures/README-unnamed-chunk-6-1.png" alt="" width="100%" />
 
 **Method 2:** O/E and overall prevalence:
 
 ``` r
-OE_sol5 <- ggOE(res$obj[[4]], table = F)
+OE_sol4 <- ggOE(res$obj$`4classes`, table = F)
 ```
 
-<img src="man/figures/README-unnamed-chunk-9-1.png" alt="" width="100%" />
+<img src="man/figures/README-unnamed-chunk-7-1.png" alt="" width="100%" />
 
 Same method but with 95% CI:
 
 ``` r
-OEx_sol5 <- ggOE(res$obj[[4]], table = F, boot = T)
+OEx_sol4 <- ggOE(res$obj$`4classes`, table = F, boot = T)
 ```
 
-<img src="man/figures/README-unnamed-chunk-10-1.png" alt="" width="100%" />
+<img src="man/figures/README-unnamed-chunk-8-1.png" alt="" width="100%" />
 
 **Method 3:**
 
 ``` r
-prev_sol5 <- ggprev(res$obj[[4]])
+OExa_sol4 <- ggOEx_adaptive(res$obj$`4classes`, table = F)
 ```
 
-<img src="man/figures/README-unnamed-chunk-11-1.png" alt="" width="100%" />
+<img src="man/figures/README-unnamed-chunk-9-1.png" alt="" width="100%" />
 
 **Method 4:**
 
 ``` r
-prev_sol5 <- ggprev_spaghetti(res$obj[[4]])
+prev_sol4 <- ggprev(res$obj$`4classes`)
+```
+
+<img src="man/figures/README-unnamed-chunk-10-1.png" alt="" width="100%" />
+
+**Method 5:**
+
+``` r
+prev_sol4 <- ggprev_spaghetti(res$obj$`4classes`)
+```
+
+<img src="man/figures/README-unnamed-chunk-11-1.png" alt="" width="100%" />
+
+### Run the LCA with cross validation to assess stability
+
+``` r
+res_stab <- stability_mmlca(
+  nclasses = 2:6,
+  X = X,
+  nboot=5,
+  conditions = disease_names,
+  nrep = 10,
+  plot=T
+)
+#> Warning: package 'future' was built under R version 4.5.3
+#> Warning: MultisessionFuture ('future_lapply-1') added, removed, or modified
+#> devices. A future expression must close any opened devices and must not close
+#> devices it did not open. Details: 1 devices differ: index=2, before='NA',
+#> after='pdf'. See also help("future.options", package = "future") [future
+#> 'future_lapply-1' (0d87a97bbf8e3460dea5247012ca8eef-1); on
+#> 0d87a97bbf8e3460dea5247012ca8eef@CATERINA-DFG4<21496>]
+#> Warning: MultisessionFuture ('future_lapply-1') opened the default graphics device (1: c("do.call(function(...) {", "    \"# future::getGlobalsAndPackages(): FUN() uses '...' internally \"", "    \"# without having an '...' argument. This means '...' is treated\"", "    \"# as a global variable. This may happen when FUN() is an       \"", "    \"# anonymous function.                                          \"", "    \"#                                                              \"", "    \"# If an anonymous function, we will make sure to restore the   \"", "    \"# function environment of FUN() to the calling environment.    \"", 
+#> "    \"# We assume FUN() an anonymous function if it lives in the     \"", "    \"# global environment, which is where globals are written.      \"", "    penv <- env <- environment(...future.FUN)", "    repeat {", "        if (identical(env, globalenv()) || identical(env, emptyenv())) ", "            break", "        penv <- env", "        env <- parent.env(env)", "    }", "    if (identical(penv, globalenv())) {", "        environment(...future.FUN) <- environment()", "    }", "    else if (!identical(penv, emptyenv()) && !is.null(penv) && ", 
+#> "        !isNamespace(penv)) {", "        parent.env(penv) <- environment()", "    }", "    rm(list = c(\"env\", \"penv\"), inherits = FALSE)", "    {", "        \"# future.apply:::future_xapply(): preserve future option\"", "        ...future.globals.maxSize.org <- getOption(\"future.globals.maxSize\")", "        if (!identical(...future.globals.maxSize.org, ...future.globals.maxSize)) {", "            oopts <- options(future.globals.maxSize = ...future.globals.maxSize)", "            on.exit(options(oopts), add = TRUE)", 
+#> "        }", "        {", "            \"# future.apply::future_lapply(): process chunk of elements\"", "            lapply(seq_along(...future.elements_ii), FUN = function(jj) {", "                ...future.X_jj <- ...future.elements_ii[[jj]]", "                {", "                  ...future.FUN(...future.X_jj, ...)", "                }", "            })", "        }", "    }", "}, args = future.call.arguments)") -> c("(function (...) ", "{", "    \"# future::getGlobalsAndPackages(): FUN() uses '...' internally \"", "    \"# without having an '...' argument. This means '...' is treated\"", "    \"# as a global variable. This may happen when FUN() is an       \"", "    \"# anonymous function.                                          \"", "    \"#                                                              \"", "    \"# If an anonymous function, we will make sure to restore the   \"", "    \"# function environment of FUN() to the calling environment.    \"", 
+#> "    \"# We assume FUN() an anonymous function if it lives in the     \"", "    \"# global environment, which is where globals are written.      \"", "    penv <- env <- environment(...future.FUN)", "    repeat {", "        if (identical(env, globalenv()) || identical(env, emptyenv())) ", "            break", "        penv <- env", "        env <- parent.env(env)", "    }", "    if (identical(penv, globalenv())) {", "        environment(...future.FUN) <- environment()", "    }", "    else if (!identical(penv, emptyenv()) && !is.null(penv) && ", 
+#> "        !isNamespace(penv)) {", "        parent.env(penv) <- environment()", "    }", "    rm(list = c(\"env\", \"penv\"), inherits = FALSE)", "    {", "        \"# future.apply:::future_xapply(): preserve future option\"", "        ...future.globals.maxSize.org <- getOption(\"future.globals.maxSize\")", "        if (!identical(...future.globals.maxSize.org, ...future.globals.maxSize)) {", "            oopts <- options(future.globals.maxSize = ...future.globals.maxSize)", "            on.exit(options(oopts), add = TRUE)", 
+#> "        }", "        {", "            \"# future.apply::future_lapply(): process chunk of elements\"", "            lapply(seq_along(...future.elements_ii), FUN = function(jj) {", "                ...future.X_jj <- ...future.elements_ii[[jj]]", "                {", "                  ...future.FUN(...future.X_jj, ...)", "                }", "            })", "        }", "    }", "})()") -> c("lapply(seq_along(...future.elements_ii), FUN = function(jj) {", "    ...future.X_jj <- ...future.elements_ii[[jj]]", "    {", "        ...future.FUN(...future.X_jj, ...)", "    }", "})") -> ...). This happens for instance if plot() is called without explicitly opening a graphics device before. Using default graphics devices in parallel processing will typically leave behind an 'Rplots.pdf' file on the parallel worker. If the intention is to plot to file, please open a graphics device explicitly (e.g. pdf() or png()) [recommended], or set your preferred `options(device = ...)` [not recommended], then plot, and make sure to close it at the end (i.e. dev.off()). See also help("future.options", package = "future") [future 'future_lapply-1' (0d87a97bbf8e3460dea5247012ca8eef-1); on 0d87a97bbf8e3460dea5247012ca8eef@CATERINA-DFG4<21496>]
+#> Warning: UNRELIABLE VALUE: One of the 'future.apply' iterations
+#> ('future_lapply-1') unexpectedly generated random numbers without declaring so.
+#> There is a risk that those random numbers are not statistically sound and the
+#> overall results might be invalid. To fix this, specify 'future.seed=TRUE'. This
+#> ensures that proper, parallel-safe random numbers are produced via a parallel
+#> RNG method. To disable this check, use 'future.seed = NULL', or set option
+#> 'future.rng.onMisuse' to "ignore". [future 'future_lapply-1'
+#> (0d87a97bbf8e3460dea5247012ca8eef-1); on
+#> 0d87a97bbf8e3460dea5247012ca8eef@CATERINA-DFG4<21496>]
+#> Warning: package 'future' was built under R version 4.5.3
+#> Warning: MultisessionFuture ('future_lapply-2') added, removed, or modified
+#> devices. A future expression must close any opened devices and must not close
+#> devices it did not open. Details: 1 devices differ: index=2, before='NA',
+#> after='pdf'. See also help("future.options", package = "future") [future
+#> 'future_lapply-2' (0d87a97bbf8e3460dea5247012ca8eef-2); on
+#> 0d87a97bbf8e3460dea5247012ca8eef@CATERINA-DFG4<21496>]
+#> Warning: MultisessionFuture ('future_lapply-2') opened the default graphics device (1: c("do.call(function(...) {", "    \"# future::getGlobalsAndPackages(): FUN() uses '...' internally \"", "    \"# without having an '...' argument. This means '...' is treated\"", "    \"# as a global variable. This may happen when FUN() is an       \"", "    \"# anonymous function.                                          \"", "    \"#                                                              \"", "    \"# If an anonymous function, we will make sure to restore the   \"", "    \"# function environment of FUN() to the calling environment.    \"", 
+#> "    \"# We assume FUN() an anonymous function if it lives in the     \"", "    \"# global environment, which is where globals are written.      \"", "    penv <- env <- environment(...future.FUN)", "    repeat {", "        if (identical(env, globalenv()) || identical(env, emptyenv())) ", "            break", "        penv <- env", "        env <- parent.env(env)", "    }", "    if (identical(penv, globalenv())) {", "        environment(...future.FUN) <- environment()", "    }", "    else if (!identical(penv, emptyenv()) && !is.null(penv) && ", 
+#> "        !isNamespace(penv)) {", "        parent.env(penv) <- environment()", "    }", "    rm(list = c(\"env\", \"penv\"), inherits = FALSE)", "    {", "        \"# future.apply:::future_xapply(): preserve future option\"", "        ...future.globals.maxSize.org <- getOption(\"future.globals.maxSize\")", "        if (!identical(...future.globals.maxSize.org, ...future.globals.maxSize)) {", "            oopts <- options(future.globals.maxSize = ...future.globals.maxSize)", "            on.exit(options(oopts), add = TRUE)", 
+#> "        }", "        {", "            \"# future.apply::future_lapply(): process chunk of elements\"", "            lapply(seq_along(...future.elements_ii), FUN = function(jj) {", "                ...future.X_jj <- ...future.elements_ii[[jj]]", "                {", "                  ...future.FUN(...future.X_jj, ...)", "                }", "            })", "        }", "    }", "}, args = future.call.arguments)") -> c("(function (...) ", "{", "    \"# future::getGlobalsAndPackages(): FUN() uses '...' internally \"", "    \"# without having an '...' argument. This means '...' is treated\"", "    \"# as a global variable. This may happen when FUN() is an       \"", "    \"# anonymous function.                                          \"", "    \"#                                                              \"", "    \"# If an anonymous function, we will make sure to restore the   \"", "    \"# function environment of FUN() to the calling environment.    \"", 
+#> "    \"# We assume FUN() an anonymous function if it lives in the     \"", "    \"# global environment, which is where globals are written.      \"", "    penv <- env <- environment(...future.FUN)", "    repeat {", "        if (identical(env, globalenv()) || identical(env, emptyenv())) ", "            break", "        penv <- env", "        env <- parent.env(env)", "    }", "    if (identical(penv, globalenv())) {", "        environment(...future.FUN) <- environment()", "    }", "    else if (!identical(penv, emptyenv()) && !is.null(penv) && ", 
+#> "        !isNamespace(penv)) {", "        parent.env(penv) <- environment()", "    }", "    rm(list = c(\"env\", \"penv\"), inherits = FALSE)", "    {", "        \"# future.apply:::future_xapply(): preserve future option\"", "        ...future.globals.maxSize.org <- getOption(\"future.globals.maxSize\")", "        if (!identical(...future.globals.maxSize.org, ...future.globals.maxSize)) {", "            oopts <- options(future.globals.maxSize = ...future.globals.maxSize)", "            on.exit(options(oopts), add = TRUE)", 
+#> "        }", "        {", "            \"# future.apply::future_lapply(): process chunk of elements\"", "            lapply(seq_along(...future.elements_ii), FUN = function(jj) {", "                ...future.X_jj <- ...future.elements_ii[[jj]]", "                {", "                  ...future.FUN(...future.X_jj, ...)", "                }", "            })", "        }", "    }", "})()") -> c("lapply(seq_along(...future.elements_ii), FUN = function(jj) {", "    ...future.X_jj <- ...future.elements_ii[[jj]]", "    {", "        ...future.FUN(...future.X_jj, ...)", "    }", "})") -> ...). This happens for instance if plot() is called without explicitly opening a graphics device before. Using default graphics devices in parallel processing will typically leave behind an 'Rplots.pdf' file on the parallel worker. If the intention is to plot to file, please open a graphics device explicitly (e.g. pdf() or png()) [recommended], or set your preferred `options(device = ...)` [not recommended], then plot, and make sure to close it at the end (i.e. dev.off()). See also help("future.options", package = "future") [future 'future_lapply-2' (0d87a97bbf8e3460dea5247012ca8eef-2); on 0d87a97bbf8e3460dea5247012ca8eef@CATERINA-DFG4<21496>]
+#> Warning: UNRELIABLE VALUE: One of the 'future.apply' iterations
+#> ('future_lapply-2') unexpectedly generated random numbers without declaring so.
+#> There is a risk that those random numbers are not statistically sound and the
+#> overall results might be invalid. To fix this, specify 'future.seed=TRUE'. This
+#> ensures that proper, parallel-safe random numbers are produced via a parallel
+#> RNG method. To disable this check, use 'future.seed = NULL', or set option
+#> 'future.rng.onMisuse' to "ignore". [future 'future_lapply-2'
+#> (0d87a97bbf8e3460dea5247012ca8eef-2); on
+#> 0d87a97bbf8e3460dea5247012ca8eef@CATERINA-DFG4<21496>]
+#> Warning: MultisessionFuture ('future_lapply-2') added, removed, or modified
+#> devices. A future expression must close any opened devices and must not close
+#> devices it did not open. Details: 1 devices differ: index=2, before='NA',
+#> after='pdf'. See also help("future.options", package = "future") [future
+#> 'future_lapply-2' (0d87a97bbf8e3460dea5247012ca8eef-2); on
+#> 0d87a97bbf8e3460dea5247012ca8eef@CATERINA-DFG4<21496>]
+#> Warning: MultisessionFuture ('future_lapply-2') opened the default graphics device (1: c("do.call(function(...) {", "    \"# future::getGlobalsAndPackages(): FUN() uses '...' internally \"", "    \"# without having an '...' argument. This means '...' is treated\"", "    \"# as a global variable. This may happen when FUN() is an       \"", "    \"# anonymous function.                                          \"", "    \"#                                                              \"", "    \"# If an anonymous function, we will make sure to restore the   \"", "    \"# function environment of FUN() to the calling environment.    \"", 
+#> "    \"# We assume FUN() an anonymous function if it lives in the     \"", "    \"# global environment, which is where globals are written.      \"", "    penv <- env <- environment(...future.FUN)", "    repeat {", "        if (identical(env, globalenv()) || identical(env, emptyenv())) ", "            break", "        penv <- env", "        env <- parent.env(env)", "    }", "    if (identical(penv, globalenv())) {", "        environment(...future.FUN) <- environment()", "    }", "    else if (!identical(penv, emptyenv()) && !is.null(penv) && ", 
+#> "        !isNamespace(penv)) {", "        parent.env(penv) <- environment()", "    }", "    rm(list = c(\"env\", \"penv\"), inherits = FALSE)", "    {", "        \"# future.apply:::future_xapply(): preserve future option\"", "        ...future.globals.maxSize.org <- getOption(\"future.globals.maxSize\")", "        if (!identical(...future.globals.maxSize.org, ...future.globals.maxSize)) {", "            oopts <- options(future.globals.maxSize = ...future.globals.maxSize)", "            on.exit(options(oopts), add = TRUE)", 
+#> "        }", "        {", "            \"# future.apply::future_lapply(): process chunk of elements\"", "            lapply(seq_along(...future.elements_ii), FUN = function(jj) {", "                ...future.X_jj <- ...future.elements_ii[[jj]]", "                {", "                  ...future.FUN(...future.X_jj, ...)", "                }", "            })", "        }", "    }", "}, args = future.call.arguments)") -> c("(function (...) ", "{", "    \"# future::getGlobalsAndPackages(): FUN() uses '...' internally \"", "    \"# without having an '...' argument. This means '...' is treated\"", "    \"# as a global variable. This may happen when FUN() is an       \"", "    \"# anonymous function.                                          \"", "    \"#                                                              \"", "    \"# If an anonymous function, we will make sure to restore the   \"", "    \"# function environment of FUN() to the calling environment.    \"", 
+#> "    \"# We assume FUN() an anonymous function if it lives in the     \"", "    \"# global environment, which is where globals are written.      \"", "    penv <- env <- environment(...future.FUN)", "    repeat {", "        if (identical(env, globalenv()) || identical(env, emptyenv())) ", "            break", "        penv <- env", "        env <- parent.env(env)", "    }", "    if (identical(penv, globalenv())) {", "        environment(...future.FUN) <- environment()", "    }", "    else if (!identical(penv, emptyenv()) && !is.null(penv) && ", 
+#> "        !isNamespace(penv)) {", "        parent.env(penv) <- environment()", "    }", "    rm(list = c(\"env\", \"penv\"), inherits = FALSE)", "    {", "        \"# future.apply:::future_xapply(): preserve future option\"", "        ...future.globals.maxSize.org <- getOption(\"future.globals.maxSize\")", "        if (!identical(...future.globals.maxSize.org, ...future.globals.maxSize)) {", "            oopts <- options(future.globals.maxSize = ...future.globals.maxSize)", "            on.exit(options(oopts), add = TRUE)", 
+#> "        }", "        {", "            \"# future.apply::future_lapply(): process chunk of elements\"", "            lapply(seq_along(...future.elements_ii), FUN = function(jj) {", "                ...future.X_jj <- ...future.elements_ii[[jj]]", "                {", "                  ...future.FUN(...future.X_jj, ...)", "                }", "            })", "        }", "    }", "})()") -> c("lapply(seq_along(...future.elements_ii), FUN = function(jj) {", "    ...future.X_jj <- ...future.elements_ii[[jj]]", "    {", "        ...future.FUN(...future.X_jj, ...)", "    }", "})") -> ...). This happens for instance if plot() is called without explicitly opening a graphics device before. Using default graphics devices in parallel processing will typically leave behind an 'Rplots.pdf' file on the parallel worker. If the intention is to plot to file, please open a graphics device explicitly (e.g. pdf() or png()) [recommended], or set your preferred `options(device = ...)` [not recommended], then plot, and make sure to close it at the end (i.e. dev.off()). See also help("future.options", package = "future") [future 'future_lapply-2' (0d87a97bbf8e3460dea5247012ca8eef-2); on 0d87a97bbf8e3460dea5247012ca8eef@CATERINA-DFG4<21496>]
+#> Warning: package 'future' was built under R version 4.5.3
+#> Warning: MultisessionFuture ('future_lapply-3') added, removed, or modified
+#> devices. A future expression must close any opened devices and must not close
+#> devices it did not open. Details: 1 devices differ: index=2, before='NA',
+#> after='pdf'. See also help("future.options", package = "future") [future
+#> 'future_lapply-3' (0d87a97bbf8e3460dea5247012ca8eef-3); on
+#> 0d87a97bbf8e3460dea5247012ca8eef@CATERINA-DFG4<21496>]
+#> Warning: MultisessionFuture ('future_lapply-3') opened the default graphics device (1: c("do.call(function(...) {", "    \"# future::getGlobalsAndPackages(): FUN() uses '...' internally \"", "    \"# without having an '...' argument. This means '...' is treated\"", "    \"# as a global variable. This may happen when FUN() is an       \"", "    \"# anonymous function.                                          \"", "    \"#                                                              \"", "    \"# If an anonymous function, we will make sure to restore the   \"", "    \"# function environment of FUN() to the calling environment.    \"", 
+#> "    \"# We assume FUN() an anonymous function if it lives in the     \"", "    \"# global environment, which is where globals are written.      \"", "    penv <- env <- environment(...future.FUN)", "    repeat {", "        if (identical(env, globalenv()) || identical(env, emptyenv())) ", "            break", "        penv <- env", "        env <- parent.env(env)", "    }", "    if (identical(penv, globalenv())) {", "        environment(...future.FUN) <- environment()", "    }", "    else if (!identical(penv, emptyenv()) && !is.null(penv) && ", 
+#> "        !isNamespace(penv)) {", "        parent.env(penv) <- environment()", "    }", "    rm(list = c(\"env\", \"penv\"), inherits = FALSE)", "    {", "        \"# future.apply:::future_xapply(): preserve future option\"", "        ...future.globals.maxSize.org <- getOption(\"future.globals.maxSize\")", "        if (!identical(...future.globals.maxSize.org, ...future.globals.maxSize)) {", "            oopts <- options(future.globals.maxSize = ...future.globals.maxSize)", "            on.exit(options(oopts), add = TRUE)", 
+#> "        }", "        {", "            \"# future.apply::future_lapply(): process chunk of elements\"", "            lapply(seq_along(...future.elements_ii), FUN = function(jj) {", "                ...future.X_jj <- ...future.elements_ii[[jj]]", "                {", "                  ...future.FUN(...future.X_jj, ...)", "                }", "            })", "        }", "    }", "}, args = future.call.arguments)") -> c("(function (...) ", "{", "    \"# future::getGlobalsAndPackages(): FUN() uses '...' internally \"", "    \"# without having an '...' argument. This means '...' is treated\"", "    \"# as a global variable. This may happen when FUN() is an       \"", "    \"# anonymous function.                                          \"", "    \"#                                                              \"", "    \"# If an anonymous function, we will make sure to restore the   \"", "    \"# function environment of FUN() to the calling environment.    \"", 
+#> "    \"# We assume FUN() an anonymous function if it lives in the     \"", "    \"# global environment, which is where globals are written.      \"", "    penv <- env <- environment(...future.FUN)", "    repeat {", "        if (identical(env, globalenv()) || identical(env, emptyenv())) ", "            break", "        penv <- env", "        env <- parent.env(env)", "    }", "    if (identical(penv, globalenv())) {", "        environment(...future.FUN) <- environment()", "    }", "    else if (!identical(penv, emptyenv()) && !is.null(penv) && ", 
+#> "        !isNamespace(penv)) {", "        parent.env(penv) <- environment()", "    }", "    rm(list = c(\"env\", \"penv\"), inherits = FALSE)", "    {", "        \"# future.apply:::future_xapply(): preserve future option\"", "        ...future.globals.maxSize.org <- getOption(\"future.globals.maxSize\")", "        if (!identical(...future.globals.maxSize.org, ...future.globals.maxSize)) {", "            oopts <- options(future.globals.maxSize = ...future.globals.maxSize)", "            on.exit(options(oopts), add = TRUE)", 
+#> "        }", "        {", "            \"# future.apply::future_lapply(): process chunk of elements\"", "            lapply(seq_along(...future.elements_ii), FUN = function(jj) {", "                ...future.X_jj <- ...future.elements_ii[[jj]]", "                {", "                  ...future.FUN(...future.X_jj, ...)", "                }", "            })", "        }", "    }", "})()") -> c("lapply(seq_along(...future.elements_ii), FUN = function(jj) {", "    ...future.X_jj <- ...future.elements_ii[[jj]]", "    {", "        ...future.FUN(...future.X_jj, ...)", "    }", "})") -> ...). This happens for instance if plot() is called without explicitly opening a graphics device before. Using default graphics devices in parallel processing will typically leave behind an 'Rplots.pdf' file on the parallel worker. If the intention is to plot to file, please open a graphics device explicitly (e.g. pdf() or png()) [recommended], or set your preferred `options(device = ...)` [not recommended], then plot, and make sure to close it at the end (i.e. dev.off()). See also help("future.options", package = "future") [future 'future_lapply-3' (0d87a97bbf8e3460dea5247012ca8eef-3); on 0d87a97bbf8e3460dea5247012ca8eef@CATERINA-DFG4<21496>]
+#> Warning: UNRELIABLE VALUE: One of the 'future.apply' iterations
+#> ('future_lapply-3') unexpectedly generated random numbers without declaring so.
+#> There is a risk that those random numbers are not statistically sound and the
+#> overall results might be invalid. To fix this, specify 'future.seed=TRUE'. This
+#> ensures that proper, parallel-safe random numbers are produced via a parallel
+#> RNG method. To disable this check, use 'future.seed = NULL', or set option
+#> 'future.rng.onMisuse' to "ignore". [future 'future_lapply-3'
+#> (0d87a97bbf8e3460dea5247012ca8eef-3); on
+#> 0d87a97bbf8e3460dea5247012ca8eef@CATERINA-DFG4<21496>]
+#> Warning: MultisessionFuture ('future_lapply-3') added, removed, or modified
+#> devices. A future expression must close any opened devices and must not close
+#> devices it did not open. Details: 1 devices differ: index=2, before='NA',
+#> after='pdf'. See also help("future.options", package = "future") [future
+#> 'future_lapply-3' (0d87a97bbf8e3460dea5247012ca8eef-3); on
+#> 0d87a97bbf8e3460dea5247012ca8eef@CATERINA-DFG4<21496>]
+#> Warning: MultisessionFuture ('future_lapply-3') opened the default graphics device (1: c("do.call(function(...) {", "    \"# future::getGlobalsAndPackages(): FUN() uses '...' internally \"", "    \"# without having an '...' argument. This means '...' is treated\"", "    \"# as a global variable. This may happen when FUN() is an       \"", "    \"# anonymous function.                                          \"", "    \"#                                                              \"", "    \"# If an anonymous function, we will make sure to restore the   \"", "    \"# function environment of FUN() to the calling environment.    \"", 
+#> "    \"# We assume FUN() an anonymous function if it lives in the     \"", "    \"# global environment, which is where globals are written.      \"", "    penv <- env <- environment(...future.FUN)", "    repeat {", "        if (identical(env, globalenv()) || identical(env, emptyenv())) ", "            break", "        penv <- env", "        env <- parent.env(env)", "    }", "    if (identical(penv, globalenv())) {", "        environment(...future.FUN) <- environment()", "    }", "    else if (!identical(penv, emptyenv()) && !is.null(penv) && ", 
+#> "        !isNamespace(penv)) {", "        parent.env(penv) <- environment()", "    }", "    rm(list = c(\"env\", \"penv\"), inherits = FALSE)", "    {", "        \"# future.apply:::future_xapply(): preserve future option\"", "        ...future.globals.maxSize.org <- getOption(\"future.globals.maxSize\")", "        if (!identical(...future.globals.maxSize.org, ...future.globals.maxSize)) {", "            oopts <- options(future.globals.maxSize = ...future.globals.maxSize)", "            on.exit(options(oopts), add = TRUE)", 
+#> "        }", "        {", "            \"# future.apply::future_lapply(): process chunk of elements\"", "            lapply(seq_along(...future.elements_ii), FUN = function(jj) {", "                ...future.X_jj <- ...future.elements_ii[[jj]]", "                {", "                  ...future.FUN(...future.X_jj, ...)", "                }", "            })", "        }", "    }", "}, args = future.call.arguments)") -> c("(function (...) ", "{", "    \"# future::getGlobalsAndPackages(): FUN() uses '...' internally \"", "    \"# without having an '...' argument. This means '...' is treated\"", "    \"# as a global variable. This may happen when FUN() is an       \"", "    \"# anonymous function.                                          \"", "    \"#                                                              \"", "    \"# If an anonymous function, we will make sure to restore the   \"", "    \"# function environment of FUN() to the calling environment.    \"", 
+#> "    \"# We assume FUN() an anonymous function if it lives in the     \"", "    \"# global environment, which is where globals are written.      \"", "    penv <- env <- environment(...future.FUN)", "    repeat {", "        if (identical(env, globalenv()) || identical(env, emptyenv())) ", "            break", "        penv <- env", "        env <- parent.env(env)", "    }", "    if (identical(penv, globalenv())) {", "        environment(...future.FUN) <- environment()", "    }", "    else if (!identical(penv, emptyenv()) && !is.null(penv) && ", 
+#> "        !isNamespace(penv)) {", "        parent.env(penv) <- environment()", "    }", "    rm(list = c(\"env\", \"penv\"), inherits = FALSE)", "    {", "        \"# future.apply:::future_xapply(): preserve future option\"", "        ...future.globals.maxSize.org <- getOption(\"future.globals.maxSize\")", "        if (!identical(...future.globals.maxSize.org, ...future.globals.maxSize)) {", "            oopts <- options(future.globals.maxSize = ...future.globals.maxSize)", "            on.exit(options(oopts), add = TRUE)", 
+#> "        }", "        {", "            \"# future.apply::future_lapply(): process chunk of elements\"", "            lapply(seq_along(...future.elements_ii), FUN = function(jj) {", "                ...future.X_jj <- ...future.elements_ii[[jj]]", "                {", "                  ...future.FUN(...future.X_jj, ...)", "                }", "            })", "        }", "    }", "})()") -> c("lapply(seq_along(...future.elements_ii), FUN = function(jj) {", "    ...future.X_jj <- ...future.elements_ii[[jj]]", "    {", "        ...future.FUN(...future.X_jj, ...)", "    }", "})") -> ...). This happens for instance if plot() is called without explicitly opening a graphics device before. Using default graphics devices in parallel processing will typically leave behind an 'Rplots.pdf' file on the parallel worker. If the intention is to plot to file, please open a graphics device explicitly (e.g. pdf() or png()) [recommended], or set your preferred `options(device = ...)` [not recommended], then plot, and make sure to close it at the end (i.e. dev.off()). See also help("future.options", package = "future") [future 'future_lapply-3' (0d87a97bbf8e3460dea5247012ca8eef-3); on 0d87a97bbf8e3460dea5247012ca8eef@CATERINA-DFG4<21496>]
+#> Warning: package 'future' was built under R version 4.5.3
+#> Warning: MultisessionFuture ('future_lapply-4') added, removed, or modified
+#> devices. A future expression must close any opened devices and must not close
+#> devices it did not open. Details: 1 devices differ: index=2, before='NA',
+#> after='pdf'. See also help("future.options", package = "future") [future
+#> 'future_lapply-4' (0d87a97bbf8e3460dea5247012ca8eef-4); on
+#> 0d87a97bbf8e3460dea5247012ca8eef@CATERINA-DFG4<21496>]
+#> Warning: MultisessionFuture ('future_lapply-4') opened the default graphics device (1: c("do.call(function(...) {", "    \"# future::getGlobalsAndPackages(): FUN() uses '...' internally \"", "    \"# without having an '...' argument. This means '...' is treated\"", "    \"# as a global variable. This may happen when FUN() is an       \"", "    \"# anonymous function.                                          \"", "    \"#                                                              \"", "    \"# If an anonymous function, we will make sure to restore the   \"", "    \"# function environment of FUN() to the calling environment.    \"", 
+#> "    \"# We assume FUN() an anonymous function if it lives in the     \"", "    \"# global environment, which is where globals are written.      \"", "    penv <- env <- environment(...future.FUN)", "    repeat {", "        if (identical(env, globalenv()) || identical(env, emptyenv())) ", "            break", "        penv <- env", "        env <- parent.env(env)", "    }", "    if (identical(penv, globalenv())) {", "        environment(...future.FUN) <- environment()", "    }", "    else if (!identical(penv, emptyenv()) && !is.null(penv) && ", 
+#> "        !isNamespace(penv)) {", "        parent.env(penv) <- environment()", "    }", "    rm(list = c(\"env\", \"penv\"), inherits = FALSE)", "    {", "        \"# future.apply:::future_xapply(): preserve future option\"", "        ...future.globals.maxSize.org <- getOption(\"future.globals.maxSize\")", "        if (!identical(...future.globals.maxSize.org, ...future.globals.maxSize)) {", "            oopts <- options(future.globals.maxSize = ...future.globals.maxSize)", "            on.exit(options(oopts), add = TRUE)", 
+#> "        }", "        {", "            \"# future.apply::future_lapply(): process chunk of elements\"", "            lapply(seq_along(...future.elements_ii), FUN = function(jj) {", "                ...future.X_jj <- ...future.elements_ii[[jj]]", "                {", "                  ...future.FUN(...future.X_jj, ...)", "                }", "            })", "        }", "    }", "}, args = future.call.arguments)") -> c("(function (...) ", "{", "    \"# future::getGlobalsAndPackages(): FUN() uses '...' internally \"", "    \"# without having an '...' argument. This means '...' is treated\"", "    \"# as a global variable. This may happen when FUN() is an       \"", "    \"# anonymous function.                                          \"", "    \"#                                                              \"", "    \"# If an anonymous function, we will make sure to restore the   \"", "    \"# function environment of FUN() to the calling environment.    \"", 
+#> "    \"# We assume FUN() an anonymous function if it lives in the     \"", "    \"# global environment, which is where globals are written.      \"", "    penv <- env <- environment(...future.FUN)", "    repeat {", "        if (identical(env, globalenv()) || identical(env, emptyenv())) ", "            break", "        penv <- env", "        env <- parent.env(env)", "    }", "    if (identical(penv, globalenv())) {", "        environment(...future.FUN) <- environment()", "    }", "    else if (!identical(penv, emptyenv()) && !is.null(penv) && ", 
+#> "        !isNamespace(penv)) {", "        parent.env(penv) <- environment()", "    }", "    rm(list = c(\"env\", \"penv\"), inherits = FALSE)", "    {", "        \"# future.apply:::future_xapply(): preserve future option\"", "        ...future.globals.maxSize.org <- getOption(\"future.globals.maxSize\")", "        if (!identical(...future.globals.maxSize.org, ...future.globals.maxSize)) {", "            oopts <- options(future.globals.maxSize = ...future.globals.maxSize)", "            on.exit(options(oopts), add = TRUE)", 
+#> "        }", "        {", "            \"# future.apply::future_lapply(): process chunk of elements\"", "            lapply(seq_along(...future.elements_ii), FUN = function(jj) {", "                ...future.X_jj <- ...future.elements_ii[[jj]]", "                {", "                  ...future.FUN(...future.X_jj, ...)", "                }", "            })", "        }", "    }", "})()") -> c("lapply(seq_along(...future.elements_ii), FUN = function(jj) {", "    ...future.X_jj <- ...future.elements_ii[[jj]]", "    {", "        ...future.FUN(...future.X_jj, ...)", "    }", "})") -> ...). This happens for instance if plot() is called without explicitly opening a graphics device before. Using default graphics devices in parallel processing will typically leave behind an 'Rplots.pdf' file on the parallel worker. If the intention is to plot to file, please open a graphics device explicitly (e.g. pdf() or png()) [recommended], or set your preferred `options(device = ...)` [not recommended], then plot, and make sure to close it at the end (i.e. dev.off()). See also help("future.options", package = "future") [future 'future_lapply-4' (0d87a97bbf8e3460dea5247012ca8eef-4); on 0d87a97bbf8e3460dea5247012ca8eef@CATERINA-DFG4<21496>]
+#> Warning: UNRELIABLE VALUE: One of the 'future.apply' iterations
+#> ('future_lapply-4') unexpectedly generated random numbers without declaring so.
+#> There is a risk that those random numbers are not statistically sound and the
+#> overall results might be invalid. To fix this, specify 'future.seed=TRUE'. This
+#> ensures that proper, parallel-safe random numbers are produced via a parallel
+#> RNG method. To disable this check, use 'future.seed = NULL', or set option
+#> 'future.rng.onMisuse' to "ignore". [future 'future_lapply-4'
+#> (0d87a97bbf8e3460dea5247012ca8eef-4); on
+#> 0d87a97bbf8e3460dea5247012ca8eef@CATERINA-DFG4<21496>]
+#> Warning: MultisessionFuture ('future_lapply-4') added, removed, or modified
+#> devices. A future expression must close any opened devices and must not close
+#> devices it did not open. Details: 1 devices differ: index=2, before='NA',
+#> after='pdf'. See also help("future.options", package = "future") [future
+#> 'future_lapply-4' (0d87a97bbf8e3460dea5247012ca8eef-4); on
+#> 0d87a97bbf8e3460dea5247012ca8eef@CATERINA-DFG4<21496>]
+#> Warning: MultisessionFuture ('future_lapply-4') opened the default graphics device (1: c("do.call(function(...) {", "    \"# future::getGlobalsAndPackages(): FUN() uses '...' internally \"", "    \"# without having an '...' argument. This means '...' is treated\"", "    \"# as a global variable. This may happen when FUN() is an       \"", "    \"# anonymous function.                                          \"", "    \"#                                                              \"", "    \"# If an anonymous function, we will make sure to restore the   \"", "    \"# function environment of FUN() to the calling environment.    \"", 
+#> "    \"# We assume FUN() an anonymous function if it lives in the     \"", "    \"# global environment, which is where globals are written.      \"", "    penv <- env <- environment(...future.FUN)", "    repeat {", "        if (identical(env, globalenv()) || identical(env, emptyenv())) ", "            break", "        penv <- env", "        env <- parent.env(env)", "    }", "    if (identical(penv, globalenv())) {", "        environment(...future.FUN) <- environment()", "    }", "    else if (!identical(penv, emptyenv()) && !is.null(penv) && ", 
+#> "        !isNamespace(penv)) {", "        parent.env(penv) <- environment()", "    }", "    rm(list = c(\"env\", \"penv\"), inherits = FALSE)", "    {", "        \"# future.apply:::future_xapply(): preserve future option\"", "        ...future.globals.maxSize.org <- getOption(\"future.globals.maxSize\")", "        if (!identical(...future.globals.maxSize.org, ...future.globals.maxSize)) {", "            oopts <- options(future.globals.maxSize = ...future.globals.maxSize)", "            on.exit(options(oopts), add = TRUE)", 
+#> "        }", "        {", "            \"# future.apply::future_lapply(): process chunk of elements\"", "            lapply(seq_along(...future.elements_ii), FUN = function(jj) {", "                ...future.X_jj <- ...future.elements_ii[[jj]]", "                {", "                  ...future.FUN(...future.X_jj, ...)", "                }", "            })", "        }", "    }", "}, args = future.call.arguments)") -> c("(function (...) ", "{", "    \"# future::getGlobalsAndPackages(): FUN() uses '...' internally \"", "    \"# without having an '...' argument. This means '...' is treated\"", "    \"# as a global variable. This may happen when FUN() is an       \"", "    \"# anonymous function.                                          \"", "    \"#                                                              \"", "    \"# If an anonymous function, we will make sure to restore the   \"", "    \"# function environment of FUN() to the calling environment.    \"", 
+#> "    \"# We assume FUN() an anonymous function if it lives in the     \"", "    \"# global environment, which is where globals are written.      \"", "    penv <- env <- environment(...future.FUN)", "    repeat {", "        if (identical(env, globalenv()) || identical(env, emptyenv())) ", "            break", "        penv <- env", "        env <- parent.env(env)", "    }", "    if (identical(penv, globalenv())) {", "        environment(...future.FUN) <- environment()", "    }", "    else if (!identical(penv, emptyenv()) && !is.null(penv) && ", 
+#> "        !isNamespace(penv)) {", "        parent.env(penv) <- environment()", "    }", "    rm(list = c(\"env\", \"penv\"), inherits = FALSE)", "    {", "        \"# future.apply:::future_xapply(): preserve future option\"", "        ...future.globals.maxSize.org <- getOption(\"future.globals.maxSize\")", "        if (!identical(...future.globals.maxSize.org, ...future.globals.maxSize)) {", "            oopts <- options(future.globals.maxSize = ...future.globals.maxSize)", "            on.exit(options(oopts), add = TRUE)", 
+#> "        }", "        {", "            \"# future.apply::future_lapply(): process chunk of elements\"", "            lapply(seq_along(...future.elements_ii), FUN = function(jj) {", "                ...future.X_jj <- ...future.elements_ii[[jj]]", "                {", "                  ...future.FUN(...future.X_jj, ...)", "                }", "            })", "        }", "    }", "})()") -> c("lapply(seq_along(...future.elements_ii), FUN = function(jj) {", "    ...future.X_jj <- ...future.elements_ii[[jj]]", "    {", "        ...future.FUN(...future.X_jj, ...)", "    }", "})") -> ...). This happens for instance if plot() is called without explicitly opening a graphics device before. Using default graphics devices in parallel processing will typically leave behind an 'Rplots.pdf' file on the parallel worker. If the intention is to plot to file, please open a graphics device explicitly (e.g. pdf() or png()) [recommended], or set your preferred `options(device = ...)` [not recommended], then plot, and make sure to close it at the end (i.e. dev.off()). See also help("future.options", package = "future") [future 'future_lapply-4' (0d87a97bbf8e3460dea5247012ca8eef-4); on 0d87a97bbf8e3460dea5247012ca8eef@CATERINA-DFG4<21496>]
+#> Warning: package 'future' was built under R version 4.5.3
+#> Warning: MultisessionFuture ('future_lapply-5') added, removed, or modified
+#> devices. A future expression must close any opened devices and must not close
+#> devices it did not open. Details: 1 devices differ: index=2, before='NA',
+#> after='pdf'. See also help("future.options", package = "future") [future
+#> 'future_lapply-5' (0d87a97bbf8e3460dea5247012ca8eef-5); on
+#> 0d87a97bbf8e3460dea5247012ca8eef@CATERINA-DFG4<21496>]
+#> Warning: MultisessionFuture ('future_lapply-5') opened the default graphics device (1: c("do.call(function(...) {", "    \"# future::getGlobalsAndPackages(): FUN() uses '...' internally \"", "    \"# without having an '...' argument. This means '...' is treated\"", "    \"# as a global variable. This may happen when FUN() is an       \"", "    \"# anonymous function.                                          \"", "    \"#                                                              \"", "    \"# If an anonymous function, we will make sure to restore the   \"", "    \"# function environment of FUN() to the calling environment.    \"", 
+#> "    \"# We assume FUN() an anonymous function if it lives in the     \"", "    \"# global environment, which is where globals are written.      \"", "    penv <- env <- environment(...future.FUN)", "    repeat {", "        if (identical(env, globalenv()) || identical(env, emptyenv())) ", "            break", "        penv <- env", "        env <- parent.env(env)", "    }", "    if (identical(penv, globalenv())) {", "        environment(...future.FUN) <- environment()", "    }", "    else if (!identical(penv, emptyenv()) && !is.null(penv) && ", 
+#> "        !isNamespace(penv)) {", "        parent.env(penv) <- environment()", "    }", "    rm(list = c(\"env\", \"penv\"), inherits = FALSE)", "    {", "        \"# future.apply:::future_xapply(): preserve future option\"", "        ...future.globals.maxSize.org <- getOption(\"future.globals.maxSize\")", "        if (!identical(...future.globals.maxSize.org, ...future.globals.maxSize)) {", "            oopts <- options(future.globals.maxSize = ...future.globals.maxSize)", "            on.exit(options(oopts), add = TRUE)", 
+#> "        }", "        {", "            \"# future.apply::future_lapply(): process chunk of elements\"", "            lapply(seq_along(...future.elements_ii), FUN = function(jj) {", "                ...future.X_jj <- ...future.elements_ii[[jj]]", "                {", "                  ...future.FUN(...future.X_jj, ...)", "                }", "            })", "        }", "    }", "}, args = future.call.arguments)") -> c("(function (...) ", "{", "    \"# future::getGlobalsAndPackages(): FUN() uses '...' internally \"", "    \"# without having an '...' argument. This means '...' is treated\"", "    \"# as a global variable. This may happen when FUN() is an       \"", "    \"# anonymous function.                                          \"", "    \"#                                                              \"", "    \"# If an anonymous function, we will make sure to restore the   \"", "    \"# function environment of FUN() to the calling environment.    \"", 
+#> "    \"# We assume FUN() an anonymous function if it lives in the     \"", "    \"# global environment, which is where globals are written.      \"", "    penv <- env <- environment(...future.FUN)", "    repeat {", "        if (identical(env, globalenv()) || identical(env, emptyenv())) ", "            break", "        penv <- env", "        env <- parent.env(env)", "    }", "    if (identical(penv, globalenv())) {", "        environment(...future.FUN) <- environment()", "    }", "    else if (!identical(penv, emptyenv()) && !is.null(penv) && ", 
+#> "        !isNamespace(penv)) {", "        parent.env(penv) <- environment()", "    }", "    rm(list = c(\"env\", \"penv\"), inherits = FALSE)", "    {", "        \"# future.apply:::future_xapply(): preserve future option\"", "        ...future.globals.maxSize.org <- getOption(\"future.globals.maxSize\")", "        if (!identical(...future.globals.maxSize.org, ...future.globals.maxSize)) {", "            oopts <- options(future.globals.maxSize = ...future.globals.maxSize)", "            on.exit(options(oopts), add = TRUE)", 
+#> "        }", "        {", "            \"# future.apply::future_lapply(): process chunk of elements\"", "            lapply(seq_along(...future.elements_ii), FUN = function(jj) {", "                ...future.X_jj <- ...future.elements_ii[[jj]]", "                {", "                  ...future.FUN(...future.X_jj, ...)", "                }", "            })", "        }", "    }", "})()") -> c("lapply(seq_along(...future.elements_ii), FUN = function(jj) {", "    ...future.X_jj <- ...future.elements_ii[[jj]]", "    {", "        ...future.FUN(...future.X_jj, ...)", "    }", "})") -> ...). This happens for instance if plot() is called without explicitly opening a graphics device before. Using default graphics devices in parallel processing will typically leave behind an 'Rplots.pdf' file on the parallel worker. If the intention is to plot to file, please open a graphics device explicitly (e.g. pdf() or png()) [recommended], or set your preferred `options(device = ...)` [not recommended], then plot, and make sure to close it at the end (i.e. dev.off()). See also help("future.options", package = "future") [future 'future_lapply-5' (0d87a97bbf8e3460dea5247012ca8eef-5); on 0d87a97bbf8e3460dea5247012ca8eef@CATERINA-DFG4<21496>]
+#> Warning: UNRELIABLE VALUE: One of the 'future.apply' iterations
+#> ('future_lapply-5') unexpectedly generated random numbers without declaring so.
+#> There is a risk that those random numbers are not statistically sound and the
+#> overall results might be invalid. To fix this, specify 'future.seed=TRUE'. This
+#> ensures that proper, parallel-safe random numbers are produced via a parallel
+#> RNG method. To disable this check, use 'future.seed = NULL', or set option
+#> 'future.rng.onMisuse' to "ignore". [future 'future_lapply-5'
+#> (0d87a97bbf8e3460dea5247012ca8eef-5); on
+#> 0d87a97bbf8e3460dea5247012ca8eef@CATERINA-DFG4<21496>]
 ```
 
 <img src="man/figures/README-unnamed-chunk-12-1.png" alt="" width="100%" />
@@ -156,9 +338,15 @@ prev_sol5 <- ggprev_spaghetti(res$obj[[4]])
 take into account for the uncertainty in the classification.
 
 ``` r
-mm_pattern <- assign_LCA(res$obj[[4]], X)
+mm_pattern <- assign_mmlca(res$obj$`4classes`, X)
 table(mm_pattern)
 #> mm_pattern
-#>    1    2    3    4    5 
-#>  267  467 1160  322  545
+#>    1    2    3    4 
+#> 1251  902  338  270
+```
+
+### Multiple imputation
+
+``` r
+mm_patterns_imputed <- impute_mmlca(res$obj$`4classes`, X)
 ```

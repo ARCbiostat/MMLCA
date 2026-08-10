@@ -21,3 +21,5 @@
 ## August 2026
 - functions renamed for consistency, old ones are mantained for backward compatibility
 - alluvial moved to package for longitudinal analyses
+- prepare_data more general
+- train/test removed, together with cv. Now we use the concept of stability

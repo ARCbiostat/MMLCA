@@ -4,14 +4,12 @@
 \alias{ggentropy}
 \title{Obtain Entropy plot and train and test data}
 \usage{
-ggentropy(obj, train, test = NULL, ratio = T)
+ggentropy(obj, X, ratio = T)
 }
 \arguments{
 \item{obj}{obtained from select_LCA}
 
-\item{train}{train data}
-
-\item{test}{test data}
+\item{X}{data}
 
 \item{ratio}{should the ratio be calculated? Deafult to TRUE.}
 }

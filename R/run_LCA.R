@@ -56,7 +56,7 @@ run_LCA <- function(nclass, X, conditions, nrep = 50, fcov = NULL, probstart = N
   CAIC <- (-2 * myresult$llik) + myresult$npar * (1 + log(myresult$N))
   likelihood_ratio <- myresult$Gsq
   internal_val_matrix <- get_internal_validation_matrix(myresult, X)
-  acc <- sum(diag(internal_val_matrix)) / nclass
+  acc <- get_accuracy(myresult,X)
   entropy <- get_entropy(myresult, X)
   return(list(
     obj = myresult,

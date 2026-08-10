@@ -4,12 +4,12 @@
 \alias{prepare_data}
 \title{Prepare the chronic disease dataset for the LCA}
 \usage{
-prepare_data(data, dis_string, keepmm = TRUE)
+prepare_data(data, dis_cols, keepmm = TRUE)
 }
 \arguments{
 \item{data}{dataframe.}
 
-\item{dis_string}{string to identify chronic disease columns.}
+\item{dis_cols}{string to identify chronic disease columns or numeric vector of chronic disease columns position .}
 
 \item{keepmm}{boolean indicating whether subjects having less that 2 chronic conditions should be removed from the returned dataset.}
 }

@@ -52,7 +52,12 @@ select_number_LCA <- function(nclasses, X, conditions, plot = T, nrep = 50) {
         ggplot2::facet_wrap(~name, scales = "free_y") +
         ggplot2::scale_y_continuous("") +
         ggplot2::scale_x_continuous("Number of latent classes", breaks = nclasses) +
-        ggplot2::theme_bw()
+        ggplot2::theme_bw()+
+        ggplot2::theme(
+                       axis.title = ggplot2::element_text(size = 18),
+                       axis.text = ggplot2::element_text(size = 16),
+                       legend.title = ggplot2::element_text(size = 16),
+                       legend.text = ggplot2::element_text(size = 14))
 
       print(gg)
     } else {

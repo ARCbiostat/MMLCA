@@ -2,25 +2,58 @@
 % Please edit documentation in R/ggOE.R
 \name{ggOE}
 \alias{ggOE}
-\title{Plot the Observed/Expected Ratios}
+\title{Plot Observed/Expected Ratios}
 \usage{
-ggOE(obj, cutoff_OE = 2, cutoff_P = NULL, table = F, boot = F, nboot = 1000)
+ggOE(obj, cutoff_OE = 2, cutoff_P = NULL, table = F, ci = F, nsample = 1000)
 }
 \arguments{
-\item{obj}{poLCA object}
+\item{obj}{A fitted \code{poLCA} object.}
 
-\item{cutoff_OE}{Numeric indicating the cut-off for the Observed/Expected ratio.}
+\item{cutoff_OE}{Numeric indicating the cut-off value used to identify
+diseases with elevated O/E ratios. Default is 2.}
 
-\item{cutoff_P}{Numeric indicating the prevalence threshold for the Observed/Expected ratio to be calculated. If NULL, all diseases are considered.}
+\item{cutoff_P}{Numeric indicating the minimum disease prevalence within a
+latent class required for a disease to be considered in the
+characterization. If \code{NULL}, all diseases are considered.}
 
-\item{table}{Boolean indicating whether the table of the O/E should be returned in addition to the plot.}
+\item{table}{Logical; if \code{TRUE}, returns the underlying table in
+addition to the plot. Default is \code{FALSE}.}
+
+\item{ci}{Logical; if \code{TRUE}, approximate 95\% confidence intervals
+for the O/E ratios are estimated using Monte Carlo simulation and
+displayed in the plot. Default is \code{FALSE}.}
+
+\item{nsample}{Integer specifying the number of Monte Carlo samples used
+to estimate confidence intervals when \code{ci = TRUE}. Default is 1000.}
 }
 \value{
-ggplot object. if table=T then a list of plot and data.frame is returned.
+A \code{ggplot2} object. If \code{table = TRUE}, a list containing the
+plot and the data frame used to generate it is returned.
 }
 \description{
-The function calculates the Observed/Expected Ratios and plot it highlighting diseases above the threshold.
+Calculates Observed/Expected (O/E) ratios for each disease within each
+latent class and displays them graphically. Diseases exceeding the
+specified O/E threshold can be highlighted and optionally filtered by a
+minimum within-class prevalence threshold.
 }
 \details{
-The Observed/expected (O/E) ratios is calculated by dividing the prevalence of the condition within the pattern by its prevalence in the total sample.
+Plot Observed/Expected Ratios
+
+
+The Observed/Expected (O/E) ratio is calculated as the prevalence of a
+disease within a latent class divided by its prevalence in the overall
+sample. Values greater than one indicate that the disease is more common
+within the latent class than expected based on its population prevalence.
+
+When \code{ci = TRUE}, approximate 95\% confidence intervals for the O/E
+ratios are obtained through Monte Carlo sampling. Overall disease
+prevalences are sampled assuming a normal approximation to the binomial
+distribution, while class-specific prevalences are sampled using the
+estimated probabilities and standard errors from the fitted
+\code{poLCA} model. Confidence limits correspond to the 2.5th and
+97.5th percentiles of the simulated O/E distribution.
+
+Diseases are considered characteristic of a latent class when their O/E
+ratio exceeds \code{cutoff_OE} and their prevalence exceeds
+\code{cutoff_P}.
 }

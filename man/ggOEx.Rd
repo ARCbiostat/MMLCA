@@ -4,23 +4,59 @@
 \alias{ggOEx}
 \title{Plot the Observed/Expected Ratios and Exclusivity}
 \usage{
-ggOEx(obj, cutoff_OE = 2, cutoff_Ex = 0.25, table = F, boot = F, nboot = 1000)
+ggOEx(
+  obj,
+  cutoff_OE = 2,
+  cutoff_Ex = 0.25,
+  table = F,
+  ci = F,
+  nsample = 1000,
+  names = F
+)
 }
 \arguments{
-\item{obj}{poLCA object}
+\item{obj}{A fitted \code{poLCA} object.}
 
 \item{cutoff_OE}{Numeric indicating the cut-off for the Observed/Expected ratio.}
 
-\item{cutoff_Ex}{Numeric indicating the cut-off for the Exclusivity.}
+\item{cutoff_Ex}{Numeric indicating the cut-off for Exclusivity.}
 
-\item{table}{Boolean indicating whether the table of the O/E should be returned in addition to the plot.}
+\item{table}{Logical; if \code{TRUE}, returns the underlying table in addition
+to the plot. Default is \code{FALSE}.}
+
+\item{ci}{Logical; if \code{TRUE}, approximate 95\% confidence intervals for
+the O/E ratios are obtained by Monte Carlo simulation using the estimated
+disease prevalences and their standard errors from the fitted latent class
+model. Default is \code{FALSE}.}
+
+\item{nsample}{Integer specifying the number of Monte Carlo samples used to
+estimate the confidence intervals when \code{ci = TRUE}. Default is 1000.}
+
+\item{names}{Logical; if \code{TRUE}, an additional panel displays diseases
+that simultaneously exceed both the O/E and Exclusivity thresholds.
+Default is \code{FALSE}.}
 }
 \value{
-ggplot object. if table=T then a list of plot and data.frame is returned.
+A ggplot object. If \code{table = TRUE}, a list containing the plot and the
+summary data frame used to generate it is returned.
 }
 \description{
-The function calculates the Observed/Expected Ratios and the Exclusivity and plot it highlighting diseases above the threshold.
+The function calculates Observed/Expected (O/E) ratios and disease
+exclusivity for each latent class and displays them graphically.
+Diseases exceeding the specified O/E and exclusivity thresholds are
+highlighted.
 }
 \details{
-The Observed/expected (O/E) ratios is calculated by dividing the prevalence of the condition within the pattern by its prevalence in the total sample. Disease exclusivity refers to the number of participants with the condition within the pattern compared to the total number of participants with the condition in the sample.
+The Observed/Expected (O/E) ratio is calculated as the prevalence of a
+disease within a latent class divided by its prevalence in the total sample.
+Disease exclusivity is calculated as the proportion of all individuals with
+a given disease who belong to a specific latent class.
+
+When \code{ci = TRUE}, approximate 95\% confidence intervals for the O/E
+ratios are computed using Monte Carlo sampling. Expected prevalences are
+sampled from normal distributions based on the observed sample prevalence,
+while class-specific prevalences are sampled using the estimated
+probabilities and standard errors from the \code{poLCA} model. The 2.5th
+and 97.5th percentiles of the simulated O/E ratios are used as confidence
+limits.
 }

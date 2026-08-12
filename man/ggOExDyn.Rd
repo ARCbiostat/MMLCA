@@ -7,7 +7,7 @@
 \usage{
 ggOEx_adaptive(...)
 
-ggOExDyn(obj, table = F, boot = F, nboot = 1000)
+ggOExDyn(obj, table = F, ci = F, nsample = 1000, names = F)
 }
 \arguments{
 \item{obj}{poLCA object}

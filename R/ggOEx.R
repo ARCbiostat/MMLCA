@@ -38,6 +38,7 @@
 #' @return
 #' A ggplot object. If \code{table = TRUE}, a list containing the plot and the
 #' summary data frame used to generate it is returned.
+#' @export
 ggOEx <- function(obj, cutoff_OE = 2, cutoff_Ex = 0.25, table = F, ci = F, nsample = 1000,names=F) {
   suppressMessages({
     suppressWarnings({

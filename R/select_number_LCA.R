@@ -37,16 +37,18 @@ select_number_LCA <- function(nclasses, X, conditions, plot = T, nrep = 50) {
       "Entropy"
     )
 
+    dat_res <- as.data.frame(dat_res)
     if (plot) {
-      dat_res_wide <- dat_res %>%
+      dat_res_long <- dat_res %>%
         as.data.frame() %>%
+        dplyr::rename(`Assignment\naccuracy (%)`=`Assignment accuracy (%)`) %>%
         tidyr::pivot_longer(5:11, values_to = "metrics", names_to = "name") %>%
         dplyr::mutate(
           metrics = as.numeric(metrics),
           nclass = as.numeric(nclass)
         )
 
-      gg <- ggplot2::ggplot(dat_res_wide) +
+      gg <- ggplot2::ggplot(dat_res_long) +
         ggplot2::geom_line(ggplot2::aes(nclass, metrics)) +
         ggplot2::geom_point(ggplot2::aes(nclass, metrics)) +
         ggplot2::facet_wrap(~name, scales = "free_y") +
@@ -54,10 +56,11 @@ select_number_LCA <- function(nclasses, X, conditions, plot = T, nrep = 50) {
         ggplot2::scale_x_continuous("Number of latent classes", breaks = nclasses) +
         ggplot2::theme_bw()+
         ggplot2::theme(
-                       axis.title = ggplot2::element_text(size = 18),
-                       axis.text = ggplot2::element_text(size = 16),
-                       legend.title = ggplot2::element_text(size = 16),
-                       legend.text = ggplot2::element_text(size = 14))
+          axis.title = ggplot2::element_text(size = 18),
+          axis.text = ggplot2::element_text(size = 16),
+          legend.title = ggplot2::element_text(size = 16),
+          legend.text = ggplot2::element_text(size = 14),
+          strip.text =ggplot2::element_text(size = 14) )
 
       print(gg)
     } else {

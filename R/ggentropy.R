@@ -23,7 +23,7 @@ ggentropy <- function(obj, X, ratio = T) {
     ggplot2::scale_y_continuous("Entropy", limits = c(0, 1)) +
     ggplot2::scale_x_continuous("Number of latent classes", breaks = dat$nclass) +
     ggplot2::theme_bw() +
-    ggplot2::theme(axis.title = ggplot2::element_text(face = "bold", size = 14), axis.text = ggplot2::element_text(face = "bold", size = 12))
+    ggplot2::theme(axis.title = ggplot2::element_text( size = 14), axis.text = ggplot2::element_text( size = 12))
 
 
   print(gg)

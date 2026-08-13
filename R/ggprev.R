@@ -10,7 +10,7 @@
 #' @export
 #'
 #' @examples
-ggprev <- function(obj, nclass, cutoff_OE = 2, cutoff_Ex = 0.25, cutoff_P = NULL) {
+ggprev <- function(obj, nclass, cutoff_OE = 2, cutoff_Ex = 0.25, cutoff_P = NULL,classes_lab="Latent class") {
   suppressMessages({
     suppressWarnings({
       nclass <- nrow(obj$probs[[1]])
@@ -31,11 +31,11 @@ ggprev <- function(obj, nclass, cutoff_OE = 2, cutoff_Ex = 0.25, cutoff_P = NULL
       O %<>% as.data.frame() %>%
         tibble::rownames_to_column("Disease") %>%
         tidyr::pivot_longer(2:(nclass + 1),
-          names_to = "Multimorbidity profile",
+          names_to = "Latent class",
           values_to = "Prevalence"
         ) %>%
         dplyr::mutate(
-          `Multimorbidity profile` = as.numeric(gsub("\\D", "", `Multimorbidity profile`)),
+          `Latent class` = as.numeric(gsub("\\D", "", `Latent class`)),
           label_P = ifelse(Prevalence < cutoff_P, NA_integer_, Disease)
         )
 
@@ -43,10 +43,10 @@ ggprev <- function(obj, nclass, cutoff_OE = 2, cutoff_Ex = 0.25, cutoff_P = NULL
       R %<>% as.data.frame() %>%
         tibble::rownames_to_column("Disease") %>%
         tidyr::pivot_longer(2:(nclass + 1),
-          names_to = "Multimorbidity profile",
+          names_to = "Latent class",
           values_to = "O/E"
         ) %>%
-        dplyr::mutate(`Multimorbidity profile` = as.numeric(gsub("\\D", "", `Multimorbidity profile`))) %>%
+        dplyr::mutate(`Latent class` = as.numeric(gsub("\\D", "", `Latent class`))) %>%
         dplyr::mutate(
           label = ifelse(`O/E` < cutoff_OE, NA_integer_, Disease)
         )
@@ -65,10 +65,10 @@ ggprev <- function(obj, nclass, cutoff_OE = 2, cutoff_Ex = 0.25, cutoff_P = NULL
       Ex %<>% as.data.frame() %>%
         tibble::rownames_to_column("Disease") %>%
         tidyr::pivot_longer(2:(nclass + 1),
-          names_to = "Multimorbidity profile",
+          names_to = "Latent class",
           values_to = "Exclusivity"
         ) %>%
-        dplyr::mutate(`Multimorbidity profile` = as.numeric(gsub("\\D", "", `Multimorbidity profile`))) %>%
+        dplyr::mutate(`Latent class` = as.numeric(gsub("\\D", "", `Latent class`))) %>%
         dplyr::mutate(label2 = ifelse(`Exclusivity` < cutoff_Ex, NA_integer_, Disease))
 
 
@@ -80,7 +80,7 @@ ggprev <- function(obj, nclass, cutoff_OE = 2, cutoff_Ex = 0.25, cutoff_P = NULL
 
 
       Char_MP %<>%
-        dplyr::select(`Multimorbidity profile`, Disease, Prevalence, Exclusivity, `O/E`, char) %>%
+        dplyr::select(`Latent class`, Disease, Prevalence, Exclusivity, `O/E`, char) %>%
         dplyr::mutate(
           Prevalence = Prevalence * 100,
           Exclusivity = Exclusivity * 100,
@@ -88,28 +88,28 @@ ggprev <- function(obj, nclass, cutoff_OE = 2, cutoff_Ex = 0.25, cutoff_P = NULL
         )
 
       datn <- data.frame(
-        `Multimorbidity profile` = 1:nclass,
+        `Latent class` = 1:nclass,
         N = as.numeric(table(obj$predclass)),
         P = round(as.numeric(table(obj$predclass)) / length(obj$predclass) * 100, 0)
       )
 
-      colnames(datn)[1] <- "Multimorbidity profile"
+      colnames(datn)[1] <- "Latent class"
       Char_MP %<>% dplyr::left_join(datn)
       Char_MP %<>% dplyr::left_join(datn) %>%
-        dplyr::mutate(`Multimorbidity profile` = paste0(`Multimorbidity profile`, " (", P, "%)"))
+        dplyr::mutate(`Latent class` = paste0(`Latent class`, " (", P, "%)"))
 
       gg <- ggplot2::ggplot(Char_MP) +
         ggplot2::geom_point(ggplot2::aes(1, Disease, size = Prevalence / 10, color = as.factor(char))) +
         ggplot2::scale_x_continuous("", breaks = NULL) +
-        ggplot2::facet_grid(~`Multimorbidity profile`) +
-        ggprism::theme_prism() +
+        ggplot2::facet_grid(~`Latent class`) +
+        ggplot2::theme_bw() +
         ggplot2::scale_color_manual("Overexpression above threshold", values = c("grey60", "indianred"), labels = c("No", "Yes")) +
         ggplot2::scale_size_continuous("Prevalence (%)",
           guide = ggplot2::guide_legend(override.aes = list(col = "grey60")),
           breaks = c(1, 2.5, 5, 8),
           labels = c(10, 25, 50, 80)
         ) +
-        ggplot2::ggtitle("Multimorbidity Profiles")
+        ggplot2::ggtitle("Latent classs")
       ggplot2::theme(
         axis.ticks.x = ggplot2::element_blank(),
         legend.title = ggplot2::element_text(),

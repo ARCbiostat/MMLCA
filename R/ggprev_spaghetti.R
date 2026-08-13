@@ -2,15 +2,13 @@
 #' @description The function plots the conditional disease prevalence using a spaghetti plot, highlighting diseases with high O/E, Exclusivity or Entropy
 #' @param obj
 #' @param nclass
-#' @param cutoff_OE
-#' @param cutoff_Ex
 #' @param cutoff_P
 #'
 #' @return
 #' @export
 #'
 #' @examples
-ggprev_spaghetti <- function(obj, cutoff_P = 0) {
+ggprev_spaghetti <- function(obj, cutoff_P = 0,classes_lab="Latent class") {
   suppressMessages({
     suppressWarnings({
       nclass <- nrow(obj$probs[[1]])
@@ -29,10 +27,10 @@ ggprev_spaghetti <- function(obj, cutoff_P = 0) {
       O %<>% as.data.frame() %>%
         tibble::rownames_to_column("Disease") %>%
         tidyr::pivot_longer(2:(nclass + 1),
-          names_to = "Multimorbidity profile",
+          names_to = "Latent class",
           values_to = "Prevalence"
         ) %>%
-        dplyr::mutate(`Multimorbidity profile` = as.numeric(gsub("\\D", "", `Multimorbidity profile`)))
+        dplyr::mutate(`Latent class` = as.numeric(gsub("\\D", "", `Latent class`)))
 
 
       E %<>% as.data.frame()
@@ -60,21 +58,21 @@ ggprev_spaghetti <- function(obj, cutoff_P = 0) {
         dplyr::arrange(index)
 
 
-      Char_MP$`Multimorbidity profile` <- as.factor(Char_MP$`Multimorbidity profile`)
+      Char_MP$`Latent class` <- as.factor(Char_MP$`Latent class`)
       gg <- ggplot2::ggplot() +
         ggplot2::geom_point(
           data = Char_MP, ggplot2::aes(index,
             Prevalence,
-            color = `Multimorbidity profile`,
-            group = `Multimorbidity profile`
+            color = `Latent class`,
+            group = `Latent class`
           ),
           size = 3
         ) +
         ggplot2::geom_line(
           data = Char_MP, ggplot2::aes(index,
             Prevalence,
-            color = `Multimorbidity profile`,
-            group = `Multimorbidity profile`
+            color = `Latent class`,
+            group = `Latent class`
           ),
           linewidth = 1
         ) +
@@ -93,11 +91,14 @@ ggprev_spaghetti <- function(obj, cutoff_P = 0) {
           linewidth = 1
         ) +
         ggplot2::scale_x_continuous("", breaks = unique(Char_MP$index), labels = unique(as.character(Char_MP$Disease))) +
-        ggprism::theme_prism() +
+        ggplot2::theme_bw() +
         ggplot2::theme(
           legend.title = ggplot2::element_text(),
-          legend.position = "bottom",
-          panel.grid.major.y = ggplot2::element_line(color = "grey90", linetype = "dashed", linewidth = 0.3)
+          #legend.position = "bottom",
+          panel.grid.major.y = ggplot2::element_line(color = "grey90", linetype = "dashed", linewidth = 0.3),
+          axis.text.x = ggplot2::element_text(angle = 90,
+                                              hjust = 1,
+                                              vjust = 0.5)
         )
 
 

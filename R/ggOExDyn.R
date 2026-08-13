@@ -7,7 +7,7 @@
 #' @export
 #'
 #' @examples
-ggOExDyn <- function(obj, table = F, ci = F, nsample = 1000,names=F) {
+ggOExDyn <- function(obj, table = F, ci = F, nsample = 1000,names=F,classes_lab="Latent class") {
   suppressMessages({
     suppressWarnings({
       nclass <- nrow(obj$probs[[1]])
@@ -23,10 +23,10 @@ ggOExDyn <- function(obj, table = F, ci = F, nsample = 1000,names=F) {
       R %<>% as.data.frame() %>%
         tibble::rownames_to_column("Disease") %>%
         tidyr::pivot_longer(2:(nclass + 1),
-          names_to = "Multimorbidity profile",
+          names_to = "Latent class",
           values_to = "O/E"
         ) %>%
-        dplyr::mutate(`Multimorbidity profile` = as.numeric(gsub("\\D", "", `Multimorbidity profile`)))
+        dplyr::mutate(`Latent class` = as.numeric(gsub("\\D", "", `Latent class`)))
 
       N <- apply(obj$y - 1, 2, sum)
 
@@ -41,18 +41,18 @@ ggOExDyn <- function(obj, table = F, ci = F, nsample = 1000,names=F) {
       Ex %<>% as.data.frame() %>%
         tibble::rownames_to_column("Disease") %>%
         tidyr::pivot_longer(2:(nclass + 1),
-          names_to = "Multimorbidity profile",
+          names_to = "Latent class",
           values_to = "Exclusivity"
         ) %>%
-        dplyr::mutate(`Multimorbidity profile` = as.numeric(gsub("\\D", "", `Multimorbidity profile`)))
+        dplyr::mutate(`Latent class` = as.numeric(gsub("\\D", "", `Latent class`)))
 
       O %<>% as.data.frame() %>%
         tibble::rownames_to_column("Disease") %>%
         tidyr::pivot_longer(2:(nclass + 1),
-          names_to = "Multimorbidity profile",
+          names_to = "Latent class",
           values_to = "Prevalence"
         ) %>%
-        dplyr::mutate(`Multimorbidity profile` = as.numeric(gsub("\\D", "", `Multimorbidity profile`)))
+        dplyr::mutate(`Latent class` = as.numeric(gsub("\\D", "", `Latent class`)))
 
 
 
@@ -61,7 +61,7 @@ ggOExDyn <- function(obj, table = F, ci = F, nsample = 1000,names=F) {
         left_join(O)
 
       datn <- data.frame(
-        `Multimorbidity profile` = 1:nclass,
+        `Latent class` = 1:nclass,
         N = as.numeric(table(obj$predclass)),
         P = round(as.numeric(table(obj$predclass)) / length(obj$predclass) * 100, 0)
       ) %>%
@@ -75,7 +75,7 @@ ggOExDyn <- function(obj, table = F, ci = F, nsample = 1000,names=F) {
                                 P<=10 ~0))
 
 
-      colnames(datn)[1] <- "Multimorbidity profile"
+      colnames(datn)[1] <- "Latent class"
       if (ci) {
         observed_ci <- array(NA, dim = c(nclass, nsample, ncol(obj$y)))
         expected_ci <- matrix(NA, nrow = nsample, ncol = ncol(obj$y))
@@ -101,20 +101,20 @@ ggOExDyn <- function(obj, table = F, ci = F, nsample = 1000,names=F) {
           as.data.frame() %>%
           tibble::rownames_to_column("Disease") %>%
           tidyr::pivot_longer(2:(nclass + 1),
-                              names_to = "Multimorbidity profile",
+                              names_to = "Latent class",
                               values_to = "Lower O/E"
           ) %>%
-          dplyr::mutate(`Multimorbidity profile` = as.numeric(gsub("\\D", "", `Multimorbidity profile`)))
+          dplyr::mutate(`Latent class` = as.numeric(gsub("\\D", "", `Latent class`)))
 
 
         upper %<>% t() %>%
           as.data.frame() %>%
           tibble::rownames_to_column("Disease") %>%
           tidyr::pivot_longer(2:(nclass + 1),
-                              names_to = "Multimorbidity profile",
+                              names_to = "Latent class",
                               values_to = "Upper O/E"
           ) %>%
-          dplyr::mutate(`Multimorbidity profile` = as.numeric(gsub("\\D", "", `Multimorbidity profile`)))
+          dplyr::mutate(`Latent class` = as.numeric(gsub("\\D", "", `Latent class`)))
       }
 
       Char_MP <- R %>%
@@ -132,7 +132,7 @@ ggOExDyn <- function(obj, table = F, ci = F, nsample = 1000,names=F) {
       if(ci){
         Char_MP %<>% left_join(lower) %>% left_join(upper)
         Char_MP %<>%
-          dplyr::mutate(`Multimorbidity profile` = paste0(`Multimorbidity profile`, " (", P, "%)")) %>%
+          dplyr::mutate(`Latent class` = paste0(`Latent class`, " (", P, "%)")) %>%
           dplyr::mutate(char = ifelse(`Lower O/E` > cut_OE & Exclusivity> cut_Ex, 1, NA_integer_))
           dplyr::mutate(label = ifelse(char==1, Disease, NA_integer_))
 
@@ -141,7 +141,7 @@ ggOExDyn <- function(obj, table = F, ci = F, nsample = 1000,names=F) {
           ggplot2::geom_pointrange(ggplot2::aes(xmin = `Lower O/E`, xmax = `Upper O/E`, y = Disease, x = `O/E`), linewidth = 1) +
           ggplot2::geom_bar(ggplot2::aes(`O/E`, Disease, fill = Disease), stat = "identity", alpha = 0.5) +
           ggplot2::geom_vline(ggplot2::aes(xintercept = cut_OE), linetype = "dashed") +
-          ggplot2::facet_grid(. ~ `Multimorbidity profile`) +
+          ggplot2::facet_grid(. ~ `Latent class`) +
           ggplot2::scale_y_discrete("Disease") +
           ggplot2::theme_bw() +
           ggplot2::theme(
@@ -151,12 +151,12 @@ ggOExDyn <- function(obj, table = F, ci = F, nsample = 1000,names=F) {
             axis.ticks.y = ggplot2::element_blank(),
             panel.grid.major.y = ggplot2::element_line(color = "grey", linewidth = 0.5)
           ) +
-          ggplot2::ggtitle("Multimorbidity Profiles")
+          ggplot2::ggtitle("Latent class")
 
         ggex <- ggplot2::ggplot(Char_MP) +
           ggplot2::geom_bar(ggplot2::aes(Exclusivity, Disease, fill = Disease), stat = "identity") +
           ggplot2::geom_vline(ggplot2::aes(xintercept = cut_Ex), linetype = "dashed") +
-          ggplot2::facet_grid(. ~ `Multimorbidity profile`) +
+          ggplot2::facet_grid(. ~ `Latent class`) +
           ggplot2::scale_y_discrete("Disease") +
           ggplot2::scale_x_continuous(limits = c(0, 1)) +
           ggplot2::theme_bw() +
@@ -170,12 +170,12 @@ ggOExDyn <- function(obj, table = F, ci = F, nsample = 1000,names=F) {
       }else{
 
         Char_MP %<>% dplyr::left_join(datn) %>%
-          dplyr::mutate(`Multimorbidity profile` = paste0(`Multimorbidity profile`, " (", P, "%)"))
+          dplyr::mutate(`Latent class` = paste0(`Latent class`, " (", P, "%)"))
 
         ggOE <- ggplot2::ggplot(Char_MP) +
           ggplot2::geom_bar(ggplot2::aes(`O/E`, Disease, fill = Disease), stat = "identity") +
           ggplot2::geom_vline(ggplot2::aes(xintercept = cut_OE), linetype = "dashed") +
-          ggplot2::facet_grid(. ~ `Multimorbidity profile`) +
+          ggplot2::facet_grid(. ~ `Latent class`) +
           ggplot2::scale_y_discrete("Disease") +
           ggplot2::theme_bw() +
           ggplot2::theme(
@@ -185,12 +185,12 @@ ggOExDyn <- function(obj, table = F, ci = F, nsample = 1000,names=F) {
             axis.ticks.y = ggplot2::element_blank(),
             panel.grid.major.y = ggplot2::element_line(color = "grey", linewidth = 0.5)
           ) +
-          ggplot2::ggtitle("Multimorbidity Profiles")
+          ggplot2::ggtitle("Latent class")
 
         ggex <- ggplot2::ggplot(Char_MP) +
           ggplot2::geom_bar(ggplot2::aes(Exclusivity, Disease, fill = Disease), stat = "identity") +
           ggplot2::geom_vline(ggplot2::aes(xintercept = cut_Ex), linetype = "dashed") +
-          ggplot2::facet_grid(. ~ `Multimorbidity profile`) +
+          ggplot2::facet_grid(. ~ `Latent class`) +
           ggplot2::scale_y_discrete("Disease") +
           ggplot2::scale_x_continuous(limits = c(0, 1)) +
           ggplot2::theme_bw() +
@@ -204,18 +204,18 @@ ggOExDyn <- function(obj, table = F, ci = F, nsample = 1000,names=F) {
       }
 
 
-      Char_MP %<>% mutate(`Multimorbidity profile` = as.factor(`Multimorbidity profile`))
+      Char_MP %<>% mutate(`Latent class` = as.factor(`Latent class`))
 
       Char_MP2 <- Char_MP %>%
         dplyr::ungroup() %>%
         dplyr::filter(char == 1) %>%
-        dplyr::group_by(`Multimorbidity profile`) %>%
+        dplyr::group_by(`Latent class`) %>%
         dplyr::arrange(desc(`O/E`),desc(Exclusivity)) %>%
         dplyr::mutate(index = row_number())
 
       ggnames <- ggplot2::ggplot(Char_MP2) +
         ggplot2::geom_text(ggplot2::aes(0.1, index, label = label, hjust = "left",col=ifelse(index%in%c(1:3),"2","1")), size = 4) +
-        ggplot2::facet_grid(. ~ `Multimorbidity profile`, drop = F) +
+        ggplot2::facet_grid(. ~ `Latent class`, drop = F) +
         ggplot2::scale_y_reverse("Disease") +
         ggplot2::scale_x_continuous(limits = c(0, 1)) +
         ggplot2::scale_color_manual(values = c("black","red"))+
@@ -237,7 +237,7 @@ ggOExDyn <- function(obj, table = F, ci = F, nsample = 1000,names=F) {
       }
 
       print("Diseases above threshold:")
-      print(Char_MP2 %>% dplyr::select(`Multimorbidity profile`,index, label) %>% dplyr::arrange(`Multimorbidity profile`,index) %>% dplyr::rename(Disease=label) %>% as.data.frame())
+      print(Char_MP2 %>% dplyr::select(`Latent class`,index, label) %>% dplyr::arrange(`Latent class`,index) %>% dplyr::rename(Disease=label) %>% as.data.frame())
       if (table) {
         colnames(Char_MP)[4] <- "O/E above threshold"
         colnames(Char_MP)[6] <- "Exclusivity above threshold"
@@ -252,14 +252,14 @@ ggOExDyn <- function(obj, table = F, ci = F, nsample = 1000,names=F) {
 
 
       # Char_MP %<>% dplyr::left_join(datn) %>%
-      # dplyr::mutate(`Multimorbidity profile` = paste0(`Multimorbidity profile`, " (", P, "%)")) %>%
+      # dplyr::mutate(`Latent class` = paste0(`Latent class`, " (", P, "%)")) %>%
       #   dplyr::mutate(char = ifelse(`O/E`>=cut_OE & Exclusivity>=cut_Ex, 1, NA_integer_),
       #                 label=ifelse(char==1,Disease,NA_character_))
       #
       # ggOE <- ggplot2::ggplot(Char_MP) +
       #   ggplot2::geom_bar(ggplot2::aes(`O/E`, Disease, fill = Disease), stat = "identity") +
       #   ggplot2::geom_vline(ggplot2::aes(xintercept = cut_OE), linetype = "dashed") +
-      #   ggplot2::facet_grid(. ~ `Multimorbidity profile`) +
+      #   ggplot2::facet_grid(. ~ `Latent class`) +
       #   ggplot2::scale_y_discrete("Chronic conditions") +
       #   ggprism::theme_prism() +
       #   ggplot2::theme(
@@ -269,12 +269,12 @@ ggOExDyn <- function(obj, table = F, ci = F, nsample = 1000,names=F) {
       #     axis.ticks.y = ggplot2::element_blank(),
       #     panel.grid.major.y = ggplot2::element_line(color = "grey", linewidth = 0.5)
       #   ) +
-      #   ggplot2::ggtitle("Multimorbidity Profiles")
+      #   ggplot2::ggtitle("Latent class")
       #
       # ggex <- ggplot2::ggplot(Char_MP) +
       #   ggplot2::geom_bar(ggplot2::aes(Exclusivity, Disease, fill = Disease), stat = "identity") +
       #   ggplot2::geom_vline(ggplot2::aes(xintercept = cut_Ex), linetype = "dashed") +
-      #   ggplot2::facet_grid(. ~ `Multimorbidity profile`) +
+      #   ggplot2::facet_grid(. ~ `Latent class`) +
       #   ggplot2::scale_y_discrete("Chronic conditions") +
       #   ggplot2::scale_x_continuous(limits = c(0, 1)) +
       #   ggprism::theme_prism() +
@@ -286,18 +286,18 @@ ggOExDyn <- function(obj, table = F, ci = F, nsample = 1000,names=F) {
       #     panel.grid.major.y = ggplot2::element_line(color = "grey", linewidth = 0.5)
       #   )
       #
-      # Char_MP %<>% mutate(`Multimorbidity profile` = as.factor(`Multimorbidity profile`))
+      # Char_MP %<>% mutate(`Latent class` = as.factor(`Latent class`))
       #
       # Char_MP2 <- Char_MP %>%
       #   dplyr::ungroup() %>%
       #   dplyr::filter(char == 1) %>%
-      #   dplyr::group_by(`Multimorbidity profile`) %>%
+      #   dplyr::group_by(`Latent class`) %>%
       #   dplyr::arrange(desc(`O/E`),desc(Exclusivity)) %>%
       #   dplyr::mutate(index = row_number())
       #
       # ggnames <- ggplot2::ggplot(Char_MP2) +
       #   ggplot2::geom_text(ggplot2::aes(0.1, index, label = label, hjust = "left",col=ifelse(index%in%c(1:3),"2","1")), size = 8) +
-      #   ggplot2::facet_grid(. ~ `Multimorbidity profile`, drop = F) +
+      #   ggplot2::facet_grid(. ~ `Latent class`, drop = F) +
       #   ggplot2::scale_y_reverse("Chronic conditions") +
       #   ggplot2::scale_x_continuous(limits = c(0, 1)) +
       #   ggplot2::scale_color_manual(values = c("black","red"))+
@@ -316,10 +316,10 @@ ggOExDyn <- function(obj, table = F, ci = F, nsample = 1000,names=F) {
       # print(gg)
       # if (table) {
       #   Char_MP %<>%
-      #     dplyr::group_by(`Multimorbidity profile`) %>%
-      #     dplyr::arrange(`Multimorbidity profile`,desc(`O/E`),desc(Exclusivity)) %>%
+      #     dplyr::group_by(`Latent class`) %>%
+      #     dplyr::arrange(`Latent class`,desc(`O/E`),desc(Exclusivity)) %>%
       #     dplyr::mutate(index = row_number()) %>%
-      #     dplyr::select(`Multimorbidity profile`,Disease,index,char,`O/E`,Exclusivity,Prevalence,cut_OE,cut_Ex)
+      #     dplyr::select(`Latent class`,Disease,index,char,`O/E`,Exclusivity,Prevalence,cut_OE,cut_Ex)
       #   # colnames(Char_MP)[4] <- "O/E above threshold"
       #   # colnames(Char_MP)[6] <- "Exclusivity above threshold"
       #   colnames(Char_MP)[4] <- "Flag for O/E and exclusivity above threshold"

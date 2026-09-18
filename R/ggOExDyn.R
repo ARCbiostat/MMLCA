@@ -148,7 +148,7 @@ ggOExDyn <- function(obj, table = F, ci = F, nsample = 1000,names=F,classes_lab=
           ggplot2::theme_bw() +
           ggplot2::theme(
             legend.position = "null",
-            axis.text.y = ggplot2::element_text(hjust = 1),
+            axis.text.y = ggplot2::element_text(hjust = 0),
             strip.text.x.top = ggplot2::element_text(size = 14),
             axis.ticks.y = ggplot2::element_blank(),
             panel.grid.major.y = ggplot2::element_line(color = "grey", linewidth = 0.5)
@@ -164,7 +164,7 @@ ggOExDyn <- function(obj, table = F, ci = F, nsample = 1000,names=F,classes_lab=
           ggplot2::theme_bw() +
           ggplot2::theme(
             legend.position = "null",
-            axis.text.y = ggplot2::element_text(hjust = 1),
+            axis.text.y = ggplot2::element_text(hjust = 0),
             strip.text.x.top = ggplot2::element_blank(),
             axis.ticks.y = ggplot2::element_blank(),
             panel.grid.major.y = ggplot2::element_line(color = "grey", linewidth = 0.5)

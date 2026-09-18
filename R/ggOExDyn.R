@@ -60,19 +60,21 @@ ggOExDyn <- function(obj, table = F, ci = F, nsample = 1000,names=F,classes_lab=
         left_join(Ex) %>%
         left_join(O)
 
+      base_cut_oex <- 1/(nclass-1)
+
       datn <- data.frame(
         `Latent class` = 1:nclass,
         N = as.numeric(table(obj$predclass)),
         P = round(as.numeric(table(obj$predclass)) / length(obj$predclass) * 100, 0)
       ) %>%
-        mutate(cut_OE=case_when(P>=25~1,
+        mutate(cut_OE=case_when(P>=25~1.15,
                                 P<25 & P>=15~1.5,
                                 P<15 & P>=10~1.75,
                                 P<10 ~2),
-               cut_Ex=case_when(P>25~0.3,
-                                P<=25 & P>15~0.25,
-                                P<=15 & P>10~0.20,
-                                P<=10 ~0))
+               cut_Ex=case_when(P>25~base_cut_oex*1.2,
+                                P<=25 & P>15~base_cut_oex,
+                                P<=15 & P>10~base_cut_oex*0.8,
+                                P<=10 ~base_cut_oex*0.6))
 
 
       colnames(datn)[1] <- "Latent class"

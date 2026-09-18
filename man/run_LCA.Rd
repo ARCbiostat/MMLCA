@@ -7,9 +7,11 @@
 \usage{
 fit_mmlca(...)
 
-run_LCA(nclass, X, conditions, nrep = 50, fcov = NULL, probstart = NULL)
+run_LCA(nclass, X, conditions, nrep = 50, fcov = NULL, probstart = NULL, ...)
 }
 \arguments{
+\item{...}{additional parameters to be passed to poLCA.}
+
 \item{nclass}{Numeric indicating the number of latent classes.}
 
 \item{X}{Matrix with chronic diseases variables (coded as 1:no and 2:yes) to use for the calculation.}

@@ -86,7 +86,7 @@ ggprev_spaghetti <- function(obj, cutoff_P = 0,classes_lab="Latent class") {
         ggplot2::geom_line(
           data = Char_MP_ov, ggplot2::aes(index,
             `Overall prevalence`,
-            group = 1
+            group = "Overall"
           ),
           linewidth = 1
         ) +

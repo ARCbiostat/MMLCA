@@ -7,7 +7,7 @@
 \usage{
 impute_mmlca(...)
 
-multiple_imputation(obj, data, nimp)
+multiple_imputation(obj, data = NULL, nimp = 1)
 }
 \arguments{
 \item{obj}{LCA object}

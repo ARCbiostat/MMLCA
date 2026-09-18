@@ -7,9 +7,11 @@
 \usage{
 select_mmlca(...)
 
-select_number_LCA(nclasses, X, conditions, plot = T, nrep = 50)
+select_number_LCA(nclasses, X, conditions, plot = T, nrep = 50, ...)
 }
 \arguments{
+\item{...}{additional parameters to be passed to poLCA.}
+
 \item{nclasses}{Numeric vector indicating the number of latent classes to investigate.}
 
 \item{X}{Matrix with chronic diseases variables (coded as 1:no and 2:yes) to use for the calculation.}

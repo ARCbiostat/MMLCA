@@ -1,0 +1,27 @@
+year <- sub("-.*", "", meta$Date)
+vers <- sprintf("R package version: %s", meta$Version)
+
+bibentry(
+  bibtype = "Misc",
+  title   = "MMLCA: an R package for the identification and characterization of multimorbidity patterns using latent class analysis",
+  author  = c(
+    person("Caterina", "Gregorio"),
+    person("Hao", "Luo"),
+    person("Giorgi", "Beritze"),
+    person("Cecilia", "Damiano"),
+    person("Alice Margherita", "Ornago"),
+    person("Federico", "Triolo"),
+    person("Amaia", "Calderón-Larrañaga"),
+    person("Davide Liborio", "Vetrano")
+   
+  ),
+  year = year,
+  
+  header = "To cite MMLCA in publications use:",
+  textVersion = paste(
+    "Gregorio C., Luo H., Beridze G., Damiano C., Ornago A.M., Triolo F.,4, Calderón-Larrañaga A., Vetrano D.L. (2026).",
+    "MMLCA: an R package for the identification and characterization of multimorbidity patterns using latent class analysis.",
+    note = vers,
+url = "https://github.com/ARCbiostat/MMLCA"
+  )
+)

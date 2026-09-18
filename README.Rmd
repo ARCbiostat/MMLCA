@@ -4,6 +4,8 @@ output: github_document
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
+# <img src="man/figures/logo.png" align="right" width=150> 
+
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
@@ -13,13 +15,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-# MMLCA: an R package to identify multimorbidity patterns
-
-# <img src="man/figures/logo.png" align="right" width="150"/>
-
-<!-- badges: start -->
-
-<!-- badges: end -->
+# MMLCA: an R package for the identification and characterization of multimorbidity patterns using latent class analysis
 
 **MMLCA** aims to simplify the identification of multimorbidity patterns through user-friendly functions. Leveraging the power of Latent Class Analysis (LCA) as implemented in the `poLCA` package, **MMLCA** provides an accessible and efficient tool for researchers.
 
@@ -32,139 +28,16 @@ You can install the development version of MMLCA from [GitHub](https://github.co
 devtools::install_github("ARCbiostat/MMLCA")
 ```
 
-## Overview of the package
+## Tutorial
 
-## Overview of the package
+A paper tutorial will be soon out, stay tuned!
 
-Main functions are grouped into four analytical steps:
+## Citation 
 
-- **Data preparation**
-  - `prepare_data()`
-  - `select_conditions()`
+To cite MMLCA in publications use:
 
-- **Estimation and model selection**
-  - `fit_mmlca()`
-  - `select_mmlca()`
-  - `ggaccuracy()`
-  -`ggentropy()`
-  -`ggcompare_classes()`
+  Gregorio C., Luo H., Beridze G., Damiano C., Ornago A.M., Triolo F.,4, Calderón-Larrañaga A., Vetrano D.L. (2026). MMLCA: an R package
+  for the identification and characterization of multimorbidity patterns using latent class analysis. R package version: 0.1.0
+  https://github.com/ARCbiostat/MMLCA
 
-- **Pattern interpretation**
-  - `ggOE()`
-  - `ggOEx()`
-  - `ggOEx_adaptive()`
-  - `ggprev()`
-  - `ggprev_spaghetti()`
-
-- **Subsequent analyses**
-  - `assign_mmlca()`
-  - `impute_mmlca()`
-
-Legacy function names remain supported for backward compatibility.
-
-For the complete index of functions, please visit the
-docs/reference/index.html.
-
-## Example
-
-This is an example with all the steps to identify MM patterns using LCA.
-
-### Preparation
-
-Load the package and the data:
-
-```{r example}
-library(MMLCA)
-data(mmdata)
-```
-
-Prepare the dataset:
-
-```{r}
-X <- prepare_data(mmdata, dis_cols = "dis", keepmm = T)
-```
-
-The chronic diseases data has 2761 subjects since we removed individuals with only one chronic condition.
-
-Select the conditions to include in the LCA based on the prevalence:
-
-```{r}
-threshold <- 0.02 # 2% prevalence
-disease_names <- select_conditions(X,
-  threshold = threshold
-)
-
-disease_names
-```
-
-### Run the LCA
-
-Run the LCA with different number of classes and compare the metrics:
-
-```{r,results='hide'}
-res <- select_mmlca(
-  nclasses = 2:7,
-  X = X,
-  conditions = disease_names,
-  nrep = 10
-)
-```
-
-It is important to check that the number of repetition is enough.
-
-### Interpretation of the MM patterns
-
-We now consider the result with 5 classes and try different method to characterize the patterns in terms of over expressed diseases.
-
-**Method 1:** O/E and Exclusivity:
-
-```{r,fig.height=50,fig.width=20}
-OEx_sol4 <- ggOEx(res$obj$`4classes`, table = F)
-```
-
-**Method 2:** O/E and overall prevalence:
-
-```{r,fig.height=20}
-OE_sol4 <- ggOE(res$obj$`4classes`, table = F)
-```
-
-Same method but with 95% CI:
-
-```{r,fig.height=20}
-OEx_sol4 <- ggOE(res$obj$`4classes`, table = F, ci = T)
-```
-
-
-**Method 3:**
-
-```{r,fig.height=20}
-OExa_sol4 <- ggOEx_adaptive(res$obj$`4classes`, table = F)
-```
-
-**Method 4:**
-
-```{r,fig.height=20}
-prev_sol4 <- ggprev(res$obj$`4classes`)
-```
-
-**Method 5:**
-
-```{r,fig.height=10,fig.width=50}
-prev_sol4 <- ggprev_spaghetti(res$obj$`4classes`)
-```
-
-### Assignment of subjects into the latent classes
-
-**Warning**: If additional analyses are performed, it is recommended to take into account for the uncertainty in the classification.
-
-```{r}
-mm_pattern <- assign_mmlca(res$obj$`4classes`, X)
-table(mm_pattern)
-```
-
-### Multiple imputation
-
-```{r,eval=FALSE}
-mm_patterns_imputed <- impute_mmlca(res$obj$`4classes`, X)
-```
 

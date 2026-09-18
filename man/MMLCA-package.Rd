@@ -13,8 +13,8 @@ MMLCA aims to simplify the identification of multimorbidity patterns through use
 \seealso{
 Useful links:
 \itemize{
-  \item \url{https://github.com/caterinagregorio/MMLCA}
-  \item Report bugs at \url{https://github.com/caterinagregorio/MMLCA/issues}
+  \item \url{https://github.com/ARCbiostat/MMLCA}
+  \item Report bugs at \url{https://github.com/ARCbiostat/MMLCA/issues}
 }
 
 }

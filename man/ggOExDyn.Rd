@@ -7,7 +7,14 @@
 \usage{
 ggOEx_adaptive(...)
 
-ggOExDyn(obj, table = F, ci = F, nsample = 1000, names = F)
+ggOExDyn(
+  obj,
+  table = F,
+  ci = F,
+  nsample = 1000,
+  names = F,
+  classes_lab = "Latent class"
+)
 }
 \arguments{
 \item{obj}{poLCA object}

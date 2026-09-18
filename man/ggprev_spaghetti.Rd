@@ -7,7 +7,7 @@
 \usage{
 ggprevalence_spaghetti(...)
 
-ggprev_spaghetti(obj, cutoff_P = 0)
+ggprev_spaghetti(obj, cutoff_P = 0, classes_lab = "Latent class")
 }
 \arguments{
 \item{cutoff_P}{}

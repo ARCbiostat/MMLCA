@@ -1,16 +1,16 @@
 #' Obtain Entropy plot and train and test data
 #'
 #' @param obj obtained from select_LCA
-#' @param X data
 #' @param ratio should the ratio be calculated? Deafult to TRUE.
 #'
 #' @return ggplot2 object
 #' @export
 #'
 #' @examples
-ggentropy <- function(obj, X, ratio = T) {
+ggentropy <- function(obj, ratio = T) {
   dat <- as.data.frame(obj$metrics)
   dat %<>% mutate_at(2:ncol(dat), as.numeric)
+  X <- obj$obj[[1]]$y
 
   dat$entropy_train <- unlist(lapply(1:nrow(dat), function(x) get_entropy(obj$obj[[x]], X)))
   if (!ratio) dat$entropy_train <- unlist(lapply(1:nrow(dat), function(x) get_entropy(obj$obj[[x]], X, ratio = F)))

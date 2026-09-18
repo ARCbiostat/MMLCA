@@ -2,9 +2,9 @@
 #' @description The function plots the conditional disease prevalence, highlighting diseases with high O/E, Exclusivity or Entropy
 #' @param obj
 #' @param nclass
-#' @param cutoff_OE
-#' @param cutoff_Ex
-#' @param cutoff_P
+#' @param cutoff_OE numeric or "a" for adaptive
+#' @param cutoff_Ex numeric or "a" for adaptive
+#' @param cutoff_P numeric
 #'
 #' @return
 #' @export
@@ -28,6 +28,21 @@ ggprev <- function(obj, nclass, cutoff_OE = 2, cutoff_Ex = 0.25, cutoff_P = NULL
       rownames(O) <- colnames(obj$y)
       R <- O / E
 
+      datn <- data.frame(
+        `Latent class` = 1:nclass,
+        N = as.numeric(table(obj$predclass)),
+        P = round(as.numeric(table(obj$predclass)) / length(obj$predclass) * 100, 0)
+      )%>%
+        mutate(cut_OE=case_when(P>=25~1,
+                                P<25 & P>=15~1.5,
+                                P<15 & P>=10~1.75,
+                                P<10 ~2),
+               cut_Ex=case_when(P>25~0.3,
+                                P<=25 & P>15~0.25,
+                                P<=15 & P>10~0.20,
+                                P<=10 ~0))
+      colnames(datn)[1] <- "Latent class"
+
       O %<>% as.data.frame() %>%
         tibble::rownames_to_column("Disease") %>%
         tidyr::pivot_longer(2:(nclass + 1),
@@ -40,36 +55,79 @@ ggprev <- function(obj, nclass, cutoff_OE = 2, cutoff_Ex = 0.25, cutoff_P = NULL
         )
 
 
-      R %<>% as.data.frame() %>%
-        tibble::rownames_to_column("Disease") %>%
-        tidyr::pivot_longer(2:(nclass + 1),
-          names_to = "Latent class",
-          values_to = "O/E"
-        ) %>%
-        dplyr::mutate(`Latent class` = as.numeric(gsub("\\D", "", `Latent class`))) %>%
-        dplyr::mutate(
-          label = ifelse(`O/E` < cutoff_OE, NA_integer_, Disease)
-        )
+      colnames(datn)[1] <- "Latent class"
 
 
-      N <- apply(obj$y - 1, 2, sum)
 
-      n <- list()
-      for (j in 1:nclass) {
-        n[[j]] <- apply(obj$y[obj$predclass == j, ] - 1, 2, sum)
+      if(cutoff_OE=="a" | cutoff_Ex=="a"){
+        message("Adaptive cutoff used!")
+        R %<>% as.data.frame() %>%
+          tibble::rownames_to_column("Disease") %>%
+          tidyr::pivot_longer(2:(nclass + 1),
+                              names_to = "Latent class",
+                              values_to = "O/E"
+          ) %>%
+          dplyr::mutate(`Latent class` = as.numeric(gsub("\\D", "", `Latent class`))) %>%
+          left_join(datn) %>%
+          dplyr::mutate(
+            label = ifelse(`O/E` < cut_OE, NA_integer_, Disease)
+          )
+
+
+        N <- apply(obj$y - 1, 2, sum)
+
+        n <- list()
+        for (j in 1:nclass) {
+          n[[j]] <- apply(obj$y[obj$predclass == j, ] - 1, 2, sum)
+        }
+
+        Ex <- do.call("cbind", n)
+
+        Ex <- Ex / N
+        Ex %<>% as.data.frame() %>%
+          tibble::rownames_to_column("Disease") %>%
+          tidyr::pivot_longer(2:(nclass + 1),
+                              names_to = "Latent class",
+                              values_to = "Exclusivity"
+          ) %>%
+          dplyr::mutate(`Latent class` = as.numeric(gsub("\\D", "", `Latent class`))) %>%
+          left_join(datn) %>%
+          dplyr::mutate(label2 = ifelse(`Exclusivity` < cut_Ex, NA_integer_, Disease))
+
+      }else{
+        R %<>% as.data.frame() %>%
+          tibble::rownames_to_column("Disease") %>%
+          tidyr::pivot_longer(2:(nclass + 1),
+                              names_to = "Latent class",
+                              values_to = "O/E"
+          ) %>%
+          dplyr::mutate(`Latent class` = as.numeric(gsub("\\D", "", `Latent class`))) %>%
+          dplyr::mutate(
+            label = ifelse(`O/E` < cutoff_OE, NA_integer_, Disease)
+          )
+
+
+        N <- apply(obj$y - 1, 2, sum)
+
+        n <- list()
+        for (j in 1:nclass) {
+          n[[j]] <- apply(obj$y[obj$predclass == j, ] - 1, 2, sum)
+        }
+
+        Ex <- do.call("cbind", n)
+
+        Ex <- Ex / N
+        Ex %<>% as.data.frame() %>%
+          tibble::rownames_to_column("Disease") %>%
+          tidyr::pivot_longer(2:(nclass + 1),
+                              names_to = "Latent class",
+                              values_to = "Exclusivity"
+          ) %>%
+          dplyr::mutate(`Latent class` = as.numeric(gsub("\\D", "", `Latent class`))) %>%
+          dplyr::mutate(label2 = ifelse(`Exclusivity` < cutoff_Ex, NA_integer_, Disease))
+
       }
 
-      Ex <- do.call("cbind", n)
-
-      Ex <- Ex / N
-      Ex %<>% as.data.frame() %>%
-        tibble::rownames_to_column("Disease") %>%
-        tidyr::pivot_longer(2:(nclass + 1),
-          names_to = "Latent class",
-          values_to = "Exclusivity"
-        ) %>%
-        dplyr::mutate(`Latent class` = as.numeric(gsub("\\D", "", `Latent class`))) %>%
-        dplyr::mutate(label2 = ifelse(`Exclusivity` < cutoff_Ex, NA_integer_, Disease))
 
 
       Char_MP <- R %>%
@@ -80,23 +138,13 @@ ggprev <- function(obj, nclass, cutoff_OE = 2, cutoff_Ex = 0.25, cutoff_P = NULL
 
 
       Char_MP %<>%
+        dplyr::mutate(`Latent class` = paste0(`Latent class`, " (", P, "%)")) %>%
         dplyr::select(`Latent class`, Disease, Prevalence, Exclusivity, `O/E`, char) %>%
         dplyr::mutate(
           Prevalence = Prevalence * 100,
           Exclusivity = Exclusivity * 100,
           `O/E` = round(`O/E`, 2)
         )
-
-      datn <- data.frame(
-        `Latent class` = 1:nclass,
-        N = as.numeric(table(obj$predclass)),
-        P = round(as.numeric(table(obj$predclass)) / length(obj$predclass) * 100, 0)
-      )
-
-      colnames(datn)[1] <- "Latent class"
-      Char_MP %<>% dplyr::left_join(datn)
-      Char_MP %<>% dplyr::left_join(datn) %>%
-        dplyr::mutate(`Latent class` = paste0(`Latent class`, " (", P, "%)"))
 
       gg <- ggplot2::ggplot(Char_MP) +
         ggplot2::geom_point(ggplot2::aes(1, Disease, size = Prevalence / 10, color = as.factor(char))) +

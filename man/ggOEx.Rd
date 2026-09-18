@@ -11,7 +11,8 @@ ggOEx(
   table = F,
   ci = F,
   nsample = 1000,
-  names = F
+  names = F,
+  classes_lab = "Latent class"
 )
 }
 \arguments{

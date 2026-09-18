@@ -5,6 +5,7 @@
 #' @param conditions Vector of columns names indicating the conditions to use for the LCA. It can be the object returned from the function select_conditions.
 #' @param plot Boolean indicating whether the goodness-of-fit measures should be plotted.
 #' @param nrep Number of times to estimate the model, using different values of probs.start. The default is one. Setting nrep>1 automates the search for the global—rather than just a local—maximum of the log-likelihood function. poLCA returns the parameter estimates corresponding to the model with the greatest log-likelihood. Default to 50. Reduce to save computation time.
+#' @param ... additional parameters to be passed to poLCA.
 #' @return A list containing the following elements:
 #' \item{metrics}{A dataframe containing the goodness-of-fit measures for the different models.}
 #' \item{obj}{A list of poLCA objects.}
@@ -14,10 +15,10 @@
 #' @export
 #'
 #' @examples
-select_number_LCA <- function(nclasses, X, conditions, plot = T, nrep = 50) {
+select_number_LCA <- function(nclasses, X, conditions, plot = T, nrep = 50,...) {
   tictoc::tic()
 
-    res <- lapply(nclasses, function(x) run_LCA(x, X = X[,-1], conditions = conditions, nrep = nrep))
+    res <- lapply(nclasses, function(x) run_LCA(x, X = X[,-1], conditions = conditions, nrep = nrep,...))
     dat_res <- do.call("rbind", lapply(res, function(x) x$metrics))
     objects <- lapply(res, function(x) x$obj)
     names(objects) <- nclasses
@@ -30,8 +31,7 @@ select_number_LCA <- function(nclasses, X, conditions, plot = T, nrep = 50) {
       "df",
       "BIC",
       "AIC",
-      "CAIC",
-      "ABIC",
+      "aBIC",
       "likelihood_ratio",
       "Assignment accuracy (%)",
       "Entropy"

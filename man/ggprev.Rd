@@ -7,10 +7,21 @@
 \usage{
 ggprevalence(...)
 
-ggprev(obj, nclass, cutoff_OE = 2, cutoff_Ex = 0.25, cutoff_P = NULL)
+ggprev(
+  obj,
+  nclass,
+  cutoff_OE = 2,
+  cutoff_Ex = 0.25,
+  cutoff_P = NULL,
+  classes_lab = "Latent class"
+)
 }
 \arguments{
-\item{cutoff_P}{}
+\item{cutoff_OE}{numeric or "a" for adaptive}
+
+\item{cutoff_Ex}{numeric or "a" for adaptive}
+
+\item{cutoff_P}{numeric}
 }
 \description{
 The function plots the conditional disease prevalence, highlighting diseases with high O/E, Exclusivity or Entropy

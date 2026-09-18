@@ -58,6 +58,11 @@ ggprev_spaghetti <- function(obj, cutoff_P = 0,classes_lab="Latent class") {
         dplyr::arrange(index)
 
 
+      class_cols <- setNames(
+        scales::hue_pal()(nclass),
+        seq_len(nclass)
+      )
+
       Char_MP$`Latent class` <- as.factor(Char_MP$`Latent class`)
       gg <- ggplot2::ggplot() +
         ggplot2::geom_point(
@@ -79,17 +84,25 @@ ggprev_spaghetti <- function(obj, cutoff_P = 0,classes_lab="Latent class") {
         ggplot2::geom_point(
           data = Char_MP_ov, ggplot2::aes(
             index,
-            `Overall prevalence`
+            `Overall prevalence`,
+            color="Overall"
           ),
           size = 3
         ) +
         ggplot2::geom_line(
           data = Char_MP_ov, ggplot2::aes(index,
             `Overall prevalence`,
-            group = "Overall"
+            group = 1,
+            color="Overall"
           ),
           linewidth = 1
-        ) +
+        ) +ggplot2::scale_color_manual("",
+          values = c(
+            "Overall" = "black",
+            class_cols
+          ),
+          labels = c(paste("Class",seq_len(nclass)),"Overall")
+        )+
         ggplot2::scale_x_continuous("", breaks = unique(Char_MP$index), labels = unique(as.character(Char_MP$Disease))) +
         ggplot2::theme_bw() +
         ggplot2::theme(

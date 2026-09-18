@@ -29,7 +29,6 @@ run_LCA <- function(nclass, X, conditions, nrep = 50, fcov = NULL, probstart = N
     myresult <- poLCA::poLCA(formula,
       X,
       nclass = nclass,
-      maxiter = 3000,
       na.rm = F,
       nrep = nrep,
       verbose = T
@@ -38,7 +37,6 @@ run_LCA <- function(nclass, X, conditions, nrep = 50, fcov = NULL, probstart = N
     myresult <- poLCA::poLCA(formula,
       X,
       nclass = nclass,
-      maxiter = 3000,
       na.rm = F,
       probs.start = probstart,
       verbose = T,
@@ -48,7 +46,7 @@ run_LCA <- function(nclass, X, conditions, nrep = 50, fcov = NULL, probstart = N
 
   print(paste("Completed LCA with", nclass, "..."))
 
-  Modell <- paste("Model", nclass)
+  Model <- paste("Model", nclass)
   log_likelihood <- myresult$llik
   df <- myresult$resid.df
   BIC <- myresult$bic
@@ -62,7 +60,7 @@ run_LCA <- function(nclass, X, conditions, nrep = 50, fcov = NULL, probstart = N
   return(list(
     obj = myresult,
     accuracy_matrix = internal_val_matrix,
-    metrics = c(Modell,
+    metrics = c(Model,
       nclass,
       log_likelihood,
       df,

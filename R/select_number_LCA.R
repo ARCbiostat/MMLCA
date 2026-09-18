@@ -42,7 +42,7 @@ select_number_LCA <- function(nclasses, X, conditions, plot = T, nrep = 50,...) 
       dat_res_long <- dat_res %>%
         as.data.frame() %>%
         dplyr::rename(`Assignment\naccuracy (%)`=`Assignment accuracy (%)`) %>%
-        tidyr::pivot_longer(5:11, values_to = "metrics", names_to = "name") %>%
+        tidyr::pivot_longer(5:10, values_to = "metrics", names_to = "name") %>%
         dplyr::mutate(
           metrics = as.numeric(metrics),
           nclass = as.numeric(nclass)

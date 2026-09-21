@@ -14,6 +14,7 @@ MMLCA aims to simplify the identification of multimorbidity patterns through use
 Useful links:
 \itemize{
   \item \url{https://github.com/ARCbiostat/MMLCA}
+  \item \url{https://arcbiostat.github.io/MMLCA/}
   \item Report bugs at \url{https://github.com/ARCbiostat/MMLCA/issues}
 }
 

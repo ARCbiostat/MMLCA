@@ -91,7 +91,7 @@ if(!method%in%c("pmi","weighted"))stop("invalid method selected")
           weights = .weight
         )
 
-      } if(model == "coxph"){
+      } else if(model == "coxph"){
 
         fit <- survival::coxph(
           formula,
@@ -294,7 +294,7 @@ if(!method%in%c("pmi","weighted"))stop("invalid method selected")
 
 
 
-        } if(model == "coxph") {
+        } else if(model == "coxph") {
 
           fit_b <- survival::coxph(
             formula,
@@ -365,7 +365,7 @@ if(!method%in%c("pmi","weighted"))stop("invalid method selected")
           weights = .weight
         )
 
-      } if(model == "coxph") {
+      } else if(model == "coxph") {
 
         fit <- survival::coxph(
           formula,
@@ -530,7 +530,7 @@ if(!method%in%c("pmi","weighted"))stop("invalid method selected")
       family = family
     )
 
-  } if(model == "coxph") {
+  } else if(model == "coxph") {
 
     fit <- survival::coxph(
       formula,

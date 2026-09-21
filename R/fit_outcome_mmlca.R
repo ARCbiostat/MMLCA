@@ -192,10 +192,11 @@ if(!method%in%c("pmi","weighted"))stop("invalid method selected")
       lca_b <- run_LCA(K, X = boot_X, conditions = colnames(boot_data), nrep = nrep)
       theta_boot  <- sapply(lca_b$obj$probs, function(x) x[, 2])
       S <- as.matrix(
-      proxy::simil( theta_boot,theta_ref, method = "cosine"))
+      proxy::simil(theta_boot,theta_ref, method = "cosine"))
       match <- clue::solve_LSAP(S, maximum = TRUE)
-
-      post <- lca_b$obj$posterior[, match, drop = FALSE]
+      inv_match <- integer(length(match))
+      inv_match[match] <- seq_along(match)
+      post <- lca_b$obj$posterior[, inv_match, drop = FALSE]
 
       if(method=="pmi"){
 
@@ -204,7 +205,7 @@ if(!method%in%c("pmi","weighted"))stop("invalid method selected")
         coef_list <- vector("list", M)
         var_list <- vector("list", M)
 
-        data_imp <- impute_mmlca(lca_b,nimp=M)
+        data_imp <- impute_mmlca(lca_b$obj,nimp=M)
 
         for(m in seq_len(M)){
 
@@ -212,8 +213,6 @@ if(!method%in%c("pmi","weighted"))stop("invalid method selected")
 
 
           cls <- data_imp[[m]]$mm_pattern
-          inv_match <- integer(length(match))
-          inv_match[match] <- seq_along(match)
           data_imp[[m]]$mm_pattern <-
             inv_match[data_imp[[m]]$mm_pattern]
 

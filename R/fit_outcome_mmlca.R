@@ -91,7 +91,7 @@ if(!method%in%c("pmi","weighted"))stop("invalid method selected")
           weights = .weight
         )
 
-      } else {
+      } if(model == "coxph"){
 
         fit <- survival::coxph(
           formula,
@@ -100,6 +100,8 @@ if(!method%in%c("pmi","weighted"))stop("invalid method selected")
           cluster = id
         )
 
+      }else{
+        stop("Other regression methods not yet implemented")
       }
 
 
@@ -292,13 +294,15 @@ if(!method%in%c("pmi","weighted"))stop("invalid method selected")
 
 
 
-        } else {
+        } if(model == "coxph") {
 
           fit_b <- survival::coxph(
             formula,
             data = long_dat,
             weights = .weight
           )
+        }else{
+          stop("Other regression models not yet implemented")
         }
 
         beta_boot[b, ] <- fit_b$coefficients
@@ -361,7 +365,7 @@ if(!method%in%c("pmi","weighted"))stop("invalid method selected")
           weights = .weight
         )
 
-      } else {
+      } if(model == "coxph") {
 
         fit <- survival::coxph(
           formula,
@@ -370,6 +374,8 @@ if(!method%in%c("pmi","weighted"))stop("invalid method selected")
           cluster = id
         )
 
+      }else{
+        stop("Other regression models not yet implemented")
       }
 
       return(
@@ -524,12 +530,14 @@ if(!method%in%c("pmi","weighted"))stop("invalid method selected")
       family = family
     )
 
-  } else {
+  } if(model == "coxph") {
 
     fit <- survival::coxph(
       formula,
       data = data
     )
+  } else{
+    stop("Other regression models not yet implemented")
   }
 
   fit

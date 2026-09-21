@@ -20,7 +20,7 @@ Imports:
     tictoc,
     tidyr,
     future.apply
-URL: https://github.com/ARCbiostat/MMLCA
+URL: https://github.com/ARCbiostat/MMLCA, https://arcbiostat.github.io/MMLCA/
 BugReports: https://github.com/ARCbiostat/MMLCA/issues
 Suggests: 
     testthat (>= 3.0.0)

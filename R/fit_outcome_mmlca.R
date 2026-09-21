@@ -174,7 +174,7 @@ if(!method%in%c("pmi","weighted"))stop("invalid method selected")
 
     }
 
-    theta_ref <-  sapply(object$obj$probs, function(x) x[, 2])
+    theta_ref <-  sapply(object$probs, function(x) x[, 2])
     for(b in 1:nboot){
 
       # bootstrap subjects

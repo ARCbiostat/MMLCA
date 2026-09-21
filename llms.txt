@@ -43,7 +43,8 @@ latent class analysis. R package version: 2.0
 - [`datamm2`](https://arcbiostat.github.io/MMLCA/reference/datamm2.md) :
   Multimorbidity Data 2
 - [`fit_outcome_mmlca()`](https://arcbiostat.github.io/MMLCA/reference/fit_outcome_mmlca.md)
-  : Title
+  : Regression model with multimorbidity pattern as covariate taking
+  into account of class-uncertainty
 - [`get_accuracy()`](https://arcbiostat.github.io/MMLCA/reference/get_accuracy.md)
   : Function to get the accuracy from LCA object
 - [`get_entropy()`](https://arcbiostat.github.io/MMLCA/reference/get_entropy.md)

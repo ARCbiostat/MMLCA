@@ -23,3 +23,5 @@
 - alluvial moved to package for longitudinal analyses
 - prepare_data more general
 - train/test removed, together with cv. Now we use the concept of stability
+- updated functions for multiple imputation
+- updated documentation

@@ -36,8 +36,8 @@ A paper tutorial will be soon out, stay tuned!
 
 To cite MMLCA in publications use:
 
-  Gregorio C., Luo H., Beridze G., Damiano C., Ornago A.M., Triolo F.,4, Calderón-Larrañaga A., Vetrano D.L. (2026). MMLCA: an R package
-  for the identification and characterization of multimorbidity patterns using latent class analysis. R package version: 0.1.0
+  Gregorio C., Luo H., Beridze G., Damiano C., Ornago A.M., Triolo F., Calderón-Larrañaga A., Vetrano D.L. (2026). MMLCA: an R package
+  for the identification and characterization of multimorbidity patterns using latent class analysis. R package version: 2.0
   https://github.com/ARCbiostat/MMLCA
 
 

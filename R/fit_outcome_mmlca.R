@@ -192,7 +192,7 @@ if(!method%in%c("pmi","weighted"))stop("invalid method selected")
       lca_b <- run_LCA(K, X = boot_X, conditions = colnames(boot_data), nrep = nrep)
       theta_boot  <- sapply(lca_b$obj$probs, function(x) x[, 2])
       S <- as.matrix(
-      proxy::simil(theta1, theta2, method = "cosine"))
+      proxy::simil( theta_boot,theta_ref, method = "cosine"))
       match <- clue::solve_LSAP(S, maximum = TRUE)
 
       post <- lca_b$obj$posterior[, match, drop = FALSE]

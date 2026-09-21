@@ -20,7 +20,7 @@ devtools::install_github("ARCbiostat/MMLCA")
 
 ## Tutorial
 
-A paper tutorial will be soon out, stay tuned!
+A tutorial paper will be soon out, stay tuned!
 
 ## Citation
 

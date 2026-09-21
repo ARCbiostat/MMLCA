@@ -1,20 +1,21 @@
 
-#' Title
+#' Regression model with multimorbidity pattern as covariate taking into account of class-uncertainty
 #'
-#' @param object
-#' @param formula
-#' @param data
-#' @param model
-#' @param family
-#' @param method
-#' @param M
-#' @param pattern_var
-#' @param conf.level
-#' @param exponentiate
-#' @param seed
-#' @param boot
-#' @param nboot
-#' @param nrep
+#' @param object poLCA object
+#' @param formula Two-sided model formula specifying the outcome and covariates.
+#' @param data Data frame containing the variables used in the model.
+#' @param model Outcome model. Either `"glm"` for generalized linear models  `"coxph"` for Cox proportional hazards models.
+#' @param family Family object passed to `glm()` when `model = "glm"`. Defaults to `gaussian()`.
+#' @param method Method used to account for latent class uncertainty. Either `"pmi"` (posterior multiple imputation) or `"weighted"`
+#' @param M Number of imputations when `method = "pmi"`.
+#' @param class_var String containing name of the variable of multimorbidity pattern assignments. Defaults to `"mm_pattern"`.
+#' @param ref_class Reference pattern used in regression models. Defaults to `"1"`.
+#' @param conf.level Confidence level for confidence intervals. Defaults to `0.95`.
+#' @param exponentiate Logical. If `TRUE`, exponentiates model coefficients and confidence intervals (e.g. odds ratios or hazard ratios).
+#' @param seed Optional random seed for reproducibility.
+#' @param boot Logical. If `TRUE`, confidence intervals are obtained using bootstrap resampling to take into account of uncertainty from LCA model.
+#' @param nboot Number of bootstrap samples.
+#' @param nrep Number of random starting values for bootstrap LCA runs, if applicable.
 #'
 #' @returns
 #' @export
@@ -27,7 +28,8 @@ fit_outcome_mmlca <- function(
     family = gaussian(),
     method = c("pmi","weighted"),
     M = 50,
-    pattern_var = "mm_pattern",
+    class_var = "mm_pattern",
+    ref_class="1",
     conf.level= 0.95,
     exponentiate=F,
     seed = NULL,
@@ -65,11 +67,14 @@ if(!method%in%c("pmi","weighted"))stop("invalid method selected")
 
           tmp <- data
 
-          tmp[[pattern_var]] <- factor(
+          tmp[[class_var]] <- factor(
             k,
             levels = seq_len(K)
           )
-
+          tmp[[class_var]] <- relevel(
+            tmp[[class_var]],
+            ref = ref_class
+          )
           tmp$.weight <- pmax(post[,k],0.001)
           tmp$id <- paste0(1:nrow(tmp),k)
 
@@ -123,11 +128,16 @@ if(!method%in%c("pmi","weighted"))stop("invalid method selected")
 
         cls <- data_imp[[m]]$mm_pattern
 
-        dat_m[[pattern_var]] <-
+        dat_m[[class_var]] <-
           factor(
             cls,
             levels = seq_len(K)
           )
+
+        dat_m[[class_var]] <- relevel(
+          dat_m[[class_var]],
+          ref = ref_class
+        )
 
         fit_m <- .fit_model(
           formula = formula,
@@ -162,6 +172,7 @@ if(!method%in%c("pmi","weighted"))stop("invalid method selected")
 
     }
 
+    theta_ref <-  sapply(object$obj$probs, function(x) x[, 2])
     for(b in 1:nboot){
 
       # bootstrap subjects
@@ -177,7 +188,12 @@ if(!method%in%c("pmi","weighted"))stop("invalid method selected")
       # refit LCA
 
       lca_b <- run_LCA(K, X = boot_X, conditions = colnames(boot_data), nrep = nrep)
-      post <- lca_b$obj$posterior
+      theta_boot  <- sapply(lca_b$obj$probs, function(x) x[, 2])
+      S <- as.matrix(
+      proxy::simil(theta1, theta2, method = "cosine"))
+      match <- clue::solve_LSAP(S, maximum = TRUE)
+
+      post <- lca_b$obj$posterior[, match, drop = FALSE]
 
       if(method=="pmi"){
 
@@ -194,12 +210,21 @@ if(!method%in%c("pmi","weighted"))stop("invalid method selected")
 
 
           cls <- data_imp[[m]]$mm_pattern
+          inv_match <- integer(length(match))
+          inv_match[match] <- seq_along(match)
+          data_imp[[m]]$mm_pattern <-
+            inv_match[data_imp[[m]]$mm_pattern]
 
-          dat_m[[pattern_var]] <-
+          dat_m[[class_var]] <-
             factor(
               cls,
               levels = seq_len(K)
             )
+
+          dat_m[[class_var]] <- relevel(
+            dat_m[[class_var]],
+            ref = ref_class
+          )
 
           fit_m <- .fit_model(
             formula = formula,
@@ -240,9 +265,14 @@ if(!method%in%c("pmi","weighted"))stop("invalid method selected")
 
             tmp <- boot_data
 
-            tmp[[pattern_var]] <- factor(
+            tmp[[class_var]] <- factor(
               k,
               levels = seq_len(K)
+            )
+
+            tmp[[class_var]] <- relevel(
+              tmp[[class_var]],
+              ref = ref_class
             )
 
             tmp$.weight <- pmax(post[,k],0.001)
@@ -305,9 +335,14 @@ if(!method%in%c("pmi","weighted"))stop("invalid method selected")
 
           tmp <- data
 
-          tmp[[pattern_var]] <- factor(
+          tmp[[class_var]] <- factor(
             k,
             levels = seq_len(K)
+          )
+
+          tmp[[class_var]] <- relevel(
+            tmp[[class_var]],
+            ref = ref_class
           )
 
           tmp$.weight <- pmax(post[,k],0.001)
@@ -361,11 +396,16 @@ if(!method%in%c("pmi","weighted"))stop("invalid method selected")
 
       cls <- data_imp[[m]]$mm_pattern
 
-      dat_m[[pattern_var]] <-
+      dat_m[[class_var]] <-
         factor(
           cls,
           levels = seq_len(K)
         )
+
+      dat_m[[class_var]] <- relevel(
+        dat_m[[class_var]],
+        ref = ref_class
+      )
 
       fit_m <- .fit_model(
         formula = formula,

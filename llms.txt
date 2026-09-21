@@ -1,0 +1,93 @@
+# 
+
+# MMLCA: an R package for the identification and characterization of multimorbidity patterns using latent class analysis
+
+**MMLCA** aims to simplify the identification of multimorbidity patterns
+through user-friendly functions. Leveraging the power of Latent Class
+Analysis (LCA) as implemented in the `poLCA` package, **MMLCA** provides
+an accessible and efficient tool for researchers.
+
+## Installation
+
+You can install the development version of MMLCA from
+[GitHub](https://github.com/) with:
+
+``` r
+
+# install.packages("devtools")
+devtools::install_github("ARCbiostat/MMLCA")
+```
+
+## Tutorial
+
+A paper tutorial will be soon out, stay tuned!
+
+## Citation
+
+To cite MMLCA in publications use:
+
+Gregorio C., Luo H., Beridze G., Damiano C., Ornago A.M., Triolo F.,
+Calderón-Larrañaga A., Vetrano D.L. (2026). MMLCA: an R package for the
+identification and characterization of multimorbidity patterns using
+latent class analysis. R package version: 2.0
+<https://github.com/ARCbiostat/MMLCA>
+
+# Package index
+
+## All functions
+
+- [`assign_mmlca()`](https://github.com/ARCbiostat/MMLCA/reference/assign_LCA.md)
+  [`assign_LCA()`](https://github.com/ARCbiostat/MMLCA/reference/assign_LCA.md)
+  : Assign subjects to the their most probable mm pattern according to
+  LCA model
+- [`datamm2`](https://github.com/ARCbiostat/MMLCA/reference/datamm2.md)
+  : Multimorbidity Data 2
+- [`fit_outcome_mmlca()`](https://github.com/ARCbiostat/MMLCA/reference/fit_outcome_mmlca.md)
+  : Title
+- [`get_accuracy()`](https://github.com/ARCbiostat/MMLCA/reference/get_accuracy.md)
+  : Function to get the accuracy from LCA object
+- [`get_entropy()`](https://github.com/ARCbiostat/MMLCA/reference/get_entropy.md)
+  : Function to get the entropy from LCA object
+- [`get_internal_validation_matrix()`](https://github.com/ARCbiostat/MMLCA/reference/get_internal_validation_matrix.md)
+  : Function to calculate the approximate misclassifications matrix
+- [`ggOE()`](https://github.com/ARCbiostat/MMLCA/reference/ggOE.md) :
+  Plot Observed/Expected Ratios
+- [`ggOEx()`](https://github.com/ARCbiostat/MMLCA/reference/ggOEx.md) :
+  Plot the Observed/Expected Ratios and Exclusivity
+- [`ggOEx_adaptive()`](https://github.com/ARCbiostat/MMLCA/reference/ggOExDyn.md)
+  [`ggOExDyn()`](https://github.com/ARCbiostat/MMLCA/reference/ggOExDyn.md)
+  : Plot the Observed/Expected Ratios and Exclusivity
+- [`ggaccuracy()`](https://github.com/ARCbiostat/MMLCA/reference/ggaccuracy_LCA.md)
+  [`ggaccuracy_LCA()`](https://github.com/ARCbiostat/MMLCA/reference/ggaccuracy_LCA.md)
+  : Accuracy of LCA derived Multimorbidity Patterns
+- [`ggcompare_classes()`](https://github.com/ARCbiostat/MMLCA/reference/ggcompare_classes.md)
+  : Compare class assignments across latent class solutions
+- [`ggentropy()`](https://github.com/ARCbiostat/MMLCA/reference/ggentropy.md)
+  : Obtain Entropy plot and train and test data
+- [`ggprevalence()`](https://github.com/ARCbiostat/MMLCA/reference/ggprev.md)
+  [`ggprev()`](https://github.com/ARCbiostat/MMLCA/reference/ggprev.md)
+  : Plot disease prevalences within MM patterns
+- [`ggprevalence_spaghetti()`](https://github.com/ARCbiostat/MMLCA/reference/ggprev_spaghetti.md)
+  [`ggprev_spaghetti()`](https://github.com/ARCbiostat/MMLCA/reference/ggprev_spaghetti.md)
+  : Plot disease prevalences within MM patterns
+- [`mmdata`](https://github.com/ARCbiostat/MMLCA/reference/mmdata.md) :
+  Multimorbidity Data
+- [`impute_mmlca()`](https://github.com/ARCbiostat/MMLCA/reference/multiple_imputation.md)
+  [`multiple_imputation()`](https://github.com/ARCbiostat/MMLCA/reference/multiple_imputation.md)
+  : Function to obtain imputate multiple imputations of the assigned MM
+  patterns
+- [`prepare_data()`](https://github.com/ARCbiostat/MMLCA/reference/prepare_data.md)
+  : Prepare the chronic disease dataset for the LCA
+- [`fit_mmlca()`](https://github.com/ARCbiostat/MMLCA/reference/run_LCA.md)
+  [`run_LCA()`](https://github.com/ARCbiostat/MMLCA/reference/run_LCA.md)
+  : Main function to run the LCA
+- [`select_conditions()`](https://github.com/ARCbiostat/MMLCA/reference/select_conditions.md)
+  : Identify chronic conditions above threshold prevalence
+- [`select_mmlca()`](https://github.com/ARCbiostat/MMLCA/reference/select_number_LCA.md)
+  [`select_number_LCA()`](https://github.com/ARCbiostat/MMLCA/reference/select_number_LCA.md)
+  : Function to run LCA with different number of classes and compare the
+  goodness-of-fit
+- [`stability_mmlca()`](https://github.com/ARCbiostat/MMLCA/reference/stability_mmlca.md)
+  : Function to run LCA with different number of classes/resamples and
+  compare the goodness-of-fit
+

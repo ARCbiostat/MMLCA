@@ -1,0 +1,72 @@
+# Main function to run the LCA
+
+This is a helper function to run a latent class model using poLCA. For
+details regarding poLCA see the package documentation and
+https://statistics.ohlsen-web.de/latent-class-analysis-polca/.
+
+## Usage
+
+``` r
+fit_mmlca(...)
+
+run_LCA(nclass, X, conditions, nrep = 50, fcov = NULL, probstart = NULL, ...)
+```
+
+## Arguments
+
+- ...:
+
+  additional parameters to be passed to poLCA.
+
+- nclass:
+
+  Numeric indicating the number of latent classes.
+
+- X:
+
+  Matrix with chronic diseases variables (coded as 1:no and 2:yes) to
+  use for the calculation.
+
+- conditions:
+
+  Vector of columns names indicating the conditions to use for the LCA.
+  It can be the object returned from the function select_conditions.
+
+- nrep:
+
+  Number of times to estimate the model, using different values of
+  probs.start. The default is one. Setting nrep\>1 automates the search
+  for the global—rather than just a local—maximum of the log-likelihood
+  function. poLCA returns the parameter estimates corresponding to the
+  model with the greatest log-likelihood. Default to 50. Reduce to save
+  computation time.
+
+- fcov:
+
+  Covariates used as predictors.
+
+- probstart:
+
+  A list of matrices of class-conditional response probabilities to be
+  used as the starting values for the estimation algorithm. Each matrix
+  in the list corresponds to one manifest variable, with one row for
+  each latent class, and one column for each outcome. The default is
+  NULL, producing random starting values. Note that if nrep\>1, then any
+  user-specified probs.start values are only used in the first of the
+  nrep attempts. Deafult to NULL.
+
+## Value
+
+A list containing the following elements:
+
+- obj:
+
+  An object of class 'poLCA' representing the fitted LCA model.
+
+- accuracy_matrix:
+
+  A matrix containing the mislassification probabilities.
+
+- metrics:
+
+  A vector containing goodness-of-fit measures.

@@ -132,7 +132,8 @@ ggprev <- function(obj, nclass, cutoff_OE = 2, cutoff_Ex = 0.25, cutoff_P = NULL
 
       Char_MP <- R %>%
         dplyr::left_join(Ex) %>%
-        dplyr::left_join(O)
+        dplyr::left_join(O) %>%
+        left_join(datn)
 
       Char_MP %<>% dplyr::mutate(char = ifelse(!is.na(label) & !is.na(label2) & !is.na(label_P), 1, 0))
 

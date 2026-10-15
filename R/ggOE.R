@@ -11,7 +11,7 @@
 #' @param cutoff_OE Numeric indicating the cut-off value used to identify
 #'   diseases with elevated O/E ratios. Default is 2.
 #' @param cutoff_P Numeric indicating the minimum disease prevalence within a
-#'   Multimorbidity profile required for a disease to be considered in the
+#'   latent class required for a disease to be considered in the
 #'   characterization. If \code{NULL}, all diseases are considered.
 #' @param table Logical; if \code{TRUE}, returns the underlying table in
 #'   addition to the plot. Default is \code{FALSE}.
@@ -20,12 +20,12 @@
 #'   displayed in the plot. Default is \code{FALSE}.
 #' @param nsample Integer specifying the number of Monte Carlo samples used
 #'   to estimate confidence intervals when \code{ci = TRUE}. Default is 1000.
-#'
+#'  @param classes_lab string indicating how classes should be named in the plot. Default is "Latent class"
 #' @details
 #' The Observed/Expected (O/E) ratio is calculated as the prevalence of a
-#' disease within a Multimorbidity profile divided by its prevalence in the overall
+#' disease within a latent class divided by its prevalence in the overall
 #' sample. Values greater than one indicate that the disease is more common
-#' within the Multimorbidity profile than expected based on its population prevalence.
+#' within the latent class than expected based on its population prevalence.
 #'
 #' When \code{ci = TRUE}, approximate 95\% confidence intervals for the O/E
 #' ratios are obtained through Monte Carlo sampling. Overall disease
@@ -35,7 +35,7 @@
 #' \code{poLCA} model. Confidence limits correspond to the 2.5th and
 #' 97.5th percentiles of the simulated O/E distribution.
 #'
-#' Diseases are considered characteristic of a Multimorbidity profile when their O/E
+#' Diseases are considered characteristic of a latent class when their O/E
 #' ratio exceeds \code{cutoff_OE} and their prevalence exceeds
 #' \code{cutoff_P}.
 #'
@@ -44,7 +44,7 @@
 #' plot and the data frame used to generate it is returned.
 #'
 #' @export
-ggOE <- function(obj, cutoff_OE = 2, cutoff_P = NULL, table = F, ci = F, nsample = 1000,classes_lab="Multimorbidity profile") {
+ggOE <- function(obj, cutoff_OE = 2, cutoff_P = NULL, table = F, ci = F, nsample = 1000,classes_lab="Latent class") {
   suppressMessages({
     suppressWarnings({
       nclass <- nrow(obj$probs[[1]])
@@ -86,40 +86,40 @@ ggOE <- function(obj, cutoff_OE = 2, cutoff_P = NULL, table = F, ci = F, nsample
           as.data.frame() %>%
           tibble::rownames_to_column("Disease") %>%
           tidyr::pivot_longer(2:(nclass + 1),
-            names_to = "Multimorbidity profile",
+            names_to = classes_lab,
             values_to = "Lower O/E"
           ) %>%
-          dplyr::mutate(`Multimorbidity profile` = as.numeric(gsub("\\D", "", `Multimorbidity profile`)))
+          dplyr::mutate(!!rlang::sym(classes_lab)  := as.numeric(gsub("\\D", "", .data[[classes_lab]])))
 
 
         upper %<>% t() %>%
           as.data.frame() %>%
           tibble::rownames_to_column("Disease") %>%
           tidyr::pivot_longer(2:(nclass + 1),
-            names_to = "Multimorbidity profile",
+            names_to = classes_lab,
             values_to = "Upper O/E"
           ) %>%
-          dplyr::mutate(`Multimorbidity profile` = as.numeric(gsub("\\D", "", `Multimorbidity profile`)))
+          dplyr::mutate(!!rlang::sym(classes_lab)  := as.numeric(gsub("\\D", "", .data[[classes_lab]])))
       }
 
       if (is.null(cutoff_P)) cutoff_P <- 0
       O %<>% as.data.frame() %>%
         tibble::rownames_to_column("Disease") %>%
         tidyr::pivot_longer(2:(nclass + 1),
-          names_to = "Multimorbidity profile",
+          names_to = classes_lab,
           values_to = "Prevalence"
         ) %>%
-        dplyr::mutate(`Multimorbidity profile` = as.numeric(gsub("\\D", "", `Multimorbidity profile`))) %>%
+        dplyr::mutate(!!rlang::sym(classes_lab)  := as.numeric(gsub("\\D", "", .data[[classes_lab]]))) %>%
         dplyr::mutate(label2 = ifelse(Prevalence < cutoff_P, NA_integer_, Disease))
 
 
       R %<>% as.data.frame() %>%
         tibble::rownames_to_column("Disease") %>%
         tidyr::pivot_longer(2:(nclass + 1),
-          names_to = "Multimorbidity profile",
+          names_to = classes_lab,
           values_to = "O/E"
         ) %>%
-        dplyr::mutate(`Multimorbidity profile` = as.numeric(gsub("\\D", "", `Multimorbidity profile`))) %>%
+        dplyr::mutate(!!rlang::sym(classes_lab) := as.numeric(gsub("\\D", "", .data[[classes_lab]]))) %>%
         dplyr::mutate(label = ifelse(`O/E` < cutoff_OE, NA_integer_, Disease))
 
       Char_MP <- R %>% dplyr::left_join(O)
@@ -133,13 +133,13 @@ ggOE <- function(obj, cutoff_OE = 2, cutoff_P = NULL, table = F, ci = F, nsample
         P = round(as.numeric(table(obj$predclass)) / length(obj$predclass) * 100, 0)
       )
 
-      colnames(datn)[1] <- "Multimorbidity profile"
+      colnames(datn)[1] <- classes_lab
 
 
       if (ci) {
         Char_MP %<>% left_join(lower) %>% left_join(upper)
         Char_MP %<>% dplyr::left_join(datn) %>%
-          dplyr::mutate(`Multimorbidity profile` = paste0(`Multimorbidity profile`, " (", P, "%)")) %>%
+          dplyr::mutate(!!rlang::sym(classes_lab) := paste0(.data[[classes_lab]], " (", P, "%)")) %>%
           dplyr::mutate(label3 = ifelse(!is.na(label) & !is.na(label2), Disease, NA_integer_))
         Char_MP %<>% mutate(sign = ifelse(`Lower O/E` > cutoff_OE & Prevalence >= cutoff_P, Disease, NA_integer_))
 suppressWarnings({
@@ -148,7 +148,7 @@ suppressWarnings({
     ggplot2::geom_pointrange(ggplot2::aes(xmin = `Lower O/E`, xmax = `Upper O/E`, y = Disease, x = `O/E`), linewidth = 1) +
     ggplot2::geom_bar(ggplot2::aes(`O/E`, Disease, fill = Disease), stat = "identity", alpha = 0.5) +
     ggplot2::geom_vline(ggplot2::aes(xintercept = cutoff_OE), linetype = "dashed") +
-    ggplot2::facet_grid(. ~ `Multimorbidity profile`) +
+    ggplot2::facet_grid(. ~ vars(.data[[classes_lab]])) +
     ggplot2::scale_y_discrete("Disease") +
     ggplot2::scale_x_continuous("O/E") +
     ggplot2::theme_bw(base_size = 14) +
@@ -159,7 +159,7 @@ suppressWarnings({
       axis.ticks.y = ggplot2::element_blank(),
       panel.grid.major.y = ggplot2::element_line(color = "grey", linewidth = 0.5)
     ) +
-    ggplot2::ggtitle("Multimorbidity Patterns")
+    ggplot2::ggtitle(classes_lab)
   print(ggOE)
 })
 
@@ -168,7 +168,7 @@ suppressWarnings({
 
       } else {
         Char_MP %<>% dplyr::left_join(datn) %>%
-          dplyr::mutate(`Multimorbidity profile` = paste0(`Multimorbidity profile`, " (", P, "%)")) %>%
+          dplyr::mutate(!!rlang::sym(classes_lab) := paste0(.data[[classes_lab]], " (", P, "%)")) %>%
           dplyr::mutate(label3 = ifelse(!is.na(label) & !is.na(label2), Disease, NA_integer_))
 
         suppressWarnings({
@@ -176,7 +176,7 @@ suppressWarnings({
             ggplot2::geom_bar(ggplot2::aes(`O/E`, Disease, fill = Disease), stat = "identity") +
             ggplot2::geom_text(ggplot2::aes(`O/E`, Disease, label = label3, hjust = "left"), size = 5,na.rm = T) +
             ggplot2::geom_vline(ggplot2::aes(xintercept = cutoff_OE), linetype = "dashed") +
-            ggplot2::facet_grid(. ~ `Multimorbidity profile`) +
+            ggplot2::facet_grid(cols = vars(!!rlang::sym(classes_lab))) +
             ggplot2::scale_y_discrete("Disease") +
             ggplot2::scale_x_continuous("O/E")+
             ggplot2::theme_bw(base_size = 14) +
@@ -187,7 +187,7 @@ suppressWarnings({
               axis.ticks.y = ggplot2::element_blank(),
               panel.grid.major.y = ggplot2::element_line(color = "grey", linewidth = 0.5)
             ) +
-            ggplot2::ggtitle("Multimorbidity Patterns")
+            ggplot2::ggtitle(classes_lab)
           print(ggOE)
         })
 

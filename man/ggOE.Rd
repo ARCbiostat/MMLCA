@@ -11,7 +11,7 @@ ggOE(
   table = F,
   ci = F,
   nsample = 1000,
-  classes_lab = "Multimorbidity profile"
+  classes_lab = "Latent class"
 )
 }
 \arguments{
@@ -21,7 +21,7 @@ ggOE(
 diseases with elevated O/E ratios. Default is 2.}
 
 \item{cutoff_P}{Numeric indicating the minimum disease prevalence within a
-Multimorbidity profile required for a disease to be considered in the
+latent class required for a disease to be considered in the
 characterization. If \code{NULL}, all diseases are considered.}
 
 \item{table}{Logical; if \code{TRUE}, returns the underlying table in
@@ -32,7 +32,8 @@ for the O/E ratios are estimated using Monte Carlo simulation and
 displayed in the plot. Default is \code{FALSE}.}
 
 \item{nsample}{Integer specifying the number of Monte Carlo samples used
-to estimate confidence intervals when \code{ci = TRUE}. Default is 1000.}
+ to estimate confidence intervals when \code{ci = TRUE}. Default is 1000.
+@param classes_lab string indicating how classes should be named in the plot. Default is "Latent class"}
 }
 \value{
 A \code{ggplot2} object. If \code{table = TRUE}, a list containing the
@@ -49,9 +50,9 @@ Plot Observed/Expected Ratios
 
 
 The Observed/Expected (O/E) ratio is calculated as the prevalence of a
-disease within a Multimorbidity profile divided by its prevalence in the overall
+disease within a latent class divided by its prevalence in the overall
 sample. Values greater than one indicate that the disease is more common
-within the Multimorbidity profile than expected based on its population prevalence.
+within the latent class than expected based on its population prevalence.
 
 When \code{ci = TRUE}, approximate 95\% confidence intervals for the O/E
 ratios are obtained through Monte Carlo sampling. Overall disease
@@ -61,7 +62,7 @@ estimated probabilities and standard errors from the fitted
 \code{poLCA} model. Confidence limits correspond to the 2.5th and
 97.5th percentiles of the simulated O/E distribution.
 
-Diseases are considered characteristic of a Multimorbidity profile when their O/E
+Diseases are considered characteristic of a latent class when their O/E
 ratio exceeds \code{cutoff_OE} and their prevalence exceeds
 \code{cutoff_P}.
 }

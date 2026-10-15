@@ -7,7 +7,7 @@
 ggcompare_classes(obj)
 }
 \arguments{
-\item{obj}{An object returned by function select_mmlca}
+\item{obj}{An object returned by function select_mmlca()}
 }
 \value{
 A \code{ggplot2} object containing an alluvial plot that visualizes

@@ -97,6 +97,10 @@ estimate the confidence intervals when <code>ci = TRUE</code>. Default is 1000.<
 that simultaneously exceed both the O/E and Exclusivity thresholds.
 Default is <code>FALSE</code>.</p></dd>
 
+
+<dt id="arg-classes-lab">classes_lab<a class="anchor" aria-label="anchor" href="#arg-classes-lab"></a></dt>
+<dd><p>string indicating how classes should be named in the plot. Default is "Latent class"</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -115,7 +119,10 @@ sampled from normal distributions based on the observed sample prevalence,
 while class-specific prevalences are sampled using the estimated
 probabilities and standard errors from the <code>poLCA</code> model. The 2.5th
 and 97.5th percentiles of the simulated O/E ratios are used as confidence
-limits.</p>
+limits.
+Diseases are considered characteristic of a latent class when their O/E
+ratio exceeds <code>cutoff_OE</code> and their prevalence exceeds
+<code>cutoff_Ex</code>.</p>
     </div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

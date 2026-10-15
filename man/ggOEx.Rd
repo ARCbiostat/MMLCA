@@ -36,6 +36,8 @@ estimate the confidence intervals when \code{ci = TRUE}. Default is 1000.}
 \item{names}{Logical; if \code{TRUE}, an additional panel displays diseases
 that simultaneously exceed both the O/E and Exclusivity thresholds.
 Default is \code{FALSE}.}
+
+\item{classes_lab}{string indicating how classes should be named in the plot. Default is "Latent class"}
 }
 \value{
 A ggplot object. If \code{table = TRUE}, a list containing the plot and the
@@ -60,4 +62,7 @@ while class-specific prevalences are sampled using the estimated
 probabilities and standard errors from the \code{poLCA} model. The 2.5th
 and 97.5th percentiles of the simulated O/E ratios are used as confidence
 limits.
+Diseases are considered characteristic of a latent class when their O/E
+ratio exceeds \code{cutoff_OE} and their prevalence exceeds
+\code{cutoff_Ex}.
 }

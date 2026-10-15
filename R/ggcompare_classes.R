@@ -10,7 +10,7 @@
 #' computed and converted to modal class assignments. The resulting classifications are displayed
 #' as an alluvial diagram using \pkg{ggalluvial}.
 #'
-#' @param obj An object returned by function select_mmlca
+#' @param obj An object returned by function select_mmlca()
 #' @returns
 #' A \code{ggplot2} object containing an alluvial plot that visualizes
 #' transitions in class membership across solutions with different numbers

@@ -20,6 +20,7 @@
 #' @param names Logical; if \code{TRUE}, an additional panel displays diseases
 #'   that simultaneously exceed both the O/E and Exclusivity thresholds.
 #'   Default is \code{FALSE}.
+#' @param classes_lab string indicating how classes should be named in the plot. Default is "Latent class"
 #'
 #' @details
 #' The Observed/Expected (O/E) ratio is calculated as the prevalence of a
@@ -34,7 +35,9 @@
 #' probabilities and standard errors from the \code{poLCA} model. The 2.5th
 #' and 97.5th percentiles of the simulated O/E ratios are used as confidence
 #' limits.
-#'
+#' Diseases are considered characteristic of a latent class when their O/E
+#' ratio exceeds \code{cutoff_OE} and their prevalence exceeds
+#' \code{cutoff_Ex}.
 #' @return
 #' A ggplot object. If \code{table = TRUE}, a list containing the plot and the
 #' summary data frame used to generate it is returned.
@@ -55,10 +58,10 @@ ggOEx <- function(obj, cutoff_OE = 2, cutoff_Ex = 0.25, table = F, ci = F, nsamp
       R %<>% as.data.frame() %>%
         tibble::rownames_to_column("Disease") %>%
         tidyr::pivot_longer(2:(nclass + 1),
-          names_to = "Latent class",
+          names_to = classes_lab,
           values_to = "O/E"
         ) %>%
-        dplyr::mutate(`Latent class` = as.numeric(gsub("\\D", "", `Latent class`))) %>%
+        dplyr::mutate(!!rlang::sym(classes_lab) := as.numeric(gsub("\\D", "", .data[[classes_lab]]))) %>%
         dplyr::mutate(label = ifelse(`O/E` < cutoff_OE, NA_integer_, Disease))
 
       N <- apply(obj$y - 1, 2, sum)
@@ -74,19 +77,19 @@ ggOEx <- function(obj, cutoff_OE = 2, cutoff_Ex = 0.25, table = F, ci = F, nsamp
       Ex %<>% as.data.frame() %>%
         tibble::rownames_to_column("Disease") %>%
         tidyr::pivot_longer(2:(nclass + 1),
-          names_to = "Latent class",
+          names_to = classes_lab,
           values_to = "Exclusivity"
         ) %>%
-        dplyr::mutate(`Latent class` = as.numeric(gsub("\\D", "", `Latent class`))) %>%
+        dplyr::mutate(!!rlang::sym(classes_lab) := as.numeric(gsub("\\D", "", .data[[classes_lab]]))) %>%
         dplyr::mutate(label2 = ifelse(`Exclusivity` < cutoff_Ex, NA_integer_, Disease))
 
       O %<>% as.data.frame() %>%
         tibble::rownames_to_column("Disease") %>%
         tidyr::pivot_longer(2:(nclass + 1),
-          names_to = "Latent class",
+          names_to = classes_lab,
           values_to = "Prevalence"
         ) %>%
-        dplyr::mutate(`Latent class` = as.numeric(gsub("\\D", "", `Latent class`)))
+        dplyr::mutate(!!rlang::sym(classes_lab) := as.numeric(gsub("\\D", "", .data[[classes_lab]])))
 
 
       if (ci) {
@@ -114,20 +117,20 @@ ggOEx <- function(obj, cutoff_OE = 2, cutoff_Ex = 0.25, table = F, ci = F, nsamp
           as.data.frame() %>%
           tibble::rownames_to_column("Disease") %>%
           tidyr::pivot_longer(2:(nclass + 1),
-            names_to = "Latent class",
+            names_to = classes_lab,
             values_to = "Lower O/E"
           ) %>%
-          dplyr::mutate(`Latent class` = as.numeric(gsub("\\D", "", `Latent class`)))
+          dplyr::mutate(!!rlang::sym(classes_lab) := as.numeric(gsub("\\D", "", .data[[classes_lab]])))
 
 
         upper %<>% t() %>%
           as.data.frame() %>%
           tibble::rownames_to_column("Disease") %>%
           tidyr::pivot_longer(2:(nclass + 1),
-            names_to = "Latent class",
+            names_to = classes_lab,
             values_to = "Upper O/E"
           ) %>%
-          dplyr::mutate(`Latent class` = as.numeric(gsub("\\D", "", `Latent class`)))
+          dplyr::mutate(!!rlang::sym(classes_lab)  := as.numeric(gsub("\\D", "", .data[[classes_lab]])))
       }
 
       Char_MP <- R %>%
@@ -140,13 +143,13 @@ ggOEx <- function(obj, cutoff_OE = 2, cutoff_Ex = 0.25, table = F, ci = F, nsamp
         P = round(as.numeric(table(obj$predclass)) / length(obj$predclass) * 100, 0)
       )
 
-      colnames(datn)[1] <- "Latent class"
+      colnames(datn)[1] <- classes_lab
 
 
       if(ci){
         Char_MP %<>% left_join(lower) %>% left_join(upper)
         Char_MP %<>% dplyr::left_join(datn) %>%
-          dplyr::mutate(`Latent class` = paste0(`Latent class`, " (", P, "%)")) %>%
+          dplyr::mutate(!!rlang::sym(classes_lab)  := paste0(.data[[classes_lab]], " (", P, "%)")) %>%
           dplyr::mutate(label3 = ifelse(!is.na(label) & !is.na(label2), Disease, NA_integer_))
         Char_MP %<>% mutate(char = ifelse(`Lower O/E` > cutoff_OE & Exclusivity> cutoff_Ex, 1, NA_integer_))
 
@@ -154,7 +157,7 @@ ggOEx <- function(obj, cutoff_OE = 2, cutoff_Ex = 0.25, table = F, ci = F, nsamp
           ggplot2::geom_pointrange(ggplot2::aes(xmin = `Lower O/E`, xmax = `Upper O/E`, y = Disease, x = `O/E`), linewidth = 1) +
           ggplot2::geom_bar(ggplot2::aes(`O/E`, Disease, fill = Disease), stat = "identity", alpha = 0.5) +
           ggplot2::geom_vline(ggplot2::aes(xintercept = cutoff_OE), linetype = "dashed") +
-          ggplot2::facet_grid(. ~ `Latent class`) +
+          ggplot2::facet_grid(cols = vars(!!rlang::sym(classes_lab))) +
           ggplot2::scale_y_discrete("Disease") +
           ggplot2::theme_bw() +
           ggplot2::theme(
@@ -164,12 +167,12 @@ ggOEx <- function(obj, cutoff_OE = 2, cutoff_Ex = 0.25, table = F, ci = F, nsamp
             axis.ticks.y = ggplot2::element_blank(),
             panel.grid.major.y = ggplot2::element_line(color = "grey", linewidth = 0.5)
           ) +
-          ggplot2::ggtitle("Latent class")
+          ggplot2::ggtitle(classes_lab)
 
         ggex <- ggplot2::ggplot(Char_MP) +
           ggplot2::geom_bar(ggplot2::aes(Exclusivity, Disease, fill = Disease), stat = "identity") +
           ggplot2::geom_vline(ggplot2::aes(xintercept = cutoff_Ex), linetype = "dashed") +
-          ggplot2::facet_grid(. ~ `Latent class`) +
+          ggplot2::facet_grid(cols = vars(!!rlang::sym(classes_lab))) +
           ggplot2::scale_y_discrete("Disease") +
           ggplot2::scale_x_continuous(limits = c(0, 1)) +
           ggplot2::theme_bw() +
@@ -183,12 +186,12 @@ ggOEx <- function(obj, cutoff_OE = 2, cutoff_Ex = 0.25, table = F, ci = F, nsamp
       }else{
 
         Char_MP %<>% dplyr::left_join(datn) %>%
-          dplyr::mutate(`Latent class` = paste0(`Latent class`, " (", P, "%)"))
+          dplyr::mutate(!!rlang::sym(classes_lab)  := paste0(.data[[classes_lab]], " (", P, "%)"))
 
         ggOE <- ggplot2::ggplot(Char_MP) +
           ggplot2::geom_bar(ggplot2::aes(`O/E`, Disease, fill = Disease), stat = "identity") +
           ggplot2::geom_vline(ggplot2::aes(xintercept = cutoff_OE), linetype = "dashed") +
-          ggplot2::facet_grid(. ~ `Latent class`) +
+          ggplot2::facet_grid(cols = vars(!!rlang::sym(classes_lab))) +
           ggplot2::scale_y_discrete("Disease") +
           ggplot2::theme_bw() +
           ggplot2::theme(
@@ -198,12 +201,12 @@ ggOEx <- function(obj, cutoff_OE = 2, cutoff_Ex = 0.25, table = F, ci = F, nsamp
             axis.ticks.y = ggplot2::element_blank(),
             panel.grid.major.y = ggplot2::element_line(color = "grey", linewidth = 0.5)
           ) +
-          ggplot2::ggtitle("Latent class")
+          ggplot2::ggtitle(classes_lab)
 
         ggex <- ggplot2::ggplot(Char_MP) +
           ggplot2::geom_bar(ggplot2::aes(Exclusivity, Disease, fill = Disease), stat = "identity") +
           ggplot2::geom_vline(ggplot2::aes(xintercept = cutoff_Ex), linetype = "dashed") +
-          ggplot2::facet_grid(. ~ `Latent class`) +
+          ggplot2::facet_grid(cols = vars(!!rlang::sym(classes_lab))) +
           ggplot2::scale_y_discrete("Disease") +
           ggplot2::scale_x_continuous(limits = c(0, 1)) +
           ggplot2::theme_bw() +
@@ -217,16 +220,16 @@ ggOEx <- function(obj, cutoff_OE = 2, cutoff_Ex = 0.25, table = F, ci = F, nsamp
       }
 
 
-      Char_MP %<>% mutate(`Latent class` = as.factor(`Latent class`))
+      Char_MP %<>% mutate(!!rlang::sym(classes_lab)  := as.factor(.data[[classes_lab]]))
 
       Char_MP2 <- Char_MP %>%
         dplyr::filter(char == 1) %>%
-        dplyr::group_by(`Latent class`) %>%
+        dplyr::group_by(.data[[classes_lab]]) %>%
         dplyr::mutate(index = row_number())
 
       ggnames <- ggplot2::ggplot(Char_MP2) +
         ggplot2::geom_text(ggplot2::aes(0.1, index, label = label2, hjust = "left"), size = 6) +
-        ggplot2::facet_grid(. ~ `Latent class`, drop = F) +
+        ggplot2::facet_grid(cols = vars(!!rlang::sym(classes_lab)), drop = F) +
         ggplot2::scale_y_reverse("Disease") +
         ggplot2::scale_x_continuous(limits = c(0, 1)) +
         ggplot2::theme_void() +
@@ -247,7 +250,7 @@ if(names){
 }
 
 print("Diseases above threshold:")
-print(Char_MP2 %>% dplyr::select(`Latent class`,label2) %>% dplyr::arrange(`Latent class`) %>% dplyr::rename(Disease=label2) %>% as.data.frame())
+print(Char_MP2 %>% dplyr::select(.data[[classes_lab]],label2) %>% dplyr::arrange(.data[[classes_lab]]) %>% dplyr::rename(Disease=label2) %>% as.data.frame())
       if (table) {
         colnames(Char_MP)[4] <- "O/E above threshold"
         colnames(Char_MP)[6] <- "Exclusivity above threshold"

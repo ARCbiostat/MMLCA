@@ -54,7 +54,7 @@ minimum within-class prevalence threshold.</p>
 <span>  table <span class="op">=</span> <span class="cn">F</span>,</span>
 <span>  ci <span class="op">=</span> <span class="cn">F</span>,</span>
 <span>  nsample <span class="op">=</span> <span class="fl">1000</span>,</span>
-<span>  classes_lab <span class="op">=</span> <span class="st">"Multimorbidity profile"</span></span>
+<span>  classes_lab <span class="op">=</span> <span class="st">"Latent class"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -73,7 +73,7 @@ diseases with elevated O/E ratios. Default is 2.</p></dd>
 
 <dt id="arg-cutoff-p">cutoff_P<a class="anchor" aria-label="anchor" href="#arg-cutoff-p"></a></dt>
 <dd><p>Numeric indicating the minimum disease prevalence within a
-Multimorbidity profile required for a disease to be considered in the
+latent class required for a disease to be considered in the
 characterization. If <code>NULL</code>, all diseases are considered.</p></dd>
 
 
@@ -90,7 +90,8 @@ displayed in the plot. Default is <code>FALSE</code>.</p></dd>
 
 <dt id="arg-nsample">nsample<a class="anchor" aria-label="anchor" href="#arg-nsample"></a></dt>
 <dd><p>Integer specifying the number of Monte Carlo samples used
-to estimate confidence intervals when <code>ci = TRUE</code>. Default is 1000.</p></dd>
+ to estimate confidence intervals when <code>ci = TRUE</code>. Default is 1000.
+@param classes_lab string indicating how classes should be named in the plot. Default is "Latent class"</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -103,9 +104,9 @@ plot and the data frame used to generate it is returned.</p>
     <p>Plot Observed/Expected Ratios</p>
 
 <p>The Observed/Expected (O/E) ratio is calculated as the prevalence of a
-disease within a Multimorbidity profile divided by its prevalence in the overall
+disease within a latent class divided by its prevalence in the overall
 sample. Values greater than one indicate that the disease is more common
-within the Multimorbidity profile than expected based on its population prevalence.</p>
+within the latent class than expected based on its population prevalence.</p>
 <p>When <code>ci = TRUE</code>, approximate 95% confidence intervals for the O/E
 ratios are obtained through Monte Carlo sampling. Overall disease
 prevalences are sampled assuming a normal approximation to the binomial
@@ -113,7 +114,7 @@ distribution, while class-specific prevalences are sampled using the
 estimated probabilities and standard errors from the fitted
 <code>poLCA</code> model. Confidence limits correspond to the 2.5th and
 97.5th percentiles of the simulated O/E distribution.</p>
-<p>Diseases are considered characteristic of a Multimorbidity profile when their O/E
+<p>Diseases are considered characteristic of a latent class when their O/E
 ratio exceeds <code>cutoff_OE</code> and their prevalence exceeds
 <code>cutoff_P</code>.</p>
     </div>

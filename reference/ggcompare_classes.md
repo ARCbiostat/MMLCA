@@ -16,7 +16,7 @@ ggcompare_classes(obj)
 
 - obj:
 
-  An object returned by function select_mmlca
+  An object returned by function select_mmlca()
 
 ## Value
 

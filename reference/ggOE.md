@@ -15,7 +15,7 @@ ggOE(
   table = F,
   ci = F,
   nsample = 1000,
-  classes_lab = "Multimorbidity profile"
+  classes_lab = "Latent class"
 )
 ```
 
@@ -32,9 +32,9 @@ ggOE(
 
 - cutoff_P:
 
-  Numeric indicating the minimum disease prevalence within a
-  Multimorbidity profile required for a disease to be considered in the
-  characterization. If `NULL`, all diseases are considered.
+  Numeric indicating the minimum disease prevalence within a latent
+  class required for a disease to be considered in the characterization.
+  If `NULL`, all diseases are considered.
 
 - table:
 
@@ -50,7 +50,9 @@ ggOE(
 - nsample:
 
   Integer specifying the number of Monte Carlo samples used to estimate
-  confidence intervals when `ci = TRUE`. Default is 1000.
+  confidence intervals when `ci = TRUE`. Default is 1000. @param
+  classes_lab string indicating how classes should be named in the plot.
+  Default is "Latent class"
 
 ## Value
 
@@ -62,10 +64,10 @@ the data frame used to generate it is returned.
 Plot Observed/Expected Ratios
 
 The Observed/Expected (O/E) ratio is calculated as the prevalence of a
-disease within a Multimorbidity profile divided by its prevalence in the
-overall sample. Values greater than one indicate that the disease is
-more common within the Multimorbidity profile than expected based on its
-population prevalence.
+disease within a latent class divided by its prevalence in the overall
+sample. Values greater than one indicate that the disease is more common
+within the latent class than expected based on its population
+prevalence.
 
 When `ci = TRUE`, approximate 95% confidence intervals for the O/E
 ratios are obtained through Monte Carlo sampling. Overall disease
@@ -75,6 +77,5 @@ estimated probabilities and standard errors from the fitted `poLCA`
 model. Confidence limits correspond to the 2.5th and 97.5th percentiles
 of the simulated O/E distribution.
 
-Diseases are considered characteristic of a Multimorbidity profile when
-their O/E ratio exceeds `cutoff_OE` and their prevalence exceeds
-`cutoff_P`.
+Diseases are considered characteristic of a latent class when their O/E
+ratio exceeds `cutoff_OE` and their prevalence exceeds `cutoff_P`.

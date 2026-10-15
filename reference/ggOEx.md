@@ -57,6 +57,11 @@ ggOEx(
   simultaneously exceed both the O/E and Exclusivity thresholds. Default
   is `FALSE`.
 
+- classes_lab:
+
+  string indicating how classes should be named in the plot. Default is
+  "Latent class"
+
 ## Value
 
 A ggplot object. If `table = TRUE`, a list containing the plot and the
@@ -75,4 +80,6 @@ sampled from normal distributions based on the observed sample
 prevalence, while class-specific prevalences are sampled using the
 estimated probabilities and standard errors from the `poLCA` model. The
 2.5th and 97.5th percentiles of the simulated O/E ratios are used as
-confidence limits.
+confidence limits. Diseases are considered characteristic of a latent
+class when their O/E ratio exceeds `cutoff_OE` and their prevalence
+exceeds `cutoff_Ex`.

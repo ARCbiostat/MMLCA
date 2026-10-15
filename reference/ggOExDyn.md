@@ -72,4 +72,13 @@ addition, the exclusivity criteria are also dependent on the total
 number of classes under investigation. As a result, the identification
 of characteristic diseases becomes less sensitive to class size and more
 comparable across patterns of different prevalence. Specifically, for
-classes representing at least 25
+classes representing at least 25% of the population, diseases are
+considered overrepresented when O/E ≥ 1.15, whereas progressively higher
+thresholds (1.5, 1.75, and 2.0) are applied as class prevalence
+decreases below 25%, 15%, and 10%, respectively. For exclusivity,
+thresholds are defined relative to the theoretical benchmark of 1/k,
+where k the number of latent classes. The exclusivity threshold is
+increased by 20% for highly prevalent classes (≥ 25% of the population),
+remains unchanged for classes with prevalence between 15% and 25%, and
+is reduced by 20% and 40% for classes with prevalence between 10% and
+15% and below 10%, respectively.

@@ -2,7 +2,7 @@
 
 ## Authors
 
-- **Caterina Gregororio**. Maintainer.
+- **Caterina Gregorio**. Maintainer.
 
 ## Citation
 

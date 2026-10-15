@@ -3,7 +3,7 @@ Type: Package
 Title: Latent Class Analysis to Identify Multimorbidity Patterns
 Version: 2.0.0
 Author: Caterina Gregorio
-Maintainer: Caterina Gregororio <caterina.gregorio@ki.se>
+Maintainer: Caterina Gregorio <caterina.gregorio@ki.se>
 Description: MMLCA aims to simplify the identification of multimorbidity patterns through user-friendly functions. Leveraging the power of Latent Class Analysis (LCA) as implemented in the poLCA package, MMLCA provides an accessible and efficient tool for researchers.
 License: AGPL (>= 3)
 Encoding: UTF-8
@@ -19,7 +19,8 @@ Imports:
     tibble,
     tictoc,
     tidyr,
-    future.apply
+    future.apply,
+    rlang
 URL: https://github.com/ARCbiostat/MMLCA, https://arcbiostat.github.io/MMLCA/
 BugReports: https://github.com/ARCbiostat/MMLCA/issues
 Suggests: 
